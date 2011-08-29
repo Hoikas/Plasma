@@ -1,7 +1,7 @@
-/*==LICENSE==*
+/*==COPYING==*
 
 CyanWorlds.com Engine - MMOG client, server and tools
-Copyright (C) 2011  Cyan Worlds, Inc.
+Copyright (C) 2011 Cyan Worlds, Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -10,11 +10,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Additional permissions under GNU GPL version 3 section 7
 
@@ -38,34 +38,25 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       14617 N Newport Hwy
       Mead, WA   99021
 
-*==LICENSE==*/
-#ifndef plPhysXCreatable_inc
-#define plPhysXCreatable_inc
-
-#include "pnFactory/plCreator.h"
-
-#include "plPXPhysical.h"
-
-REGISTER_CREATABLE(plPXPhysical);
-
-//#include "plHKSimulationSynchMsg.h"
-//REGISTER_CREATABLE(plHKSimulationSynchMsg);
-
-//#include "plHavokConstraintTools.h"
-//REGISTER_NONCREATABLE(plHavokConstraintsMod);
-//REGISTER_CREATABLE(plHingeConstraintMod);
-//REGISTER_CREATABLE(plStrongSpringConstraintMod);
-//REGISTER_CREATABLE(plWheelConstraintMod);
-
-
+*==COPYING==*/
 #include "plLOSDispatch.h"
-REGISTER_CREATABLE( plLOSDispatch );
-
 #include "plSimulationMgr.h"
-REGISTER_CREATABLE( plSimulationMgr );
+#include "plgDispatch.h"
+#include "plMessage/plLOSRequestMsg.h"
 
-//#include "plVehicleModifier.h"
-//REGISTER_CREATABLE(plVehicleModifier);
+plLOSDispatch::plLOSDispatch()
+{
+    RegisterAs(kLOSObject_KEY);
+    plgDispatch::Dispatch()->RegisterForExactType(plLOSRequestMsg::Index(), GetKey());
+}
 
+plLOSDispatch::~plLOSDispatch()
+{
+    plgDispatch::Dispatch()->UnRegisterForExactType(plLOSRequestMsg::Index(), GetKey());
+}
 
-#endif // plPhysXCreatable_inc
+hsBool plLOSDispatch::MsgReceive(plMessage* msg)
+{
+    // BULLET STUB
+    return hsKeyedObject::MsgReceive(msg);
+}

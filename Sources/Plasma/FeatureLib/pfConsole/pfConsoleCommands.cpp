@@ -5640,24 +5640,12 @@ PF_CONSOLE_CMD( SceneObject, Detach,            // Group name, Function name
 
 //////////////////////////////////////////////////////////////
 // PHYSICS (The Havok Flavour)
+// Now with comments that are two sizes two small!
 //////////////////////////////////////////////////////////////
 
 #ifndef LIMIT_CONSOLE_COMMANDS
 
-#include "plPhysX/plPXPhysicalControllerCore.h"
-
 PF_CONSOLE_GROUP( Physics )
-
-PF_CONSOLE_CMD( Physics, Rebuild, "", "Rebuilds the avatars collision cache")
-{
-    plPXPhysicalControllerCore::RebuildCache();
-}
-
-PF_CONSOLE_CMD(Physics, MaxPhysicalAvatars, "int max", "Set the maximum number of avatar physicals allowed. Default = 0 (meaning no limit)")
-{
-    int max = params[0];
-    plPXPhysicalControllerCore::SetMaxNumberOfControllers(max);
-}
 
 /*
 PF_CONSOLE_CMD( Physics, SetStepsPerSecond, "int steps", "Sets the number of physics substeps per second, regardless of rendering framerate.")
@@ -5888,7 +5876,7 @@ PF_CONSOLE_CMD(Physics, LogSDL, "int level", "Turn logging of physics SDL state 
     plPhysicalSDLModifier::SetLogLevel(level);
 }
 
-#include "plPhysX/plSimulationMgr.h"
+#include "plBullet/plSimulationMgr.h"
 PF_CONSOLE_CMD(Physics, ExtraProfile, "", "Toggle extra simulation profiling")
 {
     char str[256];
@@ -5940,7 +5928,7 @@ PF_CONSOLE_CMD(Physics,
                "", 
                "Toggle the physics controller debug display")
 {
-    plPXPhysicalControllerCore::fDebugDisplay = !plPXPhysicalControllerCore::fDebugDisplay;
+//    plPXPhysicalControllerCore::fDebugDisplay = !plPXPhysicalControllerCore::fDebugDisplay;
 }
 PF_CONSOLE_CMD(Physics, 
                ListAwakeActors,

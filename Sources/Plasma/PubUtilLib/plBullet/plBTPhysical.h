@@ -39,18 +39,14 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-#ifndef plPXPhysical_h_inc
-#define plPXPhysical_h_inc
+#ifndef plBTPhysical_h_inc
+#define plBTPhysical_h_inc
 
 #include "plPhysical.h" 
 #include "hsMatrix44.h"
 #include "plPhysical/plSimDefs.h"
 #include "hsBitVector.h"
 
-
-class NxActor;
-class NxConvexMesh;
-class NxTriangleMesh;
 
 struct hsPoint3;
 class hsQuat;
@@ -67,7 +63,6 @@ class plPhysicalSndGroup;
 class plGenRefMsg;
 class plSceneObject;
 class hsVectorStream;
-class NxCapsule;
 
 class PhysRecipe
 {
@@ -87,8 +82,8 @@ public:
     // The local to subworld matrix (or local to world if worldKey is nil)
     hsMatrix44 l2s;
 
-    NxConvexMesh* convexMesh;
-    NxTriangleMesh* triMesh;
+    //NxConvexMesh* convexMesh;
+    //NxTriangleMesh* triMesh;
 
     // For spheres only
     float radius;
@@ -102,8 +97,7 @@ public:
     hsVectorStream* meshStream;
 };
 
-class plPXPhysical : public plPhysical
-{
+class plBTPhysical : public plPhysical {
 public:
     friend class plSimulationMgr;
 
@@ -113,11 +107,11 @@ public:
         kPhysRefSndGroup
     };
 
-    plPXPhysical();
-    virtual ~plPXPhysical();
+    plBTPhysical();
+    virtual ~plBTPhysical();
 
-    CLASSNAME_REGISTER(plPXPhysical);
-    GETINTERFACE_ANY(plPXPhysical, plPhysical);
+    CLASSNAME_REGISTER(plBTPhysical);
+    GETINTERFACE_ANY(plBTPhysical, plPhysical);
 
     // Export time and internal use only
     hsBool Init(PhysRecipe& recipe);
@@ -186,36 +180,15 @@ public:
     // that are in the dynamic group but are actually animated or something.
     // This weeds those out.
     hsBool IsDynamic() const;
-    
-    //Hack to check if there is an overlap with the capsule
-    //this partially for exclude regions vs avatar capsule
-    virtual hsBool OverlapWithCapsule(NxCapsule& cap);
 
     virtual float GetMass() {return fMass;}
 protected:
+    hsBool HandleRefMsg(plGenRefMsg * refM);
+
     void IGetPositionSim(hsPoint3& pos) const;
     void IGetRotationSim(hsQuat& rot) const;
     void ISetPositionSim(const hsPoint3& pos);
     void ISetRotationSim(const hsQuat& rot);
-
-    /** Handle messages about our references. */
-    hsBool HandleRefMsg(plGenRefMsg * refM);
-
-    /////////////////////////////////////////////////////////////
-    //
-    // WORLDS, SUBWORLDS && CONTEXTS
-    //
-    /////////////////////////////////////////////////////////////
-
-    void IConvertGroups(uint32_t memberOf, uint32_t reportsOn, uint32_t collideWith);
-
-    /** See if the object is in a valid, non-overlapping position.
-        A valid overlap is one which is approved by the collision
-        masking code, i.e. my memberOf has no intersection with your
-        bounceOff and vice-versa
-        */
-    // Set overlapText to get a string naming all the overlapping physicals (that you must delete)
-    hsBool CheckValidPosition(char** overlapText=nil);
 
     /////////////////////////////////////////////////////////////
     //
@@ -236,9 +209,6 @@ protected:
     // Enable/disable collisions and dynamic movement
     void IEnable(hsBool enable);
 
-    void IMakeHull(NxConvexMesh* convexMesh, hsMatrix44 l2w);
-
-    NxActor* fActor;
     plKey fWorldKey;    // either a subworld or nil
 
     plSimDefs::Bounds fBoundsType;
@@ -251,23 +221,10 @@ protected:
     plKey fObjectKey;           // the key to our scene object
     plKey fSceneNode;           // the room we're in
 
-    // PHYSX FIXME - need to create a plasma hull so that we can determine if inside
     hsPlane3* fWorldHull;
     uint32_t    fHullNumberPlanes;
     hsPoint3* fSaveTriangles;
     hsBool      fInsideConvexHull;
-    void ISetHullToWorldWTriangles();
-    inline hsBool ITestPlane(const hsPoint3 &pos, const hsPlane3 &plane)
-    {
-        float dis = plane.fN.InnerProduct(pos);
-        dis += plane.fD;
-        if (dis == 0.f)
-            return false;
-        if( dis >= 0.f )    
-            return false;   
-
-        return true;
-    }
 
     // we need to remember the last matrices we sent to the coordinate interface
     // so that we can recognize them when we send them back and not reapply them,

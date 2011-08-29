@@ -39,35 +39,19 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-#ifndef plPXStream_h_inc
-#define plPXStream_h_inc
+#ifndef plBulletCreatable_inc
+#define plBulletCreatable_inc
 
-#include "hsStream.h"
-#include <NxPhysics.h>
-#include <NxStream.h>
+#include "pnFactory/plCreator.h"
 
-// A super simple wrapper to convert a Plasma stream into a PhysX one
-class plPXStream : public NxStream
-{
-public:
-    plPXStream(hsStream* s) : fStream(s) {}
+#include "plBTPhysical.h"
 
-    virtual NxU8        readByte() const { return fStream->ReadByte(); }
-    virtual NxU16       readWord() const { return fStream->ReadLE16(); }
-    virtual NxU32       readDword() const { return fStream->ReadLE32(); }
-    virtual float       readFloat() const { return fStream->ReadLEScalar(); }
-    virtual double      readDouble() const { return fStream->ReadLEDouble(); }
-    virtual void        readBuffer(void* buffer, NxU32 size) const { fStream->Read(size, buffer); }
+REGISTER_CREATABLE(plBTPhysical);
 
-    virtual NxStream&   storeByte(NxU8 b) { fStream->WriteByte(b); return *this; }
-    virtual NxStream&   storeWord(NxU16 w) { fStream->WriteLE16(w); return *this; }
-    virtual NxStream&   storeDword(NxU32 d) { fStream->WriteLE32(d); return *this; }
-    virtual NxStream&   storeFloat(NxReal f) { fStream->WriteLEScalar(f); return *this; }
-    virtual NxStream&   storeDouble(NxF64 f) { fStream->WriteLEDouble(f); return *this; }
-    virtual NxStream&   storeBuffer(const void* buffer, NxU32 size) { fStream->Write(size, buffer); return *this; }
+#include "plLOSDispatch.h"
+REGISTER_CREATABLE( plLOSDispatch );
 
-protected:
-    hsStream* fStream;
-};
+#include "plSimulationMgr.h"
+REGISTER_CREATABLE( plSimulationMgr );
 
-#endif // plPXStream_h_inc
+#endif // plPhysXCreatable_inc

@@ -58,7 +58,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plPhysical/plPhysicalCreatable.h"
 #include "plModifier/plModifierCreatable.h"
 #include "plScene/plSceneCreatable.h"
-#include "plPhysX/plPhysXCreatable.h"
+#include "plBullet/plBulletCreatable.h"
 #include "plAudio/plAudioCreatable.h"
 #include "plAudioCore/plAudioCoreCreatable.h"
 #include "plParticleSystem/plParticleCreatable.h"

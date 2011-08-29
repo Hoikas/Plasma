@@ -61,9 +61,9 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plSDL/plSDL.h"
 #include "pnMessage/plSDLModifierMsg.h"
 //for hack
-#include "plPhysX/plPXPhysical.h"
-#include "plPhysX/plPXPhysicalControllerCore.h"
-#include <NxCapsule.h>
+#include "plBullet/plBTPhysical.h"
+//#include "plBullet/plPXPhysicalControllerCore.h" 
+//#include <NxCapsule.h>
 static plPhysical* GetPhysical(plSceneObject* obj)
 {
     if (obj)
@@ -298,10 +298,10 @@ void plExcludeRegionModifier::IMoveAvatars()
     }
     */
     
-    plPXPhysical* phys =(plPXPhysical*) GetPhysical(GetTarget());
+    plBTPhysical* phys =(plBTPhysical*) GetPhysical(GetTarget());
     if (phys)
     {
-        plKey DetectorWorldKey = phys->GetWorldKey();
+/*        plKey DetectorWorldKey = phys->GetWorldKey();
         int numControllers = plPXPhysicalControllerCore::GetNumberOfControllersInThisSubWorld(phys->GetWorldKey());
         if (numControllers > 0)
         {
@@ -356,7 +356,7 @@ void plExcludeRegionModifier::IMoveAvatars()
             }
 
             delete[] controllers;
-        }
+        } */
     }
 }
 

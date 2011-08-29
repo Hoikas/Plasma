@@ -41,7 +41,6 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 *==LICENSE==*/
 #include "plPhysicalProxy.h"
 #include "plPhysical.h"
-#include "plPhysX/plPXPhysicalControllerCore.h"
 #include "plDrawable/plDrawableSpans.h"
 #include "plDrawable/plDrawableGenerator.h"
 #include "pnMessage/plProxyDrawMsg.h"
@@ -76,12 +75,12 @@ bool plPhysicalProxy::Init(plPhysical* liInfo)
     return fOwner != nil;
 }
 
-bool plPhysicalProxy::Init(plPXPhysicalControllerCore* controller)
+bool plPhysicalProxy::Init(plBTPhysicalControllerCore* controller)
 {
-    if (controller)
+/*    if (controller)
         if (controller->GetOwner())
             plProxyGen::Init(controller->GetOwner()->GetObjectPtr());
-
+*/
     fController = controller;
     fProxyMsgType = plProxyDrawMsg::kPhysical;
 
@@ -90,10 +89,11 @@ bool plPhysicalProxy::Init(plPXPhysicalControllerCore* controller)
 
 plKey plPhysicalProxy::IGetNode() const 
 {
-    if (fOwner)
+/*    if (fOwner)
         return fOwner->GetSceneNode();
     if (fController)
         return fController->GetOwner();
+        */
     return nil;
 }
 
@@ -105,7 +105,7 @@ plDrawableSpans* plPhysicalProxy::ICreateProxy(hsGMaterial* mat, hsTArray<uint32
     }
     if (fController)
     {
-        return fController->CreateProxy(mat,idx,addTo);
+//        return fController->CreateProxy(mat,idx,addTo);
     }
     return nil;
 }

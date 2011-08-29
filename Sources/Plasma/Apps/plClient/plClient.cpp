@@ -61,7 +61,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plInputCore/plInputManager.h"
 #include "plInputCore/plInputInterfaceMgr.h"
 #include "plInputCore/plInputDevice.h"
-#include "plPhysX/plSimulationMgr.h"
+#include "plBullet/plSimulationMgr.h"
 #include "plNetClient/plNetClientMgr.h"
 #include "plAvatar/plAvatarMgr.h"
 #include "plScene/plRelevanceMgr.h"

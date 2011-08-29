@@ -47,7 +47,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 class plDrawableSpans;
 class hsGMaterial;
 class plPhysical;
-class plPXPhysicalControllerCore;
+class plBTPhysicalControllerCore;
 
 class plPhysicalProxy : public plProxyGen
 {
@@ -57,11 +57,11 @@ public:
     virtual ~plPhysicalProxy();
 
     bool Init(plPhysical* phys);
-    bool Init(plPXPhysicalControllerCore* controller);
+    bool Init(plBTPhysicalControllerCore* controller);
 
 protected:
     plPhysical* fOwner;
-    plPXPhysicalControllerCore* fController;
+    plBTPhysicalControllerCore* fController;
 
     virtual plDrawableSpans*    ICreateProxy(hsGMaterial* mat, hsTArray<uint32_t>& idx, plDrawableSpans* addTo=nil);
     virtual plKey               IGetNode() const;
