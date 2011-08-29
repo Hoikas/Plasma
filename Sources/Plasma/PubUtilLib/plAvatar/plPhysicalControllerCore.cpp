@@ -48,8 +48,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plArmatureMod.h" // for LOS enum type
 #include "plMatrixChannel.h"
 #include "hsTimer.h"
-#include "plPhysX/plSimulationMgr.h"
-#include "plPhysX/plPXPhysical.h"
+#include "plBullet/plSimulationMgr.h"
+#include "plBullet/plBTPhysical.h"
 #include "pnMessage/plSetNetGroupIDMsg.h"
 #define kSWIMRADIUS 1.1f
 #define kSWIMHEIGHT 2.8f

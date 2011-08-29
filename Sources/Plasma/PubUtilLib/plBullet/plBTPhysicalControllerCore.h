@@ -41,37 +41,13 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 *==LICENSE==*/
 #include "plAvatar/plPhysicalControllerCore.h"
 #include "hsQuat.h"
-#define PHYSX_ONLY_TRIGGER_FROM_KINEMATIC 1
 
-class NxController;
-class NxCapsuleController;
-class NxActor;
-class plCoordinateInterface;
-class plPhysicalProxy;
-class plDrawableSpans;
-class hsGMaterial;
-class NxCapsule;
-class plSceneObject;
-class PXControllerHitReportWalk;
-class plCollideMsg;
-#ifndef PLASMA_EXTERNAL_RELEASE
-
-class plDbgCollisionInfo
+class plBTPhysicalControllerCore: public plPhysicalControllerCore
 {
 public:
-    plSceneObject *fSO;
-    hsVector3 fNormal;
-    hsBool fOverlap;
-};
-#endif // PLASMA_EXTERNAL_RELEASE
-class plPXPhysicalControllerCore: public plPhysicalControllerCore
-{
-    friend class PXControllerHitReportWalk;
-public:
-    plPXPhysicalControllerCore(plKey ownerSO, float height, float radius);
-    ~plPXPhysicalControllerCore();
-    //should actually be a 3 vector but everywhere else it is assumed to be just around  Z 
-        
+    plBTPhysicalControllerCore(plKey ownerSO, float height, float radius);
+    ~plBTPhysicalControllerCore();
+
     inline virtual void Move(hsVector3 displacement, unsigned int collideWith, unsigned int &collisionResults);
     // A disabled avatar doesn't move or accumulate air time if he's off the ground.
     virtual void Enable(bool enable);
@@ -87,8 +63,7 @@ public:
     virtual void GetKinematicPosition(hsPoint3& pos);
     virtual const hsMatrix44& GetPrevSubworldW2L(){ return fPrevSubworldW2L; }
     //when seeking no longer want to interact with exclusion regions
-    virtual void GetWorldSpaceCapsule(NxCapsule& cap) const;
-    static void RebuildCache();
+//    virtual void GetWorldSpaceCapsule(NxCapsule& cap) const;
     virtual const hsMatrix44& GetLastGlobalLoc(){return  fLastGlobalLoc;}
     virtual void SetKinematicLoc(const hsMatrix44& l2w){ISetKinematicLoc(l2w);}
     virtual void SetGlobalLoc(const hsMatrix44& l2w){ISetGlobalLoc(l2w);}
@@ -102,59 +77,18 @@ public:
     virtual void LeaveAge();
     virtual void UpdateControllerAndPhysicalRep();
 
-//////////////////////////////////////////
-//Static Helper Functions
-////////////////////////////////////////
-    // Used by the LOS mgr to find the controller for an actor it hit
-    static plPXPhysicalControllerCore* GetController(NxActor& actor, bool* isController);
-    // test to see if there are any controllers (i.e. avatars) in this subworld
-    static bool AnyControllersInThisWorld(plKey world);
-    static int NumControllers();
-    static int GetControllersInThisSubWorld(plKey world, int maxToReturn, 
-        plPXPhysicalControllerCore** bufferout);
-    static int GetNumberOfControllersInThisSubWorld(plKey world);
-    static void UpdatePrestep(float delSecs);
-    static void UpdatePoststep(float delSecs);
-    static void UpdatePostSimStep(float delSecs);
-    virtual plDrawableSpans* CreateProxy(hsGMaterial* mat, hsTArray<uint32_t>& idx, plDrawableSpans* addTo);
-#ifndef PLASMA_EXTERNAL_RELEASE
-    static hsBool fDebugDisplay;
-#endif // PLASMA_EXTERNAL_RELEASE
-    static void SetMaxNumberOfControllers(int max) { fPXControllersMax = max; }
-    static int fPXControllersMax;
     virtual int SweepControllerPath(const hsPoint3& startPos, const hsPoint3& endPos, hsBool vsDynamics, hsBool vsStatics, uint32_t& vsSimGroups, std::multiset< plControllerSweepRecord >& WhatWasHitOut);
     virtual void BehaveLikeAnimatedPhysical(hsBool actLikeAnAnimatedPhys);
     virtual hsBool BehavingLikeAnAnimatedPhysical();
-    virtual const hsVector3& GetLinearVelocity();
-
-    virtual void SetLinearVelocity(const hsVector3& linearVel);
-    //should actually be a 3 vector but everywhere else it is assumed to be just around  Z 
-    virtual void SetAngularVelocity(const float angvel);
-    virtual void SetVelocities(const hsVector3& linearVel, float angVel);
 
 protected:
-    friend class PXControllerHitReport;
-    static plPXPhysicalControllerCore* FindController(NxController* controller);
     void ISetGlobalLoc(const hsMatrix44& l2w);
     void IMatchKinematicToController();
     void IMatchControllerToKinematic();
     void ISetKinematicLoc(const hsMatrix44& l2w);
     void IGetPositionSim(hsPoint3& pos) const;
-    void ICreateController();
-    void IDeleteController();
-    void IInformDetectors(bool entering,bool deferUntilNextSim);
-    void ICreateController(const hsPoint3& pos);
-    NxActor* fKinematicActor;
-    NxCapsuleController* fController;
-#ifndef PLASMA_EXTERNAL_RELEASE
-    hsTArray<plDbgCollisionInfo> fDbgCollisionInfo;
-    void IDrawDebugDisplay();
-#endif
-    void IHandleResize();
-    float fPreferedRadius;
-    float fPreferedHeight;
-    // The global position and rotation of the avatar last time we set it (so we
-    // can detect if someone else moves him)
-    plPhysicalProxy* fProxyGen;     
+
+    float  fPreferedRadius;
+    float  fPreferedHeight;
     hsBool fBehavingLikeAnimatedPhys;
 };

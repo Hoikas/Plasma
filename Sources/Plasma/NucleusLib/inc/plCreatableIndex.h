@@ -114,7 +114,7 @@ CLASS_INDEX_LIST_START
     CLASS_INDEX(plPortalPhysical),
     CLASS_INDEX(plSpawnModifier),
     CLASS_INDEX(plFacingConditionalObject),
-    CLASS_INDEX(plPXPhysical),
+    CLASS_INDEX(plBTPhysical),
     CLASS_INDEX(plViewFaceModifier),
     CLASS_INDEX(plLayerInterface),
     CLASS_INDEX(plLayerWrapper),
