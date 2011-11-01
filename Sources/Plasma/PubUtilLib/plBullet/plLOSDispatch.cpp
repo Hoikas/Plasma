@@ -41,8 +41,10 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 *==COPYING==*/
 #include "plLOSDispatch.h"
 #include "plSimulationMgr.h"
+#include "plSimulationMgr.h"
 #include "plgDispatch.h"
 #include "plMessage/plLOSRequestMsg.h"
+#include "plMessage/plLOSHitMsg.h"
 
 plLOSDispatch::plLOSDispatch()
 {
@@ -59,4 +61,29 @@ hsBool plLOSDispatch::MsgReceive(plMessage* msg)
 {
     // BULLET STUB
     return hsKeyedObject::MsgReceive(msg);
+}
+
+plMessage* plLOSDispatch::ICreateHitMsg(plLOSRequestMsg* requestMsg, hsMatrix44& l2w)
+{
+    plKey ourKey = GetKey();
+    plKey rcvKey = requestMsg->GetSender();
+    plLOSHitMsg* hitMsg = new plLOSHitMsg(ourKey, rcvKey, nil);
+    hitMsg->fNoHit = false;
+	//hitMsg->fObj = gMyReport.GetObj();
+    //hitMsg->fDistance = gMyReport.GetDistance();
+    //hitMsg->fNormal = l2w * gMyReport.GetNormal();
+    //hitMsg->fHitPoint = l2w * gMyReport.GetPoint();
+    hitMsg->fRequestID = requestMsg->GetRequestID();
+    return hitMsg;
+}
+
+plMessage* plLOSDispatch::ICreateMissMsg(plLOSRequestMsg* requestMsg)
+{
+    plKey ourKey = GetKey();
+    plKey rcvKey = requestMsg->GetSender();
+    plLOSHitMsg* missMsg = new plLOSHitMsg(ourKey, rcvKey, nil);
+    missMsg->fNoHit = true;
+    missMsg->fObj = nil;
+    missMsg->fRequestID = requestMsg->GetRequestID();
+    return missMsg;
 }

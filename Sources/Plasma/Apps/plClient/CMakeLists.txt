@@ -178,6 +178,10 @@ target_link_libraries(plClient ${Vorbis_LIBRARIES})
 target_link_libraries(plClient ${DirectX_LIBRARIES})
 target_link_libraries(plClient ${CURL_LIBRARY})
 
+target_link_libraries(plClient ${BULLET_COLLISION_LIBRARY})
+target_link_libraries(plClient ${BULLET_DYNAMICS_LIBRARY})
+target_link_libraries(plClient ${BULLET_MATH_LIBRARY})
+
 if(Bink_SDK_AVAILABLE)
     target_link_libraries(plClient ${Bink_LIBRARIES})
 endif()

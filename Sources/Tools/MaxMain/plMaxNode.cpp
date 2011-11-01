@@ -75,7 +75,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 #include "pnSceneObject/plSceneObject.h"
 #include "plScene/plSceneNode.h"
-#include "plPhysX/plPXPhysical.h"
+#include "plBullet/plBTPhysical.h"
 #include "plDrawable/plInstanceDrawInterface.h"
 #include "plDrawable/plSharedMesh.h"
 #include "pnSceneObject/plSimulationInterface.h"
