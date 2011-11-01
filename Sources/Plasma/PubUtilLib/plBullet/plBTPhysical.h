@@ -64,9 +64,10 @@ class plGenRefMsg;
 class plSceneObject;
 class hsVectorStream;
 
-class PhysRecipe
+class btRigidBody;
+
+struct PhysRecipe
 {
-public:
     PhysRecipe();
 
     float mass;
@@ -82,8 +83,9 @@ public:
     // The local to subworld matrix (or local to world if worldKey is nil)
     hsMatrix44 l2s;
 
-    //NxConvexMesh* convexMesh;
-    //NxTriangleMesh* triMesh;
+    // The arrays of data for convex/trimesh objects
+    std::vector<unsigned short> indices;
+    std::vector<hsPoint3> vertices;
 
     // For spheres only
     float radius;
@@ -92,9 +94,6 @@ public:
     // For Boxes
     hsPoint3 bDimensions;
     hsPoint3 bOffset;
-
-    // For export time only.  The original data used to create the mesh
-    hsVectorStream* meshStream;
 };
 
 class plBTPhysical : public plPhysical {
@@ -150,7 +149,7 @@ public:
     virtual uint16_t  GetAllLOSDBs() { return fLOSDBs; }
     virtual hsBool  IsInLOSDB(uint16_t flag) { return hsCheckBits(fLOSDBs, flag); }
 
-    virtual hsBool    DoDetectorHullWorkaround() { return fSaveTriangles ? true : false;    }
+    virtual hsBool    DoDetectorHullWorkaround() { return false; /* BULLET STUB ??? */  }
     virtual hsBool  Should_I_Trigger(hsBool enter, hsPoint3& pos);
     virtual hsBool  IsObjectInsideHull(const hsPoint3& pos);
     virtual void    SetInsideConvexHull(hsBool inside) { fInsideConvexHull = inside;    }
@@ -185,6 +184,10 @@ public:
 protected:
     hsBool HandleRefMsg(plGenRefMsg * refM);
 
+    // versioned readers
+    void IReadV0(hsStream* s, hsResMgr* mgr, PhysRecipe& recipe);
+    void IReadV3(hsStream* s, hsResMgr* mgr, PhysRecipe& recipe);
+
     void IGetPositionSim(hsPoint3& pos) const;
     void IGetRotationSim(hsQuat& rot) const;
     void ISetPositionSim(const hsPoint3& pos);
@@ -209,7 +212,10 @@ protected:
     // Enable/disable collisions and dynamic movement
     void IEnable(hsBool enable);
 
+	btRigidBody* fBody;
     plKey fWorldKey;    // either a subworld or nil
+
+	hsBool fEnabled;
 
     plSimDefs::Bounds fBoundsType;
     plSimDefs::Group fGroup;
@@ -222,8 +228,7 @@ protected:
     plKey fSceneNode;           // the room we're in
 
     hsPlane3* fWorldHull;
-    uint32_t    fHullNumberPlanes;
-    hsPoint3* fSaveTriangles;
+    uint32_t  fHullNumberPlanes;
     hsBool      fInsideConvexHull;
 
     // we need to remember the last matrices we sent to the coordinate interface
@@ -242,6 +247,9 @@ protected:
     hsPoint3    fHitPos;
 
     plPhysicalProxy* fProxyGen;             // visual proxy for debugging
+
+	std::vector<hsPoint3> fSavedPositions;
+	std::vector<unsigned short> fSavedIndices;
 
     static int  fNumberAnimatedPhysicals;
     static int  fNumberAnimatedActivators;

@@ -39,77 +39,115 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==COPYING==*/
+#include "plProfile.h"
 #include "plSimulationMgr.h"
+#include "plLOSDispatch.h"
+#include "plPhysical/plPhysicsSoundMgr.h"
 #include "plStatusLog/plStatusLog.h"
+
+#include <btBulletDynamicsCommon.h>
+
+/////////////////////////////////////////////////////////////////
+//
+// DEFAULTS
+//
+/////////////////////////////////////////////////////////////////
+
+#define kDefaultMaxDelta    0.1         // if the step is greater than .1 seconds, clamp to that
+#define kDefaultStepSize    1.f / 60.f  // default simulation freqency is 60hz
+
+// 
+// Alloc all the sim timers here so they make a nice pretty display
+//
+plProfile_CreateTimer(  "Step", "Simulation", Step);
+plProfile_CreateCounter("  Awake", "Simulation", Awake);
+plProfile_CreateCounter("  Contacts", "Simulation", Contacts);
+plProfile_CreateCounter("  DynActors", "Simulation", DynActors);
+plProfile_CreateCounter("  DynShapes", "Simulation", DynShapes);
+plProfile_CreateCounter("  StaticShapes", "Simulation", StaticShapes);
+plProfile_CreateCounter("  Actors", "Simulation", Actors);
+plProfile_CreateCounter("  PhyScenes", "Simulation", Scenes);
+
+plProfile_CreateTimer(  "LineOfSight", "Simulation", LineOfSight);
+plProfile_CreateTimer(  "ProcessSyncs", "Simulation", ProcessSyncs);
+plProfile_CreateTimer(  "UpdateContexts", "Simulation", UpdateContexts);
+plProfile_CreateCounter("  MaySendLocation", "Simulation", MaySendLocation);
+plProfile_CreateCounter("  LocationsSent", "Simulation", LocationsSent);
+plProfile_CreateTimer(  "  PhysicsUpdates","Simulation",PhysicsUpdates);
+plProfile_CreateCounter("SetTransforms Accepted", "Simulation", SetTransforms);
+plProfile_CreateCounter("AnimatedPhysicals", "Simulation", AnimatedPhysicals);
+plProfile_CreateCounter("AnimatedActivators", "Simulation", AnimatedActivators);
+plProfile_CreateCounter("Controllers", "Simulation", Controllers);
+plProfile_CreateCounter("StepLength", "Simulation", StepLen);
 
 static plSimulationMgr* gTheInstance = NULL;
 bool plSimulationMgr::fExtraProfile = false;
 bool plSimulationMgr::fSubworldOptimization = false;
 bool plSimulationMgr::fDoClampingOnStep = true;
 #ifndef PLASMA_EXTERNAL_RELEASE
-    bool plSimulationMgr::fDisplayAwakeActors;
+bool plSimulationMgr::fDisplayAwakeActors;
 #endif //PLASMA_EXTERNAL_RELEASE
 
 plSimulationMgr::plSimulationMgr()
     : fSuspended(true)
-/*    , fMaxDelta(kDefaultMaxDelta)
+    , fMaxDelta(kDefaultMaxDelta)
     , fStepSize(kDefaultStepSize)
     , fLOSDispatch(new plLOSDispatch())
     , fSoundMgr(new plPhysicsSoundMgr)
     , fLog(nil)
-*/
-{
-
-}
-
-bool plSimulationMgr::InitSimulation()
 {
     fLog = plStatusLogMgr::GetInstance().CreateStatusLog(40, "Simulation.log", plStatusLog::kFilledBackground | plStatusLog::kAlignToTop);
     fLog->AddLine("Initialized simulation mgr");
-    return true;
 }
 
-void plSimulationMgr::Init()
+void plSimulationMgr::Advance(float delSecs)
 {
-    hsAssert(!gTheInstance, "Initializing the sim when it's already been done");
-    gTheInstance = new plSimulationMgr();
-    if (gTheInstance->InitSimulation())
-    {
-        gTheInstance->RegisterAs(kSimulationMgr_KEY);
-        gTheInstance->GetKey()->RefObject();
-    }
-    else
-    {
-        // There was an error when creating the Bullet simulation
-        // ...then get rid of the simulation instance
-        DEL(gTheInstance); // clean up the memory we allocated
-        gTheInstance = nil;
+    for(SceneMap::iterator it = fScenes.begin(); it != fScenes.end(); ++it) {
+        it->second->world->stepSimulation(delSecs, 5);
     }
 }
 
-// when the app is going away completely
-void plSimulationMgr::Shutdown()
-{
-    hsAssert(gTheInstance, "Simulation manager missing during shutdown.");
-    if (gTheInstance)
-    {
-        gTheInstance->UnRegister();     // this will destroy the instance
-        gTheInstance = nil;
-    }
-}
-
-plSimulationMgr* plSimulationMgr::GetInstance()
-{
-    return gTheInstance;
-}
-
-hsBool plSimulationMgr::MsgReceive(plMessage *msg)
+hsBool plSimulationMgr::MsgReceive(plMessage* msg)
 {
     return hsKeyedObject::MsgReceive(msg);
 }
 
-void plSimulationMgr::Advance(float)
+BtScene* plSimulationMgr::GetScene(plKey world)
 {
+    if(!world)
+        world = GetKey();
+    BtScene* scene = fScenes[world];
+    if(!scene) {
+        scene = new BtScene;
+        scene->broadphase = new btDbvtBroadphase;
+        scene->config = new btDefaultCollisionConfiguration;
+        scene->dispatch = new btCollisionDispatcher(scene->config);
+        scene->solver = new btSequentialImpulseConstraintSolver;
+        scene->world = new btDiscreteDynamicsWorld(scene->dispatch, scene->broadphase, scene->solver, scene->config);
+        scene->world->setGravity(btVector3(0, 0, -32.174049f));
+        fScenes[world] = scene;
+    }
+    return scene;
+}
+
+void plSimulationMgr::ReleaseScene(plKey world)
+{
+    if(!world)
+        world = GetKey();
+    SceneMap::iterator it = fScenes.find(world);
+    hsAssert(it != fScenes.end(), "Unknown scene");
+    if (it != fScenes.end())
+    {
+        BtScene* scene = it->second;
+        if (scene->world->getNumCollisionObjects() == 0) {
+            delete scene->world;
+            delete scene->solver;
+            delete scene->dispatch;
+            delete scene->config;
+            delete scene->broadphase;
+            fScenes.erase(it);
+        }
+    }
 }
 
 void plSimulationMgr::Log(const char * fmt, ...)
@@ -148,5 +186,28 @@ void plSimulationMgr::ClearLog()
         {
             log->Clear();
         }
+    }
+}
+
+plSimulationMgr* plSimulationMgr::GetInstance()
+{
+    return gTheInstance;
+}
+
+void plSimulationMgr::Init()
+{
+    hsAssert(!gTheInstance, "Initializing the sim when it's already been done");
+    gTheInstance = new plSimulationMgr();
+    gTheInstance->RegisterAs(kSimulationMgr_KEY);
+}
+
+// when the app is going away completely
+void plSimulationMgr::Shutdown()
+{
+    hsAssert(gTheInstance, "Simulation manager missing during shutdown.");
+    if (gTheInstance)
+    {
+        gTheInstance->UnRegister();     // this will destroy the instance
+        gTheInstance = nil;
     }
 }

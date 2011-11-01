@@ -3,6 +3,8 @@ include_directories("../../NucleusLib/inc")
 include_directories("../../NucleusLib")
 include_directories("../../PubUtilLib")
 
+include_directories(${BULLET_INCLUDE_DIR})
+
 set(plBullet_SOURCES
     plBTPhysical.cpp
     plBTPhysicalControllerCore.cpp

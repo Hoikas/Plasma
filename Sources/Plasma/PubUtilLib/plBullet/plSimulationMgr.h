@@ -44,7 +44,25 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 #include "pnKeyedObject/hsKeyedObject.h"
 
+#include <map>
+
+class plLOSDispatch;
+class plPhysicsSoundMgr;
 class plStatusLog;
+
+class btBroadphaseInterface;
+class btCollisionDispatcher;
+class btDefaultCollisionConfiguration;
+class btDiscreteDynamicsWorld;
+class btSequentialImpulseConstraintSolver;
+
+struct BtScene {
+	btBroadphaseInterface* broadphase;
+	btDefaultCollisionConfiguration* config;
+	btCollisionDispatcher* dispatch;
+	btSequentialImpulseConstraintSolver* solver;
+	btDiscreteDynamicsWorld* world;
+};
 
 class plSimulationMgr : public hsKeyedObject {
 public:
@@ -52,9 +70,6 @@ public:
     GETINTERFACE_ANY(plSimulationMgr, hsKeyedObject);
 
     plSimulationMgr();
-
-    // initialiation of the PhysX simulation
-    virtual bool InitSimulation();
 
     // Advance the simulation by the given number of seconds
     void Advance(float delSecs);
@@ -65,6 +80,11 @@ public:
     void Suspend() { fSuspended = true; }
     void Resume() { fSuspended = false; }
     bool IsSuspended() { return fSuspended; }
+
+	BtScene* GetScene(plKey world);
+    // Called when an actor is removed from a scene, checks if it's time to delete
+    // the scene
+    void ReleaseScene(plKey world);
 
     // Output the given debug text to the simulation log.
     static void Log(const char* formatStr, ...);
@@ -83,7 +103,22 @@ public:
     static bool fDisplayAwakeActors;
 #endif //PLASMA_EXTERNAL_RELEASE
 protected:
+	plPhysicsSoundMgr* fSoundMgr;
+	// A mapping from a key to a PhysX scene.  The key is either the
+    // SimulationMgr key, for the main world, or a SceneObject key if it's a
+    // subworld.
+    typedef std::map<plKey, BtScene*> SceneMap;
+    SceneMap fScenes;
+
+    plLOSDispatch* fLOSDispatch;
+
+	// Is the entire physics world suspended? If so, the clock can still advance
+    // but nothing will move.
     bool fSuspended;
+
+    float fMaxDelta;
+    float fStepSize;
+
     plStatusLog *fLog;
 };
 
