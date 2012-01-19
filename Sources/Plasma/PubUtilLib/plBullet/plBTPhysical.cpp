@@ -185,6 +185,7 @@ plBTPhysical::plBTPhysical()
     , fHitForce(0,0,0)
     , fHitPos(0,0,0)
     , fInsideConvexHull(false)
+    , fEnabled(true)
 {
 }
 
@@ -194,6 +195,7 @@ plBTPhysical::~plBTPhysical()
 
     if (fBody)
     {
+        IEnable(true);
         BtScene* scene = plSimulationMgr::GetInstance()->GetScene(fWorldKey);
         scene->world->removeRigidBody(fBody);
         delete fBody->getMotionState();
@@ -257,11 +259,9 @@ hsBool plBTPhysical::Init(PhysRecipe& recipe)
             fMass = 0.0f;
             fGroup = plSimDefs::kGroupStatic;
             btTriangleMesh *mesh = new btTriangleMesh;
-            for(size_t i = 0; i < recipe.vertices.size(); i++)
-                mesh->findOrAddVertex(toBullet(recipe.vertices[i]), false);
-            for(size_t i = 0; i < recipe.indices.size(); i++)
-                mesh->addIndex(recipe.indices[i]);
-            shape = new btBvhTriangleMeshShape(mesh, true);
+            for(size_t i = 0; i < recipe.indices.size(); i+=3) {
+                mesh->addTriangle(toBullet(recipe.vertices[recipe.indices[i]]), toBullet(recipe.vertices[recipe.indices[i+1]]), toBullet(recipe.vertices[recipe.indices[i+2]]), true);
+            }
         }
         break;
     }
@@ -311,12 +311,15 @@ hsBool plBTPhysical::Init(PhysRecipe& recipe)
         break;
     }
 
-    if(fGroup == plSimDefs::kGroupStatic)
+    if (fGroup == plSimDefs::kGroupStatic)
         fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
-    if(fGroup == plSimDefs::kGroupDetector)
-        fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    if (fGroup == plSimDefs::kGroupDetector)
+        fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
     scene->world->addRigidBody(fBody, 1 << fGroup, colgroups);
+
+    if (GetProperty(plSimulationInterface::kDisable))
+        IEnable(false);
     return true;
 }
 
@@ -857,11 +860,6 @@ void plBTPhysical::SendNewLocation(hsBool synchTransform, hsBool isSynchUpdate)
             {
                 plProfile_Inc(LocationsSent);
                 plProfile_BeginLap(PhysicsUpdates, GetKeyName().c_str());
-
-                // quick peek at the translation...last time it was corrupted because we applied a non-unit quaternion
-//              hsAssert(real_finite(fCachedLocal2World.fMap[0][3]) &&
-//                       real_finite(fCachedLocal2World.fMap[1][3]) &&
-//                       real_finite(fCachedLocal2World.fMap[2][3]), "Bad transform outgoing");
 
                 if (fCachedLocal2World.GetTranslate().fZ < kMaxNegativeZPos)
                 {

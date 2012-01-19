@@ -42,6 +42,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plAvatar/plPhysicalControllerCore.h"
 #include "hsQuat.h"
 
+class btRigidBody;
+
 class plBTPhysicalControllerCore: public plPhysicalControllerCore
 {
 public:
@@ -81,6 +83,10 @@ public:
     virtual void BehaveLikeAnimatedPhysical(hsBool actLikeAnAnimatedPhys);
     virtual hsBool BehavingLikeAnAnimatedPhysical();
 
+	virtual const hsVector3& GetLinearVelocity();
+	virtual void SetLinearVelocity(const hsVector3&);
+	virtual void SetAngularVelocity(const float);
+	virtual void SetVelocities(const hsVector3& linearVel, float angVel);	
 protected:
     void ISetGlobalLoc(const hsMatrix44& l2w);
     void IMatchKinematicToController();
@@ -88,7 +94,13 @@ protected:
     void ISetKinematicLoc(const hsMatrix44& l2w);
     void IGetPositionSim(hsPoint3& pos) const;
 
-    float  fPreferedRadius;
-    float  fPreferedHeight;
+	void ICreateController();
+	void ICreateController(const hsPoint3&);
+	void IDeleteController();
+
+    float fPreferedRadius;
+    float fPreferedHeight;
     hsBool fBehavingLikeAnimatedPhys;
+
+	btRigidBody *fBody;
 };

@@ -53,13 +53,34 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plCollideMsg.h"
 #include "plModifier/plDetectorLog.h"
 
+#include <btBulletDynamicsCommon.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+
 #define kPhysxSkinWidth 0.1f
 #define kPhysZOffset ((fRadius + (fHeight / 2)) + kPhysxSkinWidth)
 
-plBTPhysicalControllerCore::plBTPhysicalControllerCore(plKey ownerSO, float height, float radius)
-  : plPhysicalControllerCore(ownerSO, height, radius)
+#define AvatarMass 200.f
+
+static std::vector<plBTPhysicalControllerCore*> gControllers;
+
+plPhysicalControllerCore* plPhysicalControllerCore::Create(plKey ownerSO, float height, float width)
 {
+    float radius = width / 2.f;
+    float realHeight = height - width;
+    return new plBTPhysicalControllerCore(ownerSO, realHeight,radius);
+    return nil;
 }
+
+plBTPhysicalControllerCore::plBTPhysicalControllerCore(plKey ownerSO, float height, float radius)
+    : plPhysicalControllerCore(ownerSO, height, radius)
+{
+    fLastGlobalLoc.Reset();
+    ICreateController();
+    Enable(false);
+    gControllers.push_back(this);
+}
+
 plBTPhysicalControllerCore::~plBTPhysicalControllerCore()
 {
 }
@@ -67,16 +88,10 @@ plBTPhysicalControllerCore::~plBTPhysicalControllerCore()
 void plBTPhysicalControllerCore::Move(hsVector3 displacement, unsigned int collideWith, unsigned int &collisionResults)
 {
     collisionResults=0;
-/*    if(fController)
-    {
-        NxVec3 dis(displacement.fX,displacement.fY,displacement.fZ);
-        NxU32 colFlags = 0;
-        this->fController->move(dis,collideWith,.00001,colFlags);
-        if(colFlags&NXCC_COLLISION_DOWN)collisionResults|=kBottom;
-        if(colFlags&NXCC_COLLISION_UP)collisionResults|=kTop;
-        if(colFlags&&NXCC_COLLISION_SIDES)collisionResults|=kSides;
-    }*/
-    // BULLET STUB
+    fLastGlobalLoc.Translate(&displacement);
+    btTransform trans = fBody->getWorldTransform();
+    trans.setOrigin(trans.getOrigin()+btVector3(displacement.fX, displacement.fY, displacement.fZ));
+    fBody->setWorldTransform(trans);
 }
 
 void plBTPhysicalControllerCore::Enable(bool enable)
@@ -88,8 +103,9 @@ void plBTPhysicalControllerCore::Enable(bool enable)
             fEnableChanged = true;
         else
         {
-            // See ISendUpdates for why we don't re-enable right away
-//            fController->setCollision(fEnabled);
+            fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+            fBody->setLinearFactor(btVector3(0.f, 0.f, 0.f));
+            fBody->setAngularFactor(btVector3(0.f, 0.f, 0.f));
         }
     }
 }
@@ -98,10 +114,9 @@ void plBTPhysicalControllerCore::SetSubworld(plKey world)
 {   
     if (fWorldKey != world)
     {
-      // BULLET STUB
- /*       bool wasEnabled = fEnabled;
+        bool wasEnabled = fEnabled;
         //need to inform detectors in the old world that we are leaving
-        IInformDetectors(false);
+        //IInformDetectors(false);
         //done informing old world
         SimLog("Changing subworlds!");
         IDeleteController();
@@ -125,15 +140,15 @@ void plBTPhysicalControllerCore::SetSubworld(plKey world)
         }
         hsMatrix44 w2l;
         fLastGlobalLoc.GetInverse(&w2l);
-        if (fProxyGen)
-            fProxyGen->SetTransform(fLastGlobalLoc, w2l);
+        //        if (fProxyGen)
+        //            fProxyGen->SetTransform(fLastGlobalLoc, w2l);
         // Update the physical position
         SimLog("creating new controller");
         hsPoint3 PositionPlusOffset=fLocalPosition;
         PositionPlusOffset.fZ +=kPhysZOffset;
         //placing new controller and kinematic in the appropriate location
         ICreateController(PositionPlusOffset);
-        RebuildCache(); */
+        //        RebuildCache();
     }
 }
 
@@ -155,7 +170,7 @@ void plBTPhysicalControllerCore::GetState(hsPoint3& pos, float& zRot)
     fLocalRotation.GetAngleAxis(&zRot, (hsVector3*)&pos);
 
     if (pos.fZ < 0)
-        zRot = (2 * hsScalarPI) - zRot; // axis is backwards, so reverse the angle too
+        zRot = (2 * M_PI) - zRot; // axis is backwards, so reverse the angle too
 
     pos = fLocalPosition;
 }
@@ -191,15 +206,6 @@ void plBTPhysicalControllerCore::Kinematic(bool state)
     if (fKinematic != state)
     {
         fKinematic = state;
-        if (fKinematic)
-        {
-            // See ISendUpdates for why we don't re-enable right away
-//            fController->setCollision(false);
-        }
-        else
-        {
-            fKinematicChanged = true;
-        }
     }
 }
 
@@ -210,110 +216,47 @@ bool plBTPhysicalControllerCore::IsKinematic()
 
 void plBTPhysicalControllerCore::GetKinematicPosition(hsPoint3& pos)
 {
-    pos.Set(-1,-1,-1);
-/*    if ( fKinematicActor )
-    {
-        NxVec3 klPos = fKinematicActor->getGlobalPosition();
-        pos.Set(float(klPos.x), float(klPos.y), float(klPos.z) - kPhysZOffset);
-    }*/
+    btTransform trans;
+    fBody->getMotionState()->getWorldTransform(trans);
+    btVector3 out = trans.getOrigin();
+    pos.fX = out.x();
+    pos.fY = out.y();
+    pos.fZ = out.z();
 }
 
 void plBTPhysicalControllerCore::HandleEnableChanged()
 {
-        fEnableChanged = false;
-        if(this->fBehavingLikeAnimatedPhys)
-        {
- //           fController->setCollision(fEnabled);
-        }
-        else
-        {
-//            fController->setCollision(false);
-        }
+    fEnableChanged = false;
+
+    fBody->setCollisionFlags(fBody->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    fBody->setLinearFactor(btVector3(1.f, 1.f, 1.f));
+    fBody->setAngularFactor(btVector3(0.f, 0.f, 1.f));
 }
 
 void plBTPhysicalControllerCore::HandleKinematicChanged()
 {
-        fKinematicChanged = false;
-        if(this->fBehavingLikeAnimatedPhys)
-        {
-//            fController->setCollision(true);
-        }
-        else
-        {
-//            fController->setCollision(false);
-        }
+    fKinematicChanged = false;
 }
 
 void plBTPhysicalControllerCore::HandleKinematicEnableNextUpdate()
 {
-    //fKinematicActor->clearActorFlag(NX_AF_DISABLE_COLLISION);
+    fBody->setCollisionFlags(fBody->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
     fKinematicEnableNextUpdate = false;
 }
 
 void plBTPhysicalControllerCore::MoveKinematicToController(hsPoint3& pos)
 {
-    /*if ( fKinematicActor)
+    btVector3 kinPos = fBody->getWorldTransform().getOrigin();
+    if ( abs(kinPos.x()-pos.fX) + abs(kinPos.y()-pos.fY) + (abs(kinPos.z()-pos.fZ+kPhysZOffset)) > 0.0001f)
     {
-        NxVec3 kinPos = fKinematicActor->getGlobalPosition();
-        if ( abs(kinPos.x-pos.fX) + abs(kinPos.y-pos.fY) + (abs(kinPos.z-pos.fZ+kPhysZOffset)) > 0.0001f)
-        {
-            NxVec3 newPos;
-            newPos.x = (NxReal)pos.fX;
-            newPos.y = (NxReal)pos.fY;
-            newPos.z = (NxReal)pos.fZ+kPhysZOffset;
-            if ((fEnabled || fKinematic) && fBehavingLikeAnimatedPhys)
-            {
-                if (plSimulationMgr::fExtraProfile)
-                    SimLog("Moving kinematic from %f,%f,%f to %f,%f,%f",pos.fX,pos.fY,pos.fZ+kPhysZOffset,kinPos.x,kinPos.y,kinPos.z );
-                // use the position
-                fKinematicActor->moveGlobalPosition(newPos);
-            }
-            else
-            {
-                if (plSimulationMgr::fExtraProfile)
-                    SimLog("Setting kinematic from %f,%f,%f to %f,%f,%f",pos.fX,pos.fY,pos.fZ+kPhysZOffset,kinPos.x,kinPos.y,kinPos.z );
-                fKinematicActor->setGlobalPosition(newPos);
-            }
-        }
-    }*/
+        btVector3 newPos(pos.fX, pos.fY, pos.fZ+kPhysZOffset);
+        fBody->getWorldTransform().setOrigin(newPos);
+    }
 }
 
 void plBTPhysicalControllerCore::UpdateControllerAndPhysicalRep()
 {
- /*   if ( fKinematicActor)
-    {
-        if(this->fBehavingLikeAnimatedPhys)
-        {//this means we are moving the controller and then synchnig the kin
-            NxExtendedVec3 ControllerPos= fController->getPosition();
-            NxVec3 NewKinPos((NxReal)ControllerPos.x, (NxReal)ControllerPos.y, (NxReal)ControllerPos.z);
-            if (fEnabled || fKinematic)
-            {
-                if (plSimulationMgr::fExtraProfile)
-                    SimLog("Moving kinematic to %f,%f,%f",NewKinPos.x, NewKinPos.y, NewKinPos.z );
-                // use the position
-                fKinematicActor->moveGlobalPosition(NewKinPos);
-
-            }
-            else
-            {
-                if (plSimulationMgr::fExtraProfile)
-                    SimLog("Setting kinematic to %f,%f,%f", NewKinPos.x, NewKinPos.y, NewKinPos.z );
-                fKinematicActor->setGlobalPosition(NewKinPos);
-            }
-
-        }
-        else
-        {
-            NxVec3 KinPos= fKinematicActor->getGlobalPosition();
-            NxExtendedVec3 NewControllerPos(KinPos.x, KinPos.y, KinPos.z);
-            if (plSimulationMgr::fExtraProfile)
-                    SimLog("Setting Controller to %f,%f,%f", NewControllerPos.x, NewControllerPos.y, NewControllerPos.z );
-            fController->setPosition(NewControllerPos);
-        }
-        hsPoint3 curLocalPos;   
-        GetPositionSim(curLocalPos);
-        fLocalPosition = curLocalPos;
-    }*/
+    GetPositionSim(fLocalPosition);
 }
 
 void plBTPhysicalControllerCore::SetControllerDimensions(float radius, float height)
@@ -339,7 +282,7 @@ void plBTPhysicalControllerCore::LeaveAge()
 }
 
 int plBTPhysicalControllerCore::SweepControllerPath(const hsPoint3& startPos, const hsPoint3& endPos, hsBool vsDynamics, hsBool vsStatics, 
-                            uint32_t& vsSimGroups, std::multiset< plControllerSweepRecord >& WhatWasHitOut)
+    uint32_t& vsSimGroups, std::multiset< plControllerSweepRecord >& WhatWasHitOut)
 {
 /*    NxCapsule tempCap;
     tempCap.p0 =plPXConvert::Point( startPos);
@@ -393,7 +336,7 @@ int plBTPhysicalControllerCore::SweepControllerPath(const hsPoint3& startPos, co
 
 void plBTPhysicalControllerCore::BehaveLikeAnimatedPhysical(hsBool actLikeAnAnimatedPhys)
 {
-/*    hsAssert(fKinematicActor, "Changing behavior, but plPXPhysicalControllerCore has no Kinematic actor associated with it");
+ /*    hsAssert(fKinematicActor, "Changing behavior, but plPXPhysicalControllerCore has no Kinematic actor associated with it");
     if(fBehavingLikeAnimatedPhys!=actLikeAnAnimatedPhys)
     {
         fBehavingLikeAnimatedPhys=actLikeAnAnimatedPhys;
@@ -415,8 +358,6 @@ void plBTPhysicalControllerCore::BehaveLikeAnimatedPhysical(hsBool actLikeAnAnim
                 fKinematicActor->raiseBodyFlag(NX_BF_FROZEN_ROT_X);
                 fKinematicActor->raiseBodyFlag(NX_BF_FROZEN_ROT_Y);
                 fKinematicActor->clearBodyFlag(NX_BF_DISABLE_GRAVITY);
-                
-
             }
         }
     } */
@@ -424,12 +365,48 @@ void plBTPhysicalControllerCore::BehaveLikeAnimatedPhysical(hsBool actLikeAnAnim
 
 hsBool plBTPhysicalControllerCore::BehavingLikeAnAnimatedPhysical()
 {
-//    hsAssert(fKinematicActor, "plPXPhysicalControllerCore is missing a kinematic actor");
+    //    hsAssert(fKinematicActor, "plPXPhysicalControllerCore is missing a kinematic actor");
     return fBehavingLikeAnimatedPhys;
+}
+
+const hsVector3& plBTPhysicalControllerCore::GetLinearVelocity()
+{
+    btVector3 vel = fBody->getLinearVelocity();
+    fLinearVelocity.fX = vel.x();
+    fLinearVelocity.fY = vel.y();
+    fLinearVelocity.fZ = vel.z();
+    if (!BehavingLikeAnAnimatedPhysical()) {
+
+    }
+    return fLinearVelocity;
+}
+
+void plBTPhysicalControllerCore::SetLinearVelocity(const hsVector3& vel)
+{
+    plPhysicalControllerCore::SetLinearVelocity(vel);
+    fBody->setLinearVelocity(btVector3(vel.fX, vel.fY, vel.fZ));
+    if(!BehavingLikeAnAnimatedPhysical()) {
+
+    }
+}
+
+void plBTPhysicalControllerCore::SetAngularVelocity(const float val)
+{
+    plPhysicalControllerCore::SetAngularVelocity(val);
+    fBody->setAngularVelocity(btVector3(0.f, 0.f, val));
+    if(!BehavingLikeAnAnimatedPhysical()) {
+
+    }
+}
+void plBTPhysicalControllerCore::SetVelocities(const hsVector3& linearVel, float angVel)
+{
+    SetLinearVelocity(linearVel);
+    SetAngularVelocity(angVel);
 }
 
 void plBTPhysicalControllerCore::ISetKinematicLoc(const hsMatrix44& l2w)
 {
+    fLastGlobalLoc = l2w;
     hsPoint3 kPos;
     // Update our subworld position and rotation
     const plCoordinateInterface* subworldCI = GetSubworldCI();
@@ -447,13 +424,14 @@ void plBTPhysicalControllerCore::ISetKinematicLoc(const hsMatrix44& l2w)
 
     hsMatrix44 w2l;
     l2w.GetInverse(&w2l);
-/*    if (fProxyGen)
-        fProxyGen->SetTransform(l2w, w2l); */
+    /*    if (fProxyGen)
+    fProxyGen->SetTransform(l2w, w2l); */
 
     // add z offset
     kPos.fZ += kPhysZOffset;
     // Update the physical position of kinematic
-/*    if (fEnabled|| fKinematic)
+    fBody->getWorldTransform().setOrigin(btVector3(kPos.fX, kPos.fY, kPos.fZ));
+    /*    if (fEnabled|| fKinematic)
         fKinematicActor->moveGlobalPosition(plPXConvert::Point(kPos));
     else
         fKinematicActor->setGlobalPosition(plPXConvert::Point(kPos)); */
@@ -479,11 +457,12 @@ void plBTPhysicalControllerCore::ISetGlobalLoc(const hsMatrix44& l2w)
     }
     hsMatrix44 w2l;
     l2w.GetInverse(&w2l);
-/*    if (fProxyGen)
-        fProxyGen->SetTransform(l2w, w2l);
+    /*    if (fProxyGen)
+    fProxyGen->SetTransform(l2w, w2l);
     // Update the physical position
     NxExtendedVec3 nxPos(fLocalPosition.fX, fLocalPosition.fY, fLocalPosition.fZ + kPhysZOffset);
     fController->setPosition(nxPos); */
+    fBody->getWorldTransform().setOrigin(btVector3(fLocalPosition.fX, fLocalPosition.fY, fLocalPosition.fZ + kPhysZOffset));
     IMatchKinematicToController();
 }
 
@@ -498,14 +477,15 @@ void plBTPhysicalControllerCore::IMatchKinematicToController()
         kinPos.y = (NxReal)cPos.y;
         kinPos.z = (NxReal)cPos.z;
         if (plSimulationMgr::fExtraProfile)
-            SimLog("Match setting kinematic from %f,%f,%f to %f,%f,%f",prevKinPos.x,prevKinPos.y,prevKinPos.z,kinPos.x,kinPos.y,kinPos.z );
+        SimLog("Match setting kinematic from %f,%f,%f to %f,%f,%f",prevKinPos.x,prevKinPos.y,prevKinPos.z,kinPos.x,kinPos.y,kinPos.z );
         fKinematicActor->setGlobalPosition(kinPos);
     }*/
 }
 
 void plBTPhysicalControllerCore::IGetPositionSim(hsPoint3& pos) const
 {
-    
+    btVector3 btPos = fBody->getWorldTransform().getOrigin();
+    pos.Set(btPos.x(), btPos.y(), btPos.z());
     if(this->fBehavingLikeAnimatedPhys)
     {
 //        const NxExtendedVec3& nxPos = fController->getPosition();
@@ -518,9 +498,59 @@ void plBTPhysicalControllerCore::IGetPositionSim(hsPoint3& pos) const
     }
 }
 
-plPhysicalControllerCore* plPhysicalControllerCore::Create(plKey ownerSO, float height, float width)
+void plBTPhysicalControllerCore::ICreateController()
 {
-    float radius = width / 2.f;
-    float realHeight = height - width;
-    return new plBTPhysicalControllerCore(ownerSO, realHeight, radius);
+    BtScene *scene = plSimulationMgr::GetInstance()->GetScene(fWorldKey);
+
+    btCapsuleShape *shape = new btCapsuleShape(fRadius, fHeight);
+    btVector3 inertia;
+    shape->calculateLocalInertia(AvatarMass, inertia);
+    btRigidBody::btRigidBodyConstructionInfo cinfo(AvatarMass, new btDefaultMotionState, shape, inertia);
+    cinfo.m_friction = 0;
+    cinfo.m_restitution = 0;
+    fBody = new btRigidBody(cinfo);
+    fBody->setUserPointer(this);
+    fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+    fBody->setAngularFactor(btVector3(0.f, 0.f, 1.f));
+
+    short colgroups = 0;
+    colgroups |= 1 << plSimDefs::kGroupAvatarBlocker;
+    colgroups |= 1 << plSimDefs::kGroupDetector;
+    colgroups |= 1 << plSimDefs::kGroupDynamic;
+    colgroups |= 1 << plSimDefs::kGroupStatic;
+    scene->world->addRigidBody(fBody, 1 << plSimDefs::kGroupAvatar, colgroups);
+}
+
+void plBTPhysicalControllerCore::ICreateController(const hsPoint3& origin)
+{
+    BtScene *scene = plSimulationMgr::GetInstance()->GetScene(fWorldKey);
+
+    btCapsuleShape *shape = new btCapsuleShape(fRadius, fHeight);
+    btVector3 inertia;
+    shape->calculateLocalInertia(AvatarMass, inertia);
+    btRigidBody::btRigidBodyConstructionInfo cinfo(AvatarMass, new btDefaultMotionState, shape, inertia);
+    cinfo.m_friction = 0;
+    cinfo.m_restitution = 0;
+    fBody = new btRigidBody(cinfo);
+    fBody->setUserPointer(this);
+    fBody->setCollisionFlags(fBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+    fBody->setAngularFactor(btVector3(0.f, 0.f, 1.f));
+    fBody->getWorldTransform().setOrigin(btVector3(origin.fX, origin.fY, origin.fZ));
+
+    short colgroups = 0;
+    colgroups |= 1 << plSimDefs::kGroupAvatarBlocker;
+    colgroups |= 1 << plSimDefs::kGroupDetector;
+    colgroups |= 1 << plSimDefs::kGroupDynamic;
+    colgroups |= 1 << plSimDefs::kGroupStatic;
+    scene->world->addRigidBody(fBody, 1 << plSimDefs::kGroupAvatar, colgroups);
+}
+
+void plBTPhysicalControllerCore::IDeleteController()
+{
+    BtScene* scene = plSimulationMgr::GetInstance()->GetScene(fWorldKey);
+    scene->world->removeRigidBody(fBody);
+    delete fBody->getMotionState();
+    btCollisionShape *shape = fBody->getCollisionShape();
+    delete shape;
+    delete fBody;
 }

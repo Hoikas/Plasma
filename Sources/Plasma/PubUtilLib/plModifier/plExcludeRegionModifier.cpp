@@ -274,9 +274,7 @@ bool plExcludeRegionModifier::ICheckSubworlds(plKey avatar)
 // Move avatars out of volume
 void plExcludeRegionModifier::IMoveAvatars()
 {
-    //some reason this is not always finding all avatars might have something to do with
-    //Physx trigger flutter. Adding in brute force method
-    /*
+    // Let's try this the right way with Bullet. Hopefully we won't need the same hack as PhysX
     for (int i = 0; i < fContainedAvatars.Count(); i++)
     {
         if ( ICheckSubworlds(fContainedAvatars[i]) )
@@ -296,12 +294,11 @@ void plExcludeRegionModifier::IMoveAvatars()
             }
         }
     }
-    */
     
-    plBTPhysical* phys =(plBTPhysical*) GetPhysical(GetTarget());
+/*    plBTPhysical* phys =(plBTPhysical*) GetPhysical(GetTarget());
     if (phys)
     {
-/*        plKey DetectorWorldKey = phys->GetWorldKey();
+        plKey DetectorWorldKey = phys->GetWorldKey();
         int numControllers = plPXPhysicalControllerCore::GetNumberOfControllersInThisSubWorld(phys->GetWorldKey());
         if (numControllers > 0)
         {
@@ -356,8 +353,8 @@ void plExcludeRegionModifier::IMoveAvatars()
             }
 
             delete[] controllers;
-        } */
-    }
+        } 
+    } */
 }
 
 
