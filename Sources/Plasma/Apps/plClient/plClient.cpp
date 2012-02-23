@@ -155,6 +155,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 #include "pfSecurePreloader/pfSecurePreloader.h"
 #include "pfLocalizationMgr/pfLocalizationMgr.h"
+#include "pfVoIP/pfMumbleLink.h"
 
 #include "pfCsrSrv/pfCsrSrv.h"
 
@@ -414,6 +415,7 @@ hsBool plClient::Shutdown()
     }
 
     plgAudioSys::Shutdown();
+    pfMumbleLink::Shutdown();
 
     if (pfLocalizationMgr::InstanceValid())
         pfLocalizationMgr::Shutdown();
@@ -1481,6 +1483,7 @@ hsBool plClient::StartInit()
 
     plgAudioSys::Init(hWnd);
     gAudio = plgAudioSys::Sys();
+    pfMumbleLink::Init();
 
     RegisterAs( kClient_KEY );
 

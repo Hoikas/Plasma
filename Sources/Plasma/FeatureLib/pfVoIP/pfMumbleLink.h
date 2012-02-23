@@ -39,57 +39,63 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-#ifndef PLFIXEDKEY_H
-#define PLFIXEDKEY_H
 
+#ifndef _pfMumbleLink_h_
+#define _pfMumbleLink_h_
 
-    // Using Fixed Key feature:
-    // Add a new fixedkey to the enum list below.
-    // Then add, to the Seed list (in plFixedKey.cpp) in the Corresponding 
-    // position, (don't screw up, it will be validated...)
-    // The "Full Address" data for you Fixed key (see rules in plFixedKey.cpp)
+#include "HeadSpin.h"
+#include "pnKeyedObject/hsKeyedObject.h"
 
-enum plFixedKeyId
+class pfMumbleLink : hsKeyedObject
 {
-    kFirst_Fixed_KEY,
+#ifdef HS_BUILD_FOR_WIN32
+    typedef HANDLE LinkHandle;
+#else
+    typedef int32_t LinkHandle;
+#endif
 
-    kLOSObject_KEY,
-    kTimerCallbackManager_KEY,
-    kConsoleObject_KEY, 
-    kAudioSystem_KEY,
-    kInput_KEY,
-    kClient_KEY,
-    kNetClientMgr_KEY,
-    kListenerMod_KEY,
-    kTransitionMgr_KEY,
-    kLinkEffectsMgr_KEY,
-    kGameGUIMgr_KEY,
-    kGameGUIDynamicDlg_KEY,
-    kVirtualCamera1_KEY,
-    kDefaultCameraMod1_KEY,
-    kKIGUIGlue_KEY,
-    kClothingMgr_KEY,
-    kInputInterfaceMgr_KEY,
-    kAVIWriter_KEY,
-    kResManagerHelper_KEY,
-    kAvatarMgr_KEY,
-    kSimulationMgr_KEY,
-    kTransitionCamera_KEY,
-    kCCRMgr_KEY,
-    kNetClientCloneRoom_KEY,
-    kMarkerMgr_KEY,
-    kAutoProfile_KEY,
-    kGlobalVisMgr_KEY,
-    kFontCache_KEY,
-    kRelevanceMgr_KEY,
-    kJournalBookMgr_KEY,
-    kAgeLoader_KEY,
-    kBuiltIn3rdPersonCamera_KEY,
-    kSecurePreloader_KEY,
-    kMumbleLink_KEY,
+    struct LinkedMemory
+    {
+	    uint32_t      m_uiVersion;
+	    uint32_t      m_uiTick;
+	    float         m_avatarPosition[3];
+	    float         m_avatarFront[3];
+	    float         m_avatarTop[3];
+	    wchar_t       m_name[256];
+	    float         m_cameraPosition[3];
+	    float         m_cameraFront[3];
+	    float         m_cameraTop[3];
+	    wchar_t       m_identity[256];
+	    uint32_t      m_contextLen;
+	    char          m_context[256];
+	    wchar_t       m_description[2048];
+    };
 
-    kLast_Fixed_KEY
+    static pfMumbleLink* fInstance;
+    LinkedMemory*        fLink;
+    LinkHandle           fHandle;
+
+    bool OpenLink();
+    bool EnsureLink();
+    void IUpdate();
+    void CloseLink();
+
+    void ILinkIn();
+    void ILinkOut();
+
+public:
+
+    pfMumbleLink();
+    ~pfMumbleLink();
+
+    CLASSNAME_REGISTER(pfMumbleLink);
+    GETINTERFACE_ANY(pfMumbleLink, hsKeyedObject);
+
+    virtual hsBool MsgReceive(plMessage* msg);
+
+    static void Init();
+    static pfMumbleLink* GetInstance() { return fInstance; }
+    static void Shutdown();
 };
 
-
-#endif
+#endif // _pfMumbleLink_h_

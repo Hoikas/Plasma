@@ -58,5 +58,6 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "pfJournalBook/pfJournalBookCreatable.h"
 #include "pfGameMgr/pfGameMgrCreatables.h"
 #include "pfSecurePreloader/pfSecurePreloaderCreatable.h"
+#include "pfVoIP/pfVoIPCreatable.h"
 
 #endif // pfAllCreatables_inc
