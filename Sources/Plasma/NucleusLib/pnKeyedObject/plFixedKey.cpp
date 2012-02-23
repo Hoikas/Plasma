@@ -121,6 +121,7 @@ plKeySeed SeedList[] = {
     { kAgeLoader_KEY,                   CLASS_INDEX_SCOPED( plAgeLoader),               _TCFL("kAgeLoader_KEY")                },
     { kBuiltIn3rdPersonCamera_KEY,      CLASS_INDEX_SCOPED( plCameraModifier1 ),        _TCFL("kBuiltIn3rdPersonCamera_KEY"),  },
     { kSecurePreloader_KEY,             CLASS_INDEX_SCOPED( pfSecurePreloader ),        _TCFL("kSecurePreloader_KEY"),         },
+    { kMumbleLink_KEY,                  CLASS_INDEX_SCOPED( pfMumbleLink ),             _TCFL("kMumbleLink_KEY"),              },
     
 
     { kLast_Fixed_KEY,                  CLASS_INDEX_SCOPED( plSceneObject ),            _TCFL("kLast_Fixed_KEY"),              }

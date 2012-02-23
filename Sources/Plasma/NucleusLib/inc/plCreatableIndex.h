@@ -93,7 +93,7 @@ CLASS_INDEX_LIST_START
     CLASS_INDEX(plMultiModifier),
     CLASS_INDEX(plSynchedObject),
     CLASS_INDEX(plSoundBuffer),
-    CLASS_INDEX(UNUSED_plAliasModifier),
+    CLASS_INDEX(pfMumbleLink),
     CLASS_INDEX(plPickingDetector),
     CLASS_INDEX(plCollisionDetector),
     CLASS_INDEX(plLogicModifier),

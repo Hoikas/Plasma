@@ -39,57 +39,13 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-#ifndef PLFIXEDKEY_H
-#define PLFIXEDKEY_H
 
+#ifndef _pfVoIPCreatable_h_
+#define _pfVoIPCreatable_h_
 
-    // Using Fixed Key feature:
-    // Add a new fixedkey to the enum list below.
-    // Then add, to the Seed list (in plFixedKey.cpp) in the Corresponding 
-    // position, (don't screw up, it will be validated...)
-    // The "Full Address" data for you Fixed key (see rules in plFixedKey.cpp)
+#include "pnFactory/plCreator.h"
 
-enum plFixedKeyId
-{
-    kFirst_Fixed_KEY,
+#include "pfMumbleLink.h"
+REGISTER_NONCREATABLE(pfMumbleLink);
 
-    kLOSObject_KEY,
-    kTimerCallbackManager_KEY,
-    kConsoleObject_KEY, 
-    kAudioSystem_KEY,
-    kInput_KEY,
-    kClient_KEY,
-    kNetClientMgr_KEY,
-    kListenerMod_KEY,
-    kTransitionMgr_KEY,
-    kLinkEffectsMgr_KEY,
-    kGameGUIMgr_KEY,
-    kGameGUIDynamicDlg_KEY,
-    kVirtualCamera1_KEY,
-    kDefaultCameraMod1_KEY,
-    kKIGUIGlue_KEY,
-    kClothingMgr_KEY,
-    kInputInterfaceMgr_KEY,
-    kAVIWriter_KEY,
-    kResManagerHelper_KEY,
-    kAvatarMgr_KEY,
-    kSimulationMgr_KEY,
-    kTransitionCamera_KEY,
-    kCCRMgr_KEY,
-    kNetClientCloneRoom_KEY,
-    kMarkerMgr_KEY,
-    kAutoProfile_KEY,
-    kGlobalVisMgr_KEY,
-    kFontCache_KEY,
-    kRelevanceMgr_KEY,
-    kJournalBookMgr_KEY,
-    kAgeLoader_KEY,
-    kBuiltIn3rdPersonCamera_KEY,
-    kSecurePreloader_KEY,
-    kMumbleLink_KEY,
-
-    kLast_Fixed_KEY
-};
-
-
-#endif
+#endif // _pfVoIPCreatable_h_
