@@ -246,7 +246,9 @@ uint32_t hsStream::WriteSafeString(const char *string)
 
 uint32_t hsStream::WriteSafeWString(const wchar_t *string)
 {
-    int len = wcslen(string);
+    int len = 0;
+    if (string)
+        len = wcslen(string);
     hsAssert(len<0xf000, xtl::format("string len of %d is too long for WriteSafeWString, use WriteSafeWStringLong",
         len).c_str() );
 
