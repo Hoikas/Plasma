@@ -74,6 +74,7 @@ set(plMessage_HEADERS
     plInputEventMsg.h
     plInputIfaceMgrMsg.h
     plInterestingPing.h
+    plKickMsg.h
     plLayRefMsg.h
     plLightRefMsg.h
     plLinearVelocityMsg.h

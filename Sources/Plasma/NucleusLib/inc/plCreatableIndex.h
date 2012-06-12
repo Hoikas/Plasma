@@ -947,6 +947,7 @@ CLASS_INDEX_LIST_START
     CLASS_INDEX(plAngularVelocityMsg),
     CLASS_INDEX(plRideAnimatedPhysMsg),
     CLASS_INDEX(plAvBrainRideAnimatedPhysical),
+    CLASS_INDEX(plKickMsg),
     CLASS_INDEX(pfGameScoreMsg),
     CLASS_INDEX(pfGameScoreListMsg),
     CLASS_INDEX(pfGameScoreTransferMsg),
