@@ -51,6 +51,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plgDispatch.h"
 #include "pnMessage/plClientMsg.h"
 #include "pnMessage/plTimeMsg.h"
+#include "pfMessage/pfKIMsg.h" // this isn't kosher
 #include "plMessage/plLinkToAgeMsg.h"
 #include "pnKeyedObject/plKey.h"
 #include "pnKeyedObject/plUoid.h"
@@ -59,6 +60,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plNetCommon/plNetCommon.h"
 #include "plVault/plVault.h"
 #include "pnNetCommon/pnNetCommon.h"
+#include "plMessage/plKickMsg.h"
 #include "plMessage/plVaultNotifyMsg.h"
 #include "plNetMessage/plNetMessage.h"
 #include "plAvatar/plAvatarMgr.h"
@@ -342,6 +344,13 @@ hsBool plNetLinkingMgr::MsgReceive( plMessage *msg )
         return true;
     }
 
+    // Someone is kicking me from the age?
+    if (plKickMsg* pKickMsg = plKickMsg::ConvertNoRef(msg))
+    {
+        IProcessKickMsg(pKickMsg);
+        return true; // always eat this message, even if we do not act upon it
+    }
+
     return false;
 }
 
@@ -532,6 +541,56 @@ bool plNetLinkingMgr::IProcessVaultNotifyMsg(plVaultNotifyMsg* msg)
     }
 
     return false;
+}
+
+////////////////////////////////////////////////////////////////////
+
+void plNetLinkingMgr::IProcessKickMsg(plKickMsg* msg)
+{
+    plNetClientMgr* nc = plNetClientMgr::GetInstance();
+    hsAssert(msg->GetSender(), "nil sender on KickMsg");
+
+    // Before we link ourselves out of this age, let's make sure of a few things.
+    //    1. The kicker is in the age (so someone isn't trying to troll us).
+    //    2. The kicker is ***the*** (not "a", but "the") owner of this age tree.
+    uint32_t playerID = msg->GetSender()->GetUoid().GetClonePlayerID();
+    int mbrID = nc->TransportMgr().FindMember(playerID);
+    if (mbrID != -1)
+    {
+        if (VaultIsOwnerOfCurrentAgeTree(playerID))
+        {
+            // TODO: Localization! (Get us a license, Cyan...)
+            plNetTransportMember* mbr = nc->TransportMgr().GetMember(mbrID);
+            plString notify = plString::Format("You have been kicked by %s (\"%s\")",
+                                               mbr->GetPlayerName().c_str(),
+                                               msg->GetReason().c_str());
+
+            // Send a local KI msg explaining we've been kicked
+            pfKIMsg* pKiMsg = new pfKIMsg(pfKIMsg::kKILocalChatStatusMsg);
+            pKiMsg->SetBCastFlag(plMessage::kNetForce, false);
+            pKiMsg->SetBCastFlag(plMessage::kNetPropagate, false);
+            pKiMsg->SetBCastFlag(plMessage::kLocalPropagate, true);
+            pKiMsg->SetString(notify.ToWchar().GetData());
+            pKiMsg->Send(); // whoosh... off it goes (immeditately).
+
+            // Now we blast off a local plLinkToAgeMsg
+            plAgeLinkStruct link;
+            link.GetAgeInfo()->SetAgeFilename(kPersonalAgeFilename);
+            link.SetLinkingRules(plNetCommon::LinkingRules::kOwnedBook);
+
+            // Just use the LIPD for now
+            plSpawnPointInfo swPoint;
+            swPoint.SetName(kDefaultSpawnPtName);
+            link.SetSpawnPoint(swPoint);
+
+            plLinkToAgeMsg* pLinkMsg = new plLinkToAgeMsg(&link);
+            pLinkMsg->SetTimeStamp(hsTimer::GetSysSeconds() + 1.0); // delay link out so user can grok what's happening
+            pLinkMsg->SetBCastFlag(plMessage::kNetForce, false);
+            pLinkMsg->SetBCastFlag(plMessage::kNetPropagate, false);
+            pLinkMsg->SetBCastFlag(plMessage::kLocalPropagate, true);
+            pLinkMsg->Send(nc->GetKey());
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////

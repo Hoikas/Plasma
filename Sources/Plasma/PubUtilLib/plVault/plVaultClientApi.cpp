@@ -1312,6 +1312,9 @@ void RelVaultNode::GetChildNodesIncRef (
     unsigned                maxDepth,
     ARRAY(RelVaultNode*) *  nodes
 ) {
+    if (maxDepth == 0)
+        return;
+
     RelVaultNodeLink * link;
     link = state->children.Head();
     for (; link; link = state->children.Next(link)) {
@@ -3645,6 +3648,49 @@ bool VaultAmOwnerOfAge (const Uuid & ageInstId) {
 bool VaultAmCzarOfAge (const Uuid & ageInstId) {
 //  hsAssert(false, "eric, implement me");
     return false;
+}
+
+//============================================================================
+namespace OwnerOfAgeTree {
+    enum { kNo, kMaybe, kYes };
+
+    static uint8_t CheckAgeOwnersFolder(RelVaultNode* base, unsigned depth, unsigned playerID) {
+        uint8_t answer = kMaybe;
+        if (RelVaultNode* ownerFolder = base->GetChildPlayerInfoListNodeIncRef(plVault::kAgeOwnersFolder, depth)) {
+            ARRAY(RelVaultNode*) playerInfos;
+            ownerFolder->GetChildNodesIncRef(plVault::kNodeType_PlayerInfo, 1, &playerInfos);
+            for (unsigned i = 0; i < playerInfos.Count(); ++i) {
+                VaultPlayerInfoNode info(playerInfos[i]);
+                if (info.playerId == playerID)
+                    answer = kYes;
+                playerInfos[i]->DecRef();
+            }
+            if (playerInfos.Count() != 1)
+                answer = kNo;
+            ownerFolder->DecRef();
+        }
+
+        return answer;
+    }
+};
+
+bool VaultIsOwnerOfCurrentAgeTree(unsigned playerID) {
+    bool answer = false;
+    if (RelVaultNode* currAgeInfo = VaultGetAgeInfoNodeIncRef()) {
+        // Test the current age's AgeOwners folder. If kMaybe, then the current age is a sub age
+        // or a child age. Attempt to check parent age if sub age--if child age, NO.
+        uint8_t test = OwnerOfAgeTree::CheckAgeOwnersFolder(currAgeInfo, 1, playerID);
+        if (test == OwnerOfAgeTree::kMaybe) {
+            if (RelVaultNode* subAgesFolder = VaultGetAgeSubAgesFolderIncRef()) {
+                test = OwnerOfAgeTree::CheckAgeOwnersFolder(subAgesFolder, 2, playerID);
+                subAgesFolder->DecRef();
+            }
+        }
+        answer = (test == OwnerOfAgeTree::kYes);
+        currAgeInfo->DecRef();
+    }
+
+    return answer;
 }
 
 //============================================================================

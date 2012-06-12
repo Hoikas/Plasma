@@ -50,6 +50,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plLinkToAgeMsg.h"
 
 class plMessage;
+class plKickMsg;
 class plVaultNotifyMsg;
 struct plNCAgeJoiner;
 struct plNCAgeLeaver;
@@ -109,6 +110,7 @@ class plNetLinkingMgr
     bool IProcessLinkToAgeMsg( plLinkToAgeMsg * msg );
     void IDoLink(plLinkToAgeMsg* link);
     bool IProcessVaultNotifyMsg(plVaultNotifyMsg* msg);
+    void IProcessKickMsg(plKickMsg* msg);
 
     bool IDispatchMsg( plMessage * msg, uint32_t playerID );
 

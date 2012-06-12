@@ -303,6 +303,42 @@ PYTHON_GLOBAL_METHOD_DEFINITION(PtDetachObject, args, "Params: child,parent\nDet
     PYTHON_RETURN_NONE;
 }*/
 
+PYTHON_GLOBAL_METHOD_DEFINITION(PtKickClient, args, "Kicks the specified player from the current age.")
+{
+    PyObject *clientObj, *reasonObj = NULL;
+    if (!PyArg_ParseTuple(args, "O|O", &clientObj, &reasonObj))
+    {
+        PyErr_SetString(PyExc_TypeError, "PtKickClient expects a key or an int and an optional string");
+        PYTHON_RETURN_ERROR;
+    }
+
+    pyKey* key = nil; uint32_t playerID = 0;
+    plString reason = plString::Null;
+
+    if (pyKey::Check(clientObj))
+        key = pyKey::ConvertFrom(clientObj);
+    else if (PyInt_Check(clientObj))
+        playerID = (uint32_t)PyInt_AsLong(clientObj);
+    else
+    {
+        PyErr_SetString(PyExc_TypeError, "PtKickClient expects a key or an int and an optional string");
+        PYTHON_RETURN_ERROR;
+    }
+
+    if (PyString_CheckEx(reasonObj))
+        reason = PyString_AsStringEx(reasonObj);
+    else
+    {
+        PyErr_SetString(PyExc_TypeError, "PtKickClient expects a key or an int and an optional string");
+        PYTHON_RETURN_ERROR;
+    }
+
+    if (key)
+        return cyMisc::KickClient(*key, reason);
+    else
+        return cyMisc::KickClient(playerID, reason);
+}
+
 PYTHON_GLOBAL_METHOD_DEFINITION(PtDirtySynchState, args, "Params: selfKey,SDLStateName,flags\nDO NOT USE - handled by ptSDL")
 {
     PyObject* keyObj = NULL;
@@ -732,6 +768,7 @@ void cyMisc::AddPlasmaMethods3(std::vector<PyMethodDef> &methods)
     PYTHON_GLOBAL_METHOD(methods, PtDetachObject);
     
     //PYTHON_GLOBAL_METHOD(methods, PtLinkToAge);
+    PYTHON_GLOBAL_METHOD(methods, PtKickClient);
     
     PYTHON_GLOBAL_METHOD(methods, PtDirtySynchState);
     PYTHON_GLOBAL_METHOD(methods, PtDirtySynchClients);

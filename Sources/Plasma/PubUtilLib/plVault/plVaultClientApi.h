@@ -374,6 +374,7 @@ bool VaultAmOwnerOfCurrentAge ();
 bool VaultAmCzarOfCurrentAge ();
 bool VaultAmOwnerOfAge (const Uuid & ageInstId);
 bool VaultAmCzarOfAge (const Uuid & ageInstId);
+bool VaultIsOwnerOfCurrentAgeTree(unsigned playerID);
 bool VaultRegisterMTStationAndWait (
     const wchar_t stationName[],
     const wchar_t linkBackSpawnPtObjName[]

@@ -941,6 +941,9 @@ public:
     static PyObject* GetAIAvatarsByModelName(const char* name);
     static void ForceVaultNodeUpdate(unsigned nodeId);
     static void VaultDownload(unsigned nodeId);
+
+    static PyObject* KickClient(pyKey& clientKey, const plString& reason=plString::Null);
+    static PyObject* KickClient(uint32_t clientID, const plString& reason=plString::Null);
 };
 
 #endif  // cyMisc_h
