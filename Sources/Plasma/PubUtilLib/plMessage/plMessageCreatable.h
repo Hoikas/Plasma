@@ -355,6 +355,9 @@ REGISTER_CREATABLE(plAIArrivedAtGoalMsg);
 #endif // NO_AV_MSGS
 #endif // SERVER
 
+#include "plKickMsg.h"
+REGISTER_CREATABLE(plKickMsg);
+
 /*****************************************************************************
 *
 *   Messages excluded from SERVER build, and the NoAvMsgs build configurations
