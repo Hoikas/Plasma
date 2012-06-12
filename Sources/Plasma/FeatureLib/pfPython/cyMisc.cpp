@@ -54,6 +54,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plInputEventMsg.h"
 #include "plMessage/plInputIfaceMgrMsg.h"
 #include "pnMessage/plCmdIfaceModMsg.h"
+#include "plMessage/plKickMsg.h"
 #include "pnMessage/plAttachMsg.h"
 #include "plMessage/plTimerCallbackMsg.h"
 #include "plMessage/plNetVoiceListMsg.h"
@@ -2884,4 +2885,45 @@ void cyMisc::VaultDownload(unsigned nodeId)
         nil,
         nil
     );
+}
+
+PyObject* cyMisc::KickClient(pyKey& clientKey, const plString& reason)
+{
+    plKey clone = clientKey.getKey();
+    if (!clone)
+    {
+        PyErr_SetString(PyExc_ValueError, "Client Key cannot be NULL");
+        PYTHON_RETURN_ERROR;
+    }
+
+    return KickClient(clone->GetUoid().GetClonePlayerID(), reason);
+}
+
+PyObject* cyMisc::KickClient(uint32_t clientID, const plString& reason)
+{
+    if (plNetClientMgr* nc = plNetClientMgr::GetInstance())
+    {
+        if (!VaultIsOwnerOfCurrentAgeTree(nc->GetPlayerID()))
+        {
+            Py_INCREF(Py_False);
+            return Py_False;
+        }
+
+        int idx = nc->TransportMgr().FindMember(clientID);
+        if (idx != -1)
+        {
+            plKickMsg* pMsg = new plKickMsg(reason);
+            pMsg->AddNetReceiver(clientID);
+            pMsg->Send(); // whoosh... off it goes
+
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+
+        PyErr_SetString(PyExc_ValueError, "Player not found");
+        PYTHON_RETURN_ERROR;
+    }
+
+    PyErr_SetString(PyExc_RuntimeError, "NetClientMgr is not initialized");
+    PYTHON_RETURN_ERROR;
 }

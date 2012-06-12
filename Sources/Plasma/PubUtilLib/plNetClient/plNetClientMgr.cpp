@@ -81,6 +81,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plAgeLoadedMsg.h"
 #include "plMessage/plCCRMsg.h"
 #include "plMessage/plAvatarMsg.h"
+#include "plMessage/plKickMsg.h"
 #include "plMessage/plNetVoiceListMsg.h"
 #include "plMessage/plNetCommMsgs.h"
 #include "plMessage/plNetClientMgrMsg.h"
@@ -353,6 +354,7 @@ int plNetClientMgr::Init()
     // We need plVaultNotifyMsgs for the NetLinkingMgr
     plgDispatch::Dispatch()->RegisterForType(plVaultNotifyMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plResPatcherMsg::Index(), GetKey());
+    plgDispatch::Dispatch()->RegisterForExactType(plKickMsg::Index(), GetKey());
 
     IInitNetClientComm();
 
