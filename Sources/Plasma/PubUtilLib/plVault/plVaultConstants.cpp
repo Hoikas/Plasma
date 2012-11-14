@@ -39,17 +39,10 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-/*****************************************************************************
-*
-*   $/Plasma20/Sources/Plasma/PubUtilLib/plVault/plVaultConstants.cpp
-*   
-***/
 
-#include "Pch.h"
-#pragma hdrstop
+#include "plVault.h"
 
 namespace plVault {
-#ifdef CLIENT
 
 const char * NodeTypeStr( int type, bool pretty )
 {
@@ -138,5 +131,4 @@ const char * StandardNodeStr( int type )
     }
 }
 
-#endif // def CLIENT
-} // namespace plVault
+}; // namespace plVault
