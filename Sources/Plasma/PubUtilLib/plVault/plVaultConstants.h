@@ -39,23 +39,9 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
       Mead, WA   99021
 
 *==LICENSE==*/
-/*****************************************************************************
-*
-*   $/Plasma20/Sources/Plasma/PubUtilLib/plVault/plVaultConstants.h
-*   
-***/
 
-#ifdef PLASMA20_SOURCES_PLASMA_PUBUTILLIB_PLVAULT_PLVAULTCONSTANTS_H
-#error "Header $/Plasma20/Sources/Plasma/PubUtilLib/plVault/plVaultConstants.h included more than once"
-#endif
-#define PLASMA20_SOURCES_PLASMA_PUBUTILLIB_PLVAULT_PLVAULTCONSTANTS_H
-
-
-////////////////////////////////////////////////////////////////////
-// plVault: Plasma Network File System
-//
-
-class plAgeInfoSource;
+#ifndef _plVaultConstants_h_
+#define _plVaultConstants_h_
 
 
 ////////////////////////////////////////////////////////////////////
@@ -179,13 +165,9 @@ namespace plVault {
         kNoteSubType_Generic,
     };
 
-//============================================================================
-
-
-#ifdef CLIENT
-
     const char * NodeTypeStr( int type, bool pretty=false );
     const char * StandardNodeStr( int type );
 
-#endif
-};
+}; // namespace plVault
+
+#endif // _plVaultConstants_h_
