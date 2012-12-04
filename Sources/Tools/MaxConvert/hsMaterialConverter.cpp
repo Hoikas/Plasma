@@ -106,7 +106,6 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "MaxPlasmaMtls/Layers/plLayerTexBitmapPB.h"
 
 #include "pfSurface/plLayerAVI.h"
-#include "pfSurface/plLayerBink.h"
 
 #include "MaxComponent/plLightMapComponent.h"
 #include "plDrawable/plGeometrySpan.h"
@@ -1983,27 +1982,15 @@ static plLayerInterface* IProcessLayerMovie(plPassMtlBase* mtl, plLayerTex* layT
     plAnimStealthNode* stealth = IGetEntireAnimation(mtl);
 
     const char* ext = plFileUtils::GetFileExt(fileName);
-    bool isBink = ext && (stricmp(ext, "bik") == 0);
     bool isAvi  = ext &&(stricmp(ext, "avi") == 0);
 
-    if (isBink || isAvi)
+    if (isAvi)
     {
         char movieName[256];
         sprintf(movieName, "avi/%s", plFileUtils::GetFileName(fileName));
 
-        plLayerMovie* movieLayer = nil;
-        plString moviePostfix;
-
-        if (isBink)
-        {
-            movieLayer = new plLayerBink;
-            moviePostfix = "_bink";
-        }
-        else if (isAvi)
-        {
-            movieLayer = new plLayerAVI;
-            moviePostfix = "_avi";
-        }
+        plLayerMovie* movieLayer = new plLayerAVI;
+        plString moviePostfix = "_avi";
 
         plString movieKeyName = layerIFace->GetKeyName() + moviePostfix;
         hsgResMgr::ResMgr()->NewKey(movieKeyName, movieLayer, node->GetLocation());
