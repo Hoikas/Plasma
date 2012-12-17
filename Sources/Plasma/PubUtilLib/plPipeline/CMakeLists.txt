@@ -4,9 +4,6 @@ include_directories("../../NucleusLib/inc")
 include_directories("../../NucleusLib")
 include_directories("../../PubUtilLib")
 
-if(Bink_SDK_AVAILABLE)
-    include_directories(${Bink_INCLUDE_DIR})
-endif()
 if(WIN32)
     include_directories(${DirectX_INCLUDE_DIR})
 endif(WIN32)
@@ -44,7 +41,6 @@ set(plPipeline_HEADERS
     hsGColorizer.h
     hsGDDrawDllLoad.h
     hsWinRef.h
-    plBinkPlayer.h
     plCaptureRender.h
     plCubicRenderTarget.h
     plCubicRenderTargetModifier.h
