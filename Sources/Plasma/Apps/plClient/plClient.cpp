@@ -113,7 +113,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plStatusLog/plStatusLog.h"
 #include "plProgressMgr/plProgressMgr.h"
 #include "plPipeline/plDTProgressMgr.h"
-#include "plPipeline/plBinkPlayer.h"
+#include "pfMoviePlayer/plMoviePlayer.h"
 #include "plMessage/plMovieMsg.h"
 
 #include "plSDL/plSDL.h"
@@ -270,7 +270,6 @@ bool plClient::Shutdown()
     IKillMovies();
 
     plgAudioSys::Activate(false);
-    plBinkPlayer::DeInit();
     //
     // Get any proxies to commit suicide.
     plProxyDrawMsg* nuke = new plProxyDrawMsg(plProxyDrawMsg::kAllTypes
@@ -887,17 +886,17 @@ bool plClient::IHandleMovieMsg(plMovieMsg* mov)
     {
         for( i = 0; i < fMovies.GetCount(); i++ )
         {
-            if( !stricmp(mov->GetFileName(), fMovies[i]->GetFileName()) )
+            if( fMovies[i]->GetFilename() == mov->GetFileName() )
                 break;
         }
     }
     if( i == fMovies.GetCount() )
     {
 
-        fMovies.Append(new plBinkPlayer);
-        fMovies[i]->SetFileName(mov->GetFileName());
+        fMovies.Append(new plMoviePlayer);
+        fMovies[i]->SetFilename(mov->GetFileName());
     }
-
+#if 0
     if( mov->GetCmd() & plMovieMsg::kAddCallbacks )
     {
         int j;
@@ -934,24 +933,17 @@ bool plClient::IHandleMovieMsg(plMovieMsg* mov)
     }
     if( mov->GetCmd() & plMovieMsg::kVolume )
         fMovies[i]->SetVolume(mov->GetVolume());
-
+#endif
     if( mov->GetCmd() & plMovieMsg::kStart )
-        fMovies[i]->Start(fPipeline, fWindowHndl);
+        fMovies[i]->Start();
+#if 0
     if( mov->GetCmd() & plMovieMsg::kPause )
         fMovies[i]->Pause(true);
     if( mov->GetCmd() & plMovieMsg::kResume )
         fMovies[i]->Pause(false);
     if( mov->GetCmd() & plMovieMsg::kStop )
         fMovies[i]->Stop();
-
-    // If a movie has lost its filename, it means something went horribly wrong
-    // with playing it and it has shutdown. Or we just stopped it. Either way, 
-    // we need to clear it out of our list.
-    if( !(fMovies[i]->GetFileName() && *fMovies[i]->GetFileName()) )
-    {
-        delete fMovies[i];
-        fMovies.Remove(i);
-    }
+#endif
 
     return true;
 }
@@ -1556,9 +1548,9 @@ bool plClient::StartInit()
 
     plConst(float) delay(2.f);
     //commenting out publisher splash for MORE
-    //IPlayIntroBink("avi/intro0.bik", delay, 0.f, 0.f, 1.f, 1.f, 0.75);
+    //IPlayIntroBink("avi/intro0.webm", delay, 0.f, 0.f, 1.f, 1.f, 0.75);
     //if( GetDone() ) return false;
-    IPlayIntroBink("avi/intro1.bik", 0.f, 0.f, 0.f, 1.f, 1.f, 0.75);
+    IPlayIntroBink("avi/intro1.webm", 0.f, 0.f, 0.f, 1.f, 1.f, 0.75);
     if( GetDone() ) return false;
     plgDispatch::Dispatch()->RegisterForExactType(plMovieMsg::Index(), GetKey());
 
@@ -1972,7 +1964,6 @@ void plClient::IServiceMovies()
     int i;
     for( i = 0; i < fMovies.GetCount(); i++ )
     {
-        hsAssert(fMovies[i]->GetFileName() && *fMovies[i]->GetFileName(), "Lost our movie");
         if( !fMovies[i]->NextFrame() )
         {
             delete fMovies[i];
@@ -1993,16 +1984,18 @@ void plClient::IKillMovies()
 bool plClient::IPlayIntroBink(const char* movieName, float endDelay, float posX, float posY, float scaleX, float scaleY, float volume /* = 1.0 */)
 {
     SetQuitIntro(false);
-    plBinkPlayer player;
+    plMoviePlayer player;
     player.SetPosition(posX, posY);
     player.SetScale(scaleX, scaleY);
-    player.SetFileName(movieName);
+    player.SetFilename(movieName);
+#if 0
     player.SetFadeToTime(endDelay);
     player.SetFadeToColor(hsColorRGBA().Set(0, 0, 0, 1.f));
     player.SetVolume(volume);
+#endif
     bool firstTry = true;  // flag to make sure that we don't quit before we even start
 
-    if( player.Start(fPipeline, fWindowHndl) )
+    if( player.Start() )
     {
         while( true )
         {

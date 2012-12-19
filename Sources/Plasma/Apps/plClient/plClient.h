@@ -78,7 +78,6 @@ class plFontCache;
 class plClientMsg;
 class plLocation;
 class plMovieMsg;
-class plBinkPlayer;
 class plPreloaderMsg;
 class plNetCommAuthMsg;
 class plAgeLoaded2Msg;
@@ -150,7 +149,7 @@ protected:
     int                     fQuality;
 
     bool                    fQuitIntro;
-    hsTArray<plBinkPlayer*> fMovies;
+    hsTArray<class plMoviePlayer*> fMovies;
 
     plMessagePumpProc       fMessagePumpProc;
     

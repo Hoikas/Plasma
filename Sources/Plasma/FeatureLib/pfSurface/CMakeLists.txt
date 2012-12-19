@@ -24,6 +24,7 @@ set(pfSurface_HEADERS
     plFadeOpacityMod.h
     plGrabCubeMap.h
     plLayerAVI.h
+    plLayerBink.h
     plLayerMovie.h
 )
 
