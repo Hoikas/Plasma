@@ -244,7 +244,7 @@ bool plMoviePlayer::IOpenMovie()
 
     // opens the segment
     // it contains everything you ever want to know about the movie
-    int64_t pos = 0;
+    long long pos = 0;
     mkvparser::EBMLHeader ebmlHeader;
     ebmlHeader.Parse(fReader, pos);
     mkvparser::Segment* seg;
