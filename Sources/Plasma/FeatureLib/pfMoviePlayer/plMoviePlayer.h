@@ -70,7 +70,7 @@ protected:
 
     mkvparser::MkvReader* fReader;
     std::unique_ptr<mkvparser::Segment> fSegment;
-    std::unique_ptr<TrackMgr> fAudioTrack, fVideoTrack; // TODO: vector of tracks?
+    std::unique_ptr<class TrackMgr> fAudioTrack, fVideoTrack; // TODO: vector of tracks?
     std::unique_ptr<class VPX> fVpx;
     int64_t fTimeScale, fStartTime;
 
