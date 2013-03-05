@@ -43,19 +43,17 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "hsStream.h"
 #include <cmath>
 
-const int hsKeyFrame::kMaxFrameNumber = 65535;
-
 ///////////////////////////////////////////////////////////////
 
 void hsPoint3Key::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fValue.Read(stream);
 }
 
 void hsPoint3Key::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fValue.Write(stream);
 }
 
@@ -68,7 +66,7 @@ bool hsPoint3Key::CompareValue(hsPoint3Key *key)
 
 void hsBezPoint3Key::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fInTan.Read(stream);
     fOutTan.Read(stream);
     fValue.Read(stream);
@@ -76,7 +74,7 @@ void hsBezPoint3Key::Read(hsStream *stream)
 
 void hsBezPoint3Key::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fInTan.Write(stream);
     fOutTan.Write(stream);
     fValue.Write(stream);
@@ -93,13 +91,13 @@ bool hsBezPoint3Key::CompareValue(hsBezPoint3Key *key)
 
 void hsScalarKey::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fValue = stream->ReadLEScalar();
 }
 
 void hsScalarKey::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     stream->WriteLEScalar(fValue);
 }
 
@@ -110,7 +108,7 @@ bool hsScalarKey::CompareValue(hsScalarKey *key)
 
 void hsBezScalarKey::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fInTan  = stream->ReadLEScalar();
     fOutTan = stream->ReadLEScalar();
     fValue  = stream->ReadLEScalar();
@@ -118,7 +116,7 @@ void hsBezScalarKey::Read(hsStream *stream)
 
 void hsBezScalarKey::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     stream->WriteLEScalar(fInTan);
     stream->WriteLEScalar(fOutTan);
     stream->WriteLEScalar(fValue);
@@ -133,13 +131,13 @@ bool hsBezScalarKey::CompareValue(hsBezScalarKey *key)
 
 void hsQuatKey::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fValue.Read(stream);
 }
 
 void hsQuatKey::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fValue.Write(stream);
 }
 
@@ -155,13 +153,13 @@ const float hsCompressedQuatKey32::k10BitScaleRange = 1023 / (2 * kOneOverRootTw
 
 void hsCompressedQuatKey32::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fData = stream->ReadLE32();
 }
 
 void hsCompressedQuatKey32::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     stream->WriteLE32(fData);
 }
 
@@ -296,14 +294,14 @@ const float hsCompressedQuatKey64::k21BitScaleRange = 2097151 / (2 * kOneOverRoo
 
 void hsCompressedQuatKey64::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fData[0] = stream->ReadLE32();
     fData[1] = stream->ReadLE32();
 }
 
 void hsCompressedQuatKey64::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     stream->WriteLE32(fData[0]);
     stream->WriteLE32(fData[1]);
 }
@@ -457,13 +455,13 @@ void hsScaleValue::Write(hsStream *stream)
 /////////////////////////////////////////
 void hsScaleKey::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fValue.Read(stream);
 }
 
 void hsScaleKey::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fValue.Write(stream);
 }
 
@@ -474,7 +472,7 @@ bool hsScaleKey::CompareValue(hsScaleKey *key)
 
 void hsBezScaleKey::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fInTan.Read(stream);
     fOutTan.Read(stream);
     fValue.Read(stream);
@@ -482,7 +480,7 @@ void hsBezScaleKey::Read(hsStream *stream)
 
 void hsBezScaleKey::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fInTan.Write(stream);
     fOutTan.Write(stream);
     fValue.Write(stream);
@@ -495,29 +493,29 @@ bool hsBezScaleKey::CompareValue(hsBezScaleKey *key)
 
 //////////////////////
 
-void hsG3DSMaxKeyFrame::Set(hsMatrix44 *mat, uint16_t frame)
+void hsG3DSMaxKeyFrame::Set(hsMatrix44 *mat, float frameTime)
 {
-    fFrame = frame;
+    fFrameTime = frameTime;
     gemAffineParts parts;
     decomp_affine(mat->fMap, &parts);
     AP_SET(fParts, parts);
 }
 
-void hsG3DSMaxKeyFrame::Set(const hsAffineParts &parts, uint16_t frame)
+void hsG3DSMaxKeyFrame::Set(const hsAffineParts &parts, float frameTime)
 {
-    fFrame = frame;
+    fFrameTime = frameTime;
     fParts = parts;
 }
 
 void hsG3DSMaxKeyFrame::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fParts.Read(stream);
 }
 
 void hsG3DSMaxKeyFrame::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fParts.Write(stream);
 }
 
@@ -530,7 +528,7 @@ bool hsG3DSMaxKeyFrame::CompareValue(hsG3DSMaxKeyFrame *key)
 
 void hsMatrix33Key::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     int32_t i,j;
     for(i=0;i<3;i++)
         for(j=0;j<3;j++)
@@ -539,7 +537,7 @@ void hsMatrix33Key::Read(hsStream *stream)
 
 void hsMatrix33Key::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     int32_t i,j;
     for(i=0;i<3;i++)
         for(j=0;j<3;j++)
@@ -555,13 +553,13 @@ bool hsMatrix33Key::CompareValue(hsMatrix33Key *key)
 
 void hsMatrix44Key::Read(hsStream *stream)
 {
-    fFrame = stream->ReadLE16();
+    fFrameTime = stream->ReadLEScalar();
     fValue.Read(stream);
 }
 
 void hsMatrix44Key::Write(hsStream *stream)
 {
-    stream->WriteLE16(fFrame);
+    stream->WriteLEScalar(fFrameTime);
     fValue.Write(stream);
 }
 

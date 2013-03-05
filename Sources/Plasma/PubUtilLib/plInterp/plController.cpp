@@ -236,7 +236,7 @@ float plLeafController::GetLength() const
         return 0;
 
     uint8_t *ptr = (uint8_t *)fKeys;
-    return ((hsKeyFrame *)(ptr + (fNumKeys - 1) * stride))->fFrame / MAX_FRAMES_PER_SEC; 
+    return ((hsKeyFrame *)(ptr + (fNumKeys - 1) * stride))->fFrameTime;
 }
 
 uint32_t plLeafController::GetStride() const
@@ -378,7 +378,7 @@ void plLeafController::GetKeyTimes(hsTArray<float> &keyTimes) const
     for (cIdx = 0, kIdx = 0; cIdx < fNumKeys, kIdx < keyTimes.GetCount();)
     {
         float kTime = keyTimes[kIdx];
-        float cTime = ((hsKeyFrame*)(keyPtr + cIdx * stride))->fFrame / MAX_FRAMES_PER_SEC;
+        float cTime = ((hsKeyFrame*)(keyPtr + cIdx * stride))->fFrameTime;
         if (cTime < kTime)
         {
             keyTimes.InsertAtIndex(kIdx, cTime);
@@ -399,7 +399,7 @@ void plLeafController::GetKeyTimes(hsTArray<float> &keyTimes) const
     // All remaining times in the controller are later than the original keyTimes set
     for (; cIdx < fNumKeys; cIdx++)
     {
-        float cTime = ((hsKeyFrame*)(keyPtr + cIdx * stride))->fFrame / MAX_FRAMES_PER_SEC;
+        float cTime = ((hsKeyFrame*)(keyPtr + cIdx * stride))->fFrameTime;
         keyTimes.Append(cTime);
     }
 }
@@ -473,7 +473,7 @@ void plLeafController::QuickScalarController(int numKeys, float* times, float* v
     int i;
     for( i = 0; i < numKeys; i++ )
     {
-        ((hsScalarKey*)fKeys)[i].fFrame = (uint16_t)(*times++ * MAX_FRAMES_PER_SEC);
+        ((hsScalarKey*)fKeys)[i].fFrameTime = *times++;
         ((hsScalarKey*)fKeys)[i].fValue = *values;
         values = (float *)((uint8_t *)values + valueStrides);
     }

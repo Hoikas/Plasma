@@ -141,10 +141,6 @@ public:
     int GetTicksPerFrame()      { return fTicksPerFrame; }
     int GetFrameRate()          { return fFrameRate; }
     int GetTicksPerSec()        { return fTicksPerSec; }
-    int GetStartFrame()         { return fStartFrame; }
-    int GetEndFrame()           { return fEndFrame; }
-    int GetNumFrames()          { return fNumFrames; }
-    float GetAnimLength()       { return fAnimLength; }
 
 private:
     void ISetSegRange(float start, float end);
@@ -180,14 +176,12 @@ private:
     hsConverterUtils& fConverterUtils;
     plErrorMsg * fErrorMsg;
 
-    int32_t       fTicksPerFrame;
-    int32_t       fFrameRate;
-    int32_t       fTicksPerSec;
-    int32_t       fStartFrame;
-    int32_t       fEndFrame;
-    int32_t       fNumFrames;
-    float    fAnimLength;
-    bool      fWarned;
+    uint32_t      fTicksPerFrame;
+    uint32_t      fFrameRate;
+    uint32_t      fTicksPerSec;
+    float         fStartTime;
+    float         fEndTime;
+    bool          fWarned;
 
     bool      fForceLocal;
 

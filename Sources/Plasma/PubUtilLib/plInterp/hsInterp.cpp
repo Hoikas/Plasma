@@ -361,7 +361,7 @@ void hsInterp::BezScalarEval(const float value1, const float outTan,
 
 void hsInterp::BezInterp(const hsBezPoint3Key* k1, const hsBezPoint3Key* k2, const float t, hsScalarTriple* result)
 {
-    float scale = (k2->fFrame - k1->fFrame) * MAX_TICKS_PER_FRAME / 3.f;
+    float scale = (k2->fFrameTime - k1->fFrameTime) * MAX_TICKS_PER_SEC / 3.f;
     BezScalarEval(k1->fValue.fX, k1->fOutTan.fX, k2->fValue.fX, k2->fInTan.fX, t, scale, &result->fX);
     BezScalarEval(k1->fValue.fY, k1->fOutTan.fY, k2->fValue.fY, k2->fInTan.fY, t, scale, &result->fY);
     BezScalarEval(k1->fValue.fZ, k1->fOutTan.fZ, k2->fValue.fZ, k2->fInTan.fZ, t, scale, &result->fZ);
@@ -369,13 +369,13 @@ void hsInterp::BezInterp(const hsBezPoint3Key* k1, const hsBezPoint3Key* k2, con
 
 void hsInterp::BezInterp(const hsBezScalarKey* k1, const hsBezScalarKey* k2, const float t, float* result)
 {
-    float scale = (k2->fFrame - k1->fFrame) * MAX_TICKS_PER_FRAME / 3.f;
+    float scale = (k2->fFrameTime - k1->fFrameTime) * MAX_TICKS_PER_SEC / 3.f;
     BezScalarEval(k1->fValue, k1->fOutTan, k2->fValue, k2->fInTan, t, scale, result);
 }
 
 void hsInterp::BezInterp(const hsBezScaleKey* k1, const hsBezScaleKey* k2, const float t, hsScaleValue* result)
 {
-    float scale = (k2->fFrame - k1->fFrame) * MAX_TICKS_PER_FRAME / 3.f;
+    float scale = (k2->fFrameTime - k1->fFrameTime) * MAX_TICKS_PER_SEC / 3.f;
     BezScalarEval(k1->fValue.fS.fX, k1->fOutTan.fX, k2->fValue.fS.fX, k2->fInTan.fX, t, scale, &result->fS.fX);
     BezScalarEval(k1->fValue.fS.fY, k1->fOutTan.fY, k2->fValue.fS.fY, k2->fInTan.fY, t, scale, &result->fS.fY);
     BezScalarEval(k1->fValue.fS.fZ, k1->fOutTan.fZ, k2->fValue.fS.fZ, k2->fInTan.fZ, t, scale, &result->fS.fZ); 
@@ -404,10 +404,10 @@ void hsInterp::GetBoundaryKeyFrames(float time, uint32_t numKeys, void *keys, ui
 {
     hsAssert(numKeys>1, "Must have more than 1 keyframe");
     int k1, k2;
-    uint16_t frame = (uint16_t)(time * MAX_FRAMES_PER_SEC);
+    float frameTime = time * MAX_TICKS_PER_SEC;
 
     // boundary case, past end
-    if (frame > GetKey(numKeys-1, keys, size)->fFrame)
+    if (frameTime > GetKey(numKeys-1, keys, size)->fFrameTime)
     {
         k1=k2=numKeys-1;
         (*kF2) = GetKey(k1, keys, size);
@@ -418,7 +418,7 @@ void hsInterp::GetBoundaryKeyFrames(float time, uint32_t numKeys, void *keys, ui
 
     hsKeyFrame *key1, *key2;
     // boundary case, before start
-    if (frame < (key1=GetKey(0, keys, size))->fFrame)
+    if (frameTime < (key1=GetKey(0, keys, size))->fFrameTime)
     {
         k1=k2=0;
         (*kF1) = GetKey(k1, keys, size);
@@ -459,13 +459,13 @@ void hsInterp::GetBoundaryKeyFrames(float time, uint32_t numKeys, void *keys, ui
             }
                 
             key2 = GetKey(i, keys, size);
-            if (frame <= key2->fFrame && frame >= key1->fFrame)
+            if (frameTime <= key2->fFrameTime && frameTime >= key1->fFrameTime)
             {
                 k2=i;
                 k1=i-1;
                 (*kF2) = key2;
                 (*kF1) = key1;
-                *p = (time - (*kF1)->fFrame / MAX_FRAMES_PER_SEC) / (((*kF2)->fFrame - (*kF1)->fFrame) / MAX_FRAMES_PER_SEC);
+                *p = (time - (*kF1)->fFrameTime) / ((*kF2)->fFrameTime - (*kF1)->fFrameTime);
                 goto ret;
             }
             key1=key2;
@@ -483,13 +483,13 @@ void hsInterp::GetBoundaryKeyFrames(float time, uint32_t numKeys, void *keys, ui
             }
             
             key1 = GetKey(i - 1, keys, size);
-            if (frame <= key2->fFrame && frame >= key1->fFrame)
+            if (frameTime <= key2->fFrameTime && frameTime >= key1->fFrameTime)
             {
                 k2 = i;
                 k1 = i - 1;
                 (*kF2) = key2;
                 (*kF1) = key1;
-                *p = (time - (*kF1)->fFrame / MAX_FRAMES_PER_SEC) / (((*kF2)->fFrame - (*kF1)->fFrame) / MAX_FRAMES_PER_SEC);
+                *p = (time - (*kF1)->fFrameTime) / ((*kF2)->fFrameTime - (*kF1)->fFrameTime);
                 goto ret;
             }
             key2=key1;

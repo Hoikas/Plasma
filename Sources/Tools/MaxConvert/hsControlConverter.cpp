@@ -108,15 +108,13 @@ void hsControlConverter::Init(plErrorMsg* msg)
     fInterface = GetCOREInterface();
     fErrorMsg = msg;
 
-    fTicksPerFrame  = ::GetTicksPerFrame(); /*160*/
-    fFrameRate      = ::GetFrameRate();     /*30*/
-    fTicksPerSec        = fTicksPerFrame*fFrameRate;
+    fTicksPerFrame  = ::GetTicksPerFrame();
+    fFrameRate      = ::GetFrameRate();
+    fTicksPerSec    = fTicksPerFrame * fFrameRate;
 
     Interval interval = fInterface->GetAnimRange();
-    fStartFrame = interval.Start()/fTicksPerFrame;
-    fEndFrame   = interval.End()/fTicksPerFrame;
-    fNumFrames  = fEndFrame-fStartFrame+1;
-    fAnimLength = (float)(fNumFrames-1)/fFrameRate;
+    fStartTime = interval.Start() / fTicksPerSec;
+    fEndTime   = interval.End() / fTicksPerSec;
 
     fWarned = false;
 
@@ -285,16 +283,14 @@ plLeafController* hsControlConverter::MakeMatrix44Controller(StdUVGen* uvGen, co
         uvGen->Update(kTimes[i], v);
 
         // Get key
-        float secs  = (float)kTimes[i]/fTicksPerSec;
-        int frameNum= kTimes[i]/fTicksPerFrame;
-        hsAssert(frameNum <= hsKeyFrame::kMaxFrameNumber, "Anim is too long.");
+        float secs  = (float)kTimes[i] / fTicksPerSec;
 
-        fErrorMsg->Set((frameNum < fStartFrame || frameNum > fEndFrame), nodeName, 
+        fErrorMsg->Set((secs < fStartTime || secs > fEndTime), nodeName,
             "Warning: Skipping keyframes outside of animation interval").CheckAndAsk();
         
         hsMatrix44Key *key = ctrl->GetMatrix44Key(i);
         StdUVGenToHsMatrix44(&key->fValue, uvGen, true);    
-        key->fFrame = frameNum;
+        key->fFrameTime = secs;
     }
 
     return ctrl;
@@ -333,10 +329,8 @@ plLeafController* hsControlConverter::MakeMatrix44Controller(Control* prsControl
     for( i=0; i < kTimes.Count(); i++)
     {
         // Get key
-        float secs  = (float)kTimes[i]/fTicksPerSec;
-        int frameNum= kTimes[i]/fTicksPerFrame;
-        hsAssert(frameNum <= hsKeyFrame::kMaxFrameNumber, "Anim is too long.");
-    
+        float secs  = (float)kTimes[i] / fTicksPerSec;
+
         Matrix3 maxXform;
         maxXform.IdentityMatrix();
         Interval valid = FOREVER;
@@ -344,7 +338,7 @@ plLeafController* hsControlConverter::MakeMatrix44Controller(Control* prsControl
 
         hsMatrix44Key *key = ctrl->GetMatrix44Key(i);
         Matrix3ToHsMatrix44(&maxXform, &key->fValue);
-        key->fFrame = frameNum;
+        key->fFrameTime = secs;
     }
 
     return ctrl;
@@ -814,7 +808,7 @@ plLeafController* hsControlConverter::ICreateQuatController(plMaxNode* node, Con
                     hsQuatKey tempKey;
                     ICreateHSInterpKey(control, key.get(), kTimes[k], &tempKey, node, camRot);
                     hsCompressedQuatKey64 *compKey = pc->GetCompressedQuatKey64(i - startIdx);
-                    compKey->fFrame = tempKey.fFrame;
+                    compKey->fFrameTime = tempKey.fFrameTime;
                     compKey->SetQuat(tempKey.fValue);
                 }
                 else
@@ -822,7 +816,7 @@ plLeafController* hsControlConverter::ICreateQuatController(plMaxNode* node, Con
                     hsQuatKey tempKey;
                     ICreateHSInterpKey(control, key.get(), kTimes[k], &tempKey, node, camRot);
                     hsCompressedQuatKey32 *compKey = pc->GetCompressedQuatKey32(i - startIdx);
-                    compKey->fFrame = tempKey.fFrame;
+                    compKey->fFrameTime = tempKey.fFrameTime;
                     compKey->SetQuat(tempKey.fValue);
                 }
             }
@@ -999,15 +993,13 @@ int hsControlConverter::IAddPartsKeys(Control* control,
             // Get key
             ikeys->GetKey(i, key.get());
             float frameTime = key->time / GetTicksPerSec();
-            int frameNum = key->time / GetTicksPerFrame();
-            hsAssert(frameNum <= hsKeyFrame::kMaxFrameNumber, "Anim is too long.");
 
             // Check if we already have a hsG3dsMaxKey at this frameNum
             int found=FALSE;
             for(j=0; j<kfArray->GetCount(); j++)
             {
                 hsG3DSMaxKeyFrame* k = &(*kfArray)[j];
-                if (k->fFrame == frameNum)
+                if (k->fFrameTime == frameTime)
                 {
                     found = TRUE;
                     break;
@@ -1030,7 +1022,7 @@ int hsControlConverter::IAddPartsKeys(Control* control,
             // Init new keyframe
             hsG3DSMaxKeyFrame hKey;
             hKey.fParts = parts;
-            hKey.fFrame = frameNum;
+            hKey.fFrameTime = frameTime;
 
             // Add key to list
             kfArray->Append(hKey);
@@ -1328,8 +1320,8 @@ int32_t hsControlConverter::ICreateHSInterpKey(Control* control, IKey* mKey, Tim
         gemAffineParts ap;
         decomp_affine(tXform.fMap, &ap); 
 
-        hbKey->fValue.fS.Set(ap.k.x, ap.k.y, ap.k.z);
-        hbKey->fValue.fQ.Set(ap.u.x, ap.u.y, ap.u.z, ap.u.w);   
+        hbKey->fValue.fS.Set(ap.k.x, ap.k.y, ap.k.z);   
+        hbKey->fValue.fQ.Set(ap.u.x, ap.u.y, ap.u.z, ap.u.w);
     }
     else
     if (cID == Class_ID(LININTERP_FLOAT_CLASS_ID,0) )
@@ -1372,10 +1364,7 @@ int32_t hsControlConverter::ICreateHSInterpKey(Control* control, IKey* mKey, Tim
         return 0;   // failed
     }
 
-    int frameNum = keyTime / GetTicksPerFrame();
-    hsAssert(frameNum <= hsKeyFrame::kMaxFrameNumber, "Anim is too long.");
-    baseKey->fFrame = frameNum;
-    
+    baseKey->fFrameTime = keyTime / GetTicksPerSec();
     return 1;       // did it
     hsGuardEnd;
 }
@@ -2022,8 +2011,8 @@ bool    hsControlConverter::IGetSubAnimByName( Animatable *anim, TSTR &name, Ani
 
     if( anim )
     {
-        int nSub = anim->NumSubs();
         int i;
+        int nSub = anim->NumSubs();
         for( i = 0; i < nSub; i++ )
         {
             if (anim->SubAnim(i)==nil)
@@ -2105,7 +2094,7 @@ void hsControlConverter::IExportAnimatedCameraFOV(plMaxNode* node, hsTArray <hsG
     hsTArray<float> fovH;
     for (i=0; i < kfArray->Count(); i++)
     {
-        TimeValue t = TimeValue(GetTicksPerFrame() * (kfArray[0][i].fFrame));
+        TimeValue t = TimeValue(GetTicksPerSec() * (kfArray[0][i].fFrameTime));
         theCam = (GenCamera *) obj->ConvertToType(t, Class_ID(LOOKAT_CAM_CLASS_ID, 0));
         float FOVvalue= theCam->GetFOV(t); // in radians
         FOVvalue *= (float)(180.f / M_PI); // to degrees
@@ -2140,13 +2129,13 @@ void hsControlConverter::IExportAnimatedCameraFOV(plMaxNode* node, hsTArray <hsG
         {
             pCfg->fFOVh = fovH[0];
             pCfg->fFOVw = fovW[0];
-            pCfg->fAccel = kfArray[0][0].fFrame / MAX_FRAMES_PER_SEC;
+            pCfg->fAccel = kfArray[0][0].fFrameTime;
         }
         else
         {
             pCfg->fFOVh = fovH[i + 1];
             pCfg->fFOVw = fovW[i + 1];
-            pCfg->fAccel = kfArray[0][i + 1].fFrame / MAX_FRAMES_PER_SEC;
+            pCfg->fAccel = kfArray[0][i + 1].fFrameTime;
         }
         
         
@@ -2155,7 +2144,7 @@ void hsControlConverter::IExportAnimatedCameraFOV(plMaxNode* node, hsTArray <hsG
         
         plEventCallbackMsg* pCall = new plEventCallbackMsg;
         pCall->fEvent = kTime;
-        pCall->fEventTime = kfArray[0][i].fFrame / MAX_FRAMES_PER_SEC;
+        pCall->fEventTime = kfArray[0][i].fFrameTime;
         pCall->fIndex = i;
         pCall->AddReceiver(pCamMod->GetKey());
         plAnimCmdMsg* pMsg = new plAnimCmdMsg;
@@ -2163,7 +2152,7 @@ void hsControlConverter::IExportAnimatedCameraFOV(plMaxNode* node, hsTArray <hsG
         pMsg->SetSender(pAnim->GetModKey(node));
         pMsg->SetCmd(plAnimCmdMsg::kAddCallbacks);
         pMsg->SetAnimName(ENTIRE_ANIMATION_NAME);
-        pMsg->fTime = kfArray[0][i].fFrame / MAX_FRAMES_PER_SEC;
+        pMsg->fTime = kfArray[0][i].fFrameTime;
         pMsg->AddCallback(pCall);
         hsRefCnt_SafeUnRef(pCall);
         plConvert::Instance().AddMessageToQueue(pFOVMsg);

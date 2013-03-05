@@ -70,8 +70,8 @@ struct hsKeyFrame
         kMatrix44KeyFrame,
     };
 
-    uint16_t fFrame;
-    static const int kMaxFrameNumber;
+    /** Frame Time (in seconds) */
+    float fFrameTime;
 };
 
 struct hsPoint3Key : public hsKeyFrame
@@ -221,8 +221,8 @@ struct hsG3DSMaxKeyFrame : public hsKeyFrame
 
     void Reset() { fParts.Reset(); }    // Make parts identity
 
-    void Set(hsMatrix44 *mat, uint16_t frame);
-    void Set(const hsAffineParts &parts, uint16_t frame);
+    void Set(hsMatrix44 *mat, float frameTime);
+    void Set(const hsAffineParts &parts, float frameTime);
 
     hsMatrix44* GetMatrix44(hsMatrix44 *mat) { fParts.ComposeMatrix(mat); return mat; }
 

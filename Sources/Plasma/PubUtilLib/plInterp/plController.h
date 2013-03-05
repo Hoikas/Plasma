@@ -168,7 +168,16 @@ public:
     void *GetKeyBuffer() const { return fKeys; }
     void GetKeyTimes(hsTArray<float> &keyTimes) const;
     void AllocKeys(uint32_t n, uint8_t type);
+
+    /** Generates a Scalar Leaf Controller
+     *  \param numKeys      The number of keys to generate
+     *  \param times        A pointer to an array of floats of length \a numKeys that contains the keyframe times (in seconds)
+     *  \param values       A pointer to an array of floats of length \a numKeys that contains the scalar values
+     *  \param valueStrides A pointer to an array of floats of length \a numKeys that contains the stride of each value in \a values.
+     *                      This should be sizeof(float).
+     */
     void QuickScalarController(int numKeys, float* times, float* values, uint32_t valueStrides);
+
     bool AllKeysMatch() const;
     bool PurgeRedundantSubcontrollers();
 
