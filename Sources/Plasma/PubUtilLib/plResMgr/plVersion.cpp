@@ -54,9 +54,6 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 //
 static void GetChangedCreatables(int minorVersion, std::vector<uint16_t>& creatables)
 {
-    ChangedCreatable(1, plLoadAvatarMsg); 
-    ChangedCreatable(1, plArmatureMod);
-    ChangedCreatable(2, plAvBrainHuman);
 }
 
 

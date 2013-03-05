@@ -49,8 +49,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 // Set Minor Version to ZERO when you Bump Major Version
 // If you change the minor, see GetChangedCreateables in plVersion.cpp
 
-#define PLASMA2_MAJOR_VERSION   70  // Major Version...every file will need to be reexported
-#define PLASMA2_MINOR_VERSION   2   // Minor Version...only files with the specified creatables
+#define PLASMA2_MAJOR_VERSION   71  // Major Version...every file will need to be reexported
+#define PLASMA2_MINOR_VERSION   0   // Minor Version...only files with the specified creatables
                                     // will need to be reexported
 
 // Don't modify this, it's automatically updated when branches are made
@@ -142,6 +142,7 @@ public:
    68   3/03/06 bob     constant anim channels (plMatrixConstant, plScalarConstant had no R/W methods)
    69   5/08/06 bob     changed plVertCoder and hsMatrix44::Read/Write
    70   2/12/07 bob     Merged in several registry/resMangaer fixes
+   71   3/04/13 hoikas  Revert version 67. Animation keys store 32-bit float times once again :D
 */
 
 /*  Minor Log                           ---Death to those who do not log changes---
@@ -288,6 +289,7 @@ public:
     0   02/12/07 bob    Reset for major version change
     1   03/29/07 jeff   Changed plLoadAvatarMsg and plArmatureMod to be more flexible
     2   06/28/07 jeff   Changed plAvBrainHuman format to store whether it's an actor or not
+    0   03/04/13 hoikas Reset for major version change
 */
 
 #endif // plVersion_h_inc
