@@ -175,8 +175,7 @@ public:
         fSwapTargetID((uint32_t)-1),
         fCachedAlphaHackLayerCounts(nil),
         fBoneMap(nil),
-        fAnimCompression(1), // Should be plAnimCompressComp::kCompressionLow,
-                             // but I don't want to include the entire header.
+        fAnimCompression(0), // kAnimCompressNone -- don't compress unless they want it compressed
         fKeyReduceThreshold(0.0002)
     { }
     ~plMaxNodeData() 
