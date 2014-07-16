@@ -613,7 +613,7 @@ CLASS_INDEX_LIST_START
     CLASS_INDEX(plFakeOutMsg),
     CLASS_INDEX(plCursorChangeMsg),
     CLASS_INDEX(plNodeChangeMsg),
-    CLASS_INDEX(UNUSED_plAvEnableMsg),
+    CLASS_INDEX(plIgnorePlayerMsg),
     CLASS_INDEX(plLinkCallbackMsg),
     CLASS_INDEX(plTransitionMsg),
     CLASS_INDEX(plConsoleMsg),

@@ -3459,6 +3459,16 @@ bool VaultSetCCRStatus (bool online) {
 }
 
 //============================================================================
+bool VaultGetMutualIgnore() {
+    bool mutual = true;
+    if (hsRef<RelVaultNode> rvn = VaultFindChronicleEntry(kChronicle_MutualIgnore)) {
+        VaultChronicleNode chron(rvn);
+        mutual = wcstoul(chron.GetEntryValue(), nullptr, 10) != 0;
+    }
+    return mutual;
+}
+
+//============================================================================
 void VaultDump (const wchar_t tag[], unsigned vaultId, FStateDump dumpProc) {
     LogMsg(kLogDebug, L"<---- ID:%u, Begin Vault%*s%s ---->", vaultId, tag ? 1 : 0, L" ", tag);
 

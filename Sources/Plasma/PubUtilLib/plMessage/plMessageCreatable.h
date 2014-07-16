@@ -340,6 +340,9 @@ REGISTER_CREATABLE(plAIArrivedAtGoalMsg);
 #endif // NO_AV_MSGS
 #endif // SERVER
 
+#include "plIgnorePlayerMsg.h"
+REGISTER_CREATABLE(plIgnorePlayerMsg);
+
 /*****************************************************************************
 *
 *   Messages excluded from SERVER build, and the NoAvMsgs build configurations

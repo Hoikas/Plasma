@@ -86,6 +86,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plNetClientMgrMsg.h"
 #include "plMessage/plResPatcherMsg.h"
 #include "plMessage/plVaultNotifyMsg.h"
+#include "plMessage/plIgnorePlayerMsg.h"
+#include "plMessage/plMemberUpdateMsg.h"
 #include "plResMgr/plKeyFinder.h"
 #include "plResMgr/plPageInfo.h"
 #include "plNetTransport/plNetTransportMember.h"
@@ -183,6 +185,9 @@ void plNetClientMgr::Shutdown()
     // release all avatar clones
     IUnloadRemotePlayers();
     IUnloadNPCs();
+
+    // Ignore brain
+    IDestroyIgnore();
 
     // Finally, pump the dispatch system so all the new refs get delivered.
     plgDispatch::Dispatch()->MsgQueueProcess();
@@ -339,6 +344,7 @@ int plNetClientMgr::Init()
     plgDispatch::Dispatch()->RegisterForExactType(plAgeLoaded2Msg::Index(), GetKey());  
     plgDispatch::Dispatch()->RegisterForExactType(plCCRPetitionMsg::Index(), GetKey()); 
     plgDispatch::Dispatch()->RegisterForExactType(plPlayerPageMsg::Index(), GetKey());
+    plgDispatch::Dispatch()->RegisterForExactType(plMemberUpdateMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plInitialAgeStateLoadedMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plNetVoiceListMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plClientMsg::Index(), GetKey());
@@ -347,6 +353,10 @@ int plNetClientMgr::Init()
     plgDispatch::Dispatch()->RegisterForExactType(plNetCommAuthMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plNetCommActivePlayerMsg::Index(), GetKey());
     plgDispatch::Dispatch()->RegisterForExactType(plNetCommLinkToAgeMsg::Index(), GetKey());
+
+    // Ignore brain
+    plgDispatch::Dispatch()->RegisterForExactType(plIgnorePlayerMsg::Index(), GetKey());
+    ISetupIgnore();
 
     // We need plVaultNotifyMsgs for the NetLinkingMgr
     plgDispatch::Dispatch()->RegisterForType(plVaultNotifyMsg::Index(), GetKey());
@@ -1021,7 +1031,14 @@ bool plNetClientMgr::MsgReceive( plMessage* msg )
 
         return true;
     }
-    
+
+    plIgnorePlayerMsg* ignoreMsg = plIgnorePlayerMsg::ConvertNoRef(msg);
+    if (ignoreMsg)
+    {
+        IHandleIgnoreMsg(ignoreMsg);
+        return true;
+    }
+
     return plNetClientApp::MsgReceive(msg);
 }
 
@@ -1322,7 +1339,9 @@ bool plNetClientMgr::IHandlePlayerPageMsg(plPlayerPageMsg *playerMsg)
                 {
                     hsAssert(playerKey, "NIL KEY?");
                     hsAssert(!playerKey->GetName().IsNull(), "UNNAMED KEY");
-                    fTransport.GetMember(idx)->SetAvatarKey(playerKey);
+                    plNetTransportMember* mbr = fTransport.GetMember(idx);
+                    mbr->SetAvatarKey(playerKey);
+                    ICheckForIgnore(mbr);
                 }
                 else
                 {

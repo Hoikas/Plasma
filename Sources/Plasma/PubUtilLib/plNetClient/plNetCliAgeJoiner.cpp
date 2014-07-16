@@ -69,6 +69,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plMessage/plNetCommMsgs.h"
 #include "plMessage/plAgeLoadedMsg.h"
 #include "plMessage/plInputIfaceMgrMsg.h"
+#include "plMessage/plMemberUpdateMsg.h"
 #include "plMessage/plNetClientMgrMsg.h"
 #include "plMessage/plResPatcherMsg.h"
 
@@ -88,6 +89,7 @@ struct plNCAgeJoiner {
     enum NextOp {
         kNoOp,
         kLoadAge,
+        kRequestMembers,
         kLoadPlayer,
         kRequestAgeState,
         kPropagatePlayer,
@@ -273,6 +275,21 @@ void plNCAgeJoiner::ExecNextOp () {
         break;
 
         //====================================================================
+        case kRequestMembers: {
+            // Logic tells me we need to know about everyone else before they know about us
+            // Think about potential race conditions...
+            LogMsg(kLogPerf, L"AgeJoiner: Exec:kRequestMembers");
+            if (nc->GetFlagsBit(plNetClientApp::kLinkingToOfflineAge)) {
+                LogMsg(kLogPerf, L"AgeJoiner: Next:kLoadPlayer");
+                nextOp = kLoadPlayer;
+            } else {
+                nc->ISendMembersListRequest();
+                nc->SetFlagsBit(plNetClientApp::kRequestingMemberList);
+            }
+        }
+        break;
+
+        //====================================================================
         case kLoadPlayer: {
             LogMsg(kLogPerf, L"AgeJoiner: Exec:kLoadPlayer");
             // Start loading local player
@@ -316,9 +333,6 @@ void plNCAgeJoiner::ExecNextOp () {
                 nextOp = kSimStateRcvd;
             }
             else {
-                // Request age player list
-                nc->ISendMembersListRequest();
-
                 // Request initial SDL state
                 plNetMsgGameStateRequest gsmsg;
                 gsmsg.SetNetProtocol(kNetProtocolCli2Game);
@@ -432,8 +446,20 @@ bool plNCAgeJoiner::MsgReceive (plMessage * msg) {
         al->ExecPendingAgeFniFiles();
         al->ExecPendingAgeCsvFiles();
 
-        LogMsg(kLogPerf, L"AgeJoiner: Next:kLoadPlayer");
-        nextOp = kLoadPlayer;
+        LogMsg(kLogPerf, L"AgeJoiner: Next:kRequestMembers");
+        nextOp = kRequestMembers;
+        return true;
+    }
+
+    //========================================================================
+    // Got the remote players
+    //========================================================================
+    if (plMemberUpdateMsg::ConvertNoRef(msg)) {
+        if (nc->GetFlagsBit(plNetClientApp::kRequestingMemberList)) {
+            nc->SetFlagsBit(plNetClientApp::kRequestingMemberList, false);
+            LogMsg(kLogPerf, L"AgeJoiner: Next:kLoadPlayer");
+            nextOp = kLoadPlayer;
+        }
         return true;
     }
 

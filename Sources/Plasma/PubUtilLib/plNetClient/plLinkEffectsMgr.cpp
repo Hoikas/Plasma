@@ -339,11 +339,11 @@ bool plLinkEffectsMgr::MsgReceive(plMessage *msg)
 //          return true;
 //      }
 
+        plNetTransportMember* mbr=nc->TransportMgr().GetMember(nc->TransportMgr().FindMember(linkKey));
         if (pTriggerMsg->GetInvisLevel() && linkKey != nc->GetLocalPlayerKey())
         {
 #ifdef PLASMA_EXTERNAL_RELEASE
             // Verify that the server told us that the invisible avatar is a CCR
-            plNetTransportMember* mbr=nc->TransportMgr().GetMember(nc->TransportMgr().FindMember(linkKey));
             if (!mbr || mbr->GetCCRLevel()<pTriggerMsg->GetInvisLevel())
             {
                 plNetApp::StaticErrorMsg("Remote Avatar trying to be stealthy - REJECTING since he's not a CCR");
@@ -366,7 +366,11 @@ bool plLinkEffectsMgr::MsgReceive(plMessage *msg)
         BCMsg->SetLinkFlag(plLinkEffectBCMsg::kLeavingAge, pTriggerMsg->IsLeavingAge());
         BCMsg->SetLinkFlag(plLinkEffectBCMsg::kSendCallback, true);
         BCMsg->SetLinkFlag(plLinkEffectBCMsg::kMute, pTriggerMsg->MuteLinkSfx());
-        
+
+        // If the player is ignored, we don't play a linking sound (he's invisible, herp derp)
+        if (mbr && plNetClientApp::ConvertNoRef(mbr->GetNetApp())->AmIgnoring())
+            BCMsg->SetLinkFlag(plLinkEffectBCMsg::kMute);
+
         // Check if you have a Yeesha book, and mute sound if you don't.
         // 'CleftSolved' gets set when you click on the linking panel in the cleft,
         // so we use that instead of checking KILevel.

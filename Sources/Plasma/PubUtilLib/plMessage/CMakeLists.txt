@@ -16,6 +16,7 @@ set(plMessage_SOURCES
     plDynaDecalEnableMsg.cpp
     plDynamicEnvMapMsg.cpp
     plDynamicTextMsg.cpp
+    plIgnorePlayerMsg.cpp
     plInputEventMsg.cpp
     plInputIfaceMgrMsg.cpp
     plLayRefMsg.cpp
@@ -66,6 +67,7 @@ set(plMessage_HEADERS
     plDynamicEnvMapMsg.h
     plDynamicTextMsg.h
     plExcludeRegionMsg.h
+    plIgnorePlayerMsg.h
     plInputEventMsg.h
     plInputIfaceMgrMsg.h
     plInterestingPing.h

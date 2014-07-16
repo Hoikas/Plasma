@@ -11,6 +11,7 @@ set(plNetClient_SOURCES
     plNetClientCommInterface.cpp
     plNetClientGroup.cpp
     plNetClientMgr.cpp
+    plNetClientMgrIgnore.cpp
     plNetClientMgrLoad.cpp
     plNetClientMgrRecord.cpp
     plNetClientMgrSend.cpp

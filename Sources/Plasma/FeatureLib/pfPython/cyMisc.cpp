@@ -1070,7 +1070,7 @@ std::vector<PyObject*> cyMisc::GetPlayerList()
         if (avkey)
         {
             // only non-ignored people in list and not in ignore list
-            if ( !VaultAmIgnoringPlayer ( mbr->GetPlayerID()) )
+            if ( !nc->AmIgnoring() )
             {
                 PyObject* playerObj = pyPlayer::New(avkey, mbr->GetPlayerName().c_str(), mbr->GetPlayerID(), mbr->GetDistSq());
                 pyPlayer* player = pyPlayer::ConvertFrom(playerObj); // accesses internal pyPlayer object
@@ -1094,7 +1094,8 @@ std::vector<PyObject*> cyMisc::GetPlayerListDistanceSorted()
 
     // get the sorted member list from the Net transport manager
     plNetTransportMember **members = nil;
-    plNetClientMgr::GetInstance()->TransportMgr().GetMemberListDistSorted( members );
+    plNetClientMgr* nc = plNetClientMgr::GetInstance();
+    nc->TransportMgr().GetMemberListDistSorted( members );
     if( members != nil )
     {
         int i;
@@ -1105,7 +1106,7 @@ std::vector<PyObject*> cyMisc::GetPlayerListDistanceSorted()
             if (avkey)
             {
                 // only non-ignored people in list and not in ignore list
-                if ( !VaultAmIgnoringPlayer ( mbr->GetPlayerID()) )
+                if ( !nc->AmIgnoring() )
                 {
                     PyObject* playerObj = pyPlayer::New(avkey, mbr->GetPlayerName().c_str(), mbr->GetPlayerID(), mbr->GetDistSq());
                     pyPlayer* player = pyPlayer::ConvertFrom(playerObj); // accesses internal pyPlayer object

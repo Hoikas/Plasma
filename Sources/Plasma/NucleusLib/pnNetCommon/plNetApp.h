@@ -157,6 +157,9 @@ public:
         kDemoMode,                          // set if this is a demo - limited play
         kNeedInitialAgeStateCount,          // the server must tell us how many age states to expect
         kLinkingToOfflineAge,               // set if we're linking to the startup age
+        kRemoteIgnore,                      // set if this client is ignoring us
+        kLocalIgnore,                       // set if we're ignoring this client
+        kRequestingMemberList,              // set if we're waiting for the member list
     };
 
     CLASSNAME_REGISTER( plNetClientApp );
@@ -198,7 +201,9 @@ public:
     bool IsLoadingInitialAgeState() const { return GetFlagsBit(kLoadingInitialAgeState); }
     void  SetLaunchedFromSetup(bool b) { SetFlagsBit(kLaunchedFromSetup, b);    }
     bool GetLaunchedFromSetup() const { return GetFlagsBit(kLaunchedFromSetup); }
-    
+
+    bool AmIgnoring() const { return GetFlagsBit(kRemoteIgnore) || GetFlagsBit(kLocalIgnore); }
+
     // CCR stuff
 #ifdef PLASMA_EXTERNAL_RELEASE
     void SetCCRLevel(int level) {   }

@@ -237,6 +237,17 @@ private:
     int ISendGameMessage(plMessage* msg);
     void IDisableNet ();
 
+    // Enhanced ignore
+    void ISetupIgnore();
+    void IDestroyIgnore();
+
+    void IHandleIgnoreMsg(class plIgnorePlayerMsg*);
+    void IHandleIgnore(bool remote, bool mutual, plNetTransportMember* mbr, uint32_t playerID);
+    void IHandleUnIgnore(bool remote, plNetTransportMember* mbr, uint32_t playerID);
+
+    /** Checks a remote player to see if we need to ignore him/her */
+    void ICheckForIgnore(plNetTransportMember* mbr);
+
 public:
     plNetClientMgr();
     ~plNetClientMgr();

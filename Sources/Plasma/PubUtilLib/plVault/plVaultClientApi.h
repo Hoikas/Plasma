@@ -366,6 +366,7 @@ bool        VaultAmIgnoringPlayer (unsigned playerId);
 unsigned    VaultGetKILevel ();
 bool        VaultGetCCRStatus ();               // true=online, false=away
 bool        VaultSetCCRStatus (bool online);    // true=online, false=away
+bool        VaultGetMutualIgnore();
 void        VaultDump (const wchar_t tag[], unsigned vaultId, FStateDump dumpProc);
 void        VaultDump (const wchar_t tag[], unsigned vaultId);
 

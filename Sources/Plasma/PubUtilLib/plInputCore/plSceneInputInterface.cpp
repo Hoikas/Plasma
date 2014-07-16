@@ -316,13 +316,14 @@ bool    plSceneInputInterface::MsgReceive( plMessage *msg )
 
                             // okay, are we a CCR?
                             bool amCCR = plNetClientMgr::GetInstance()->GetCCRLevel();
-                            
+
                             // is this person a NPC or CCR?
-                            int mbrIdx=plNetClientMgr::GetInstance()->TransportMgr().FindMember(pObj->GetKey());
+                            int mbrIdx = plNetClientMgr::GetInstance()->TransportMgr().FindMember(pObj->GetKey());
                             plNetTransportMember* pMbr = plNetClientMgr::GetInstance()->TransportMgr().GetMember(mbrIdx);
                             if (!pMbr) // whoops - it's a freakin' NPC !
                                 return true;
-                            
+                            plNetClientApp* nc = plNetClientApp::ConvertNoRef(pMbr->GetNetApp());
+
                             if (pMbr->IsCCR())
                             {
                                 if (amCCR)
@@ -355,7 +356,7 @@ bool    plSceneInputInterface::MsgReceive( plMessage *msg )
                             }
                             // otherwise, cull people as necessary
                             // also make sure that they are not in our ignore list
-                            else if (VaultAmIgnoringPlayer( pMbr->GetPlayerID()))
+                            else if (nc && nc->AmIgnoring())
                                 return true;
                             // further, if we are offering a book, only allow clicks on the person
                             // whom we've already offered it to (to cancel it)

@@ -104,6 +104,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #define kChronicle_InitialAvCustomizationsDone  "InitialAvCustomizationsDone"
 #define kChronicle_CleftSolved                  "CleftSolved"
 #define kChronicle_GiveYeeshaReward             "GiveYeeshaReward"
+#define kChronicle_MutualIgnore                 L"MutualIgnore"
 
 ///////////////////////////////////////////////////////////////////
 
