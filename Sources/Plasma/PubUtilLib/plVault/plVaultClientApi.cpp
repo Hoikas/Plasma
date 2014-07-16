@@ -2281,6 +2281,13 @@ hsRef<RelVaultNode> VaultGetAgesICanVisitFolder () {
 }
 
 //============================================================================
+hsRef<RelVaultNode> VaultGetIgnoreListFolder() {
+    if (hsRef<RelVaultNode> rvn = GetPlayerNode())
+        return rvn->GetChildPlayerInfoListNode(plVault::kIgnoreListFolder, 1);
+    return nullptr;
+}
+
+//============================================================================
 hsRef<RelVaultNode> VaultGetPlayerInboxFolder () {
     if (hsRef<RelVaultNode> rvn = GetPlayerNode())
         return rvn->GetChildFolderNode(plVault::kInboxFolder, 1);

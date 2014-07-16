@@ -339,6 +339,7 @@ bool                VaultGetLinkToMyPersonalAge(plAgeLinkStruct * link);
 bool                VaultGetLinkToCity(plAgeLinkStruct * link);
 hsRef<RelVaultNode> VaultGetAgesIOwnFolder();
 hsRef<RelVaultNode> VaultGetAgesICanVisitFolder();
+hsRef<RelVaultNode> VaultGetIgnoreListFolder();
 hsRef<RelVaultNode> VaultGetPlayerInboxFolder();
 hsRef<RelVaultNode> VaultGetOwnedAgeLink(const plAgeInfoStruct * info);
 hsRef<RelVaultNode> VaultGetOwnedAgeInfo(const plAgeInfoStruct * info);
