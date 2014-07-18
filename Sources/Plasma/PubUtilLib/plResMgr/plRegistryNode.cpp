@@ -101,10 +101,10 @@ PageCond plRegistryPageNode::IVerify()
         return kPageCorrupt;
 
     // If major version out-of-date, entire location is screwed
-    if (fPageInfo.GetMajorVersion() > plVersion::GetMajorVersion())
-        return kPageTooNew;
-    else if (fPageInfo.GetMajorVersion() < plVersion::GetMajorVersion())
-        return kPageOutOfDate;
+    //if (fPageInfo.GetMajorVersion() > plVersion::GetMajorVersion())
+    //    return kPageTooNew;
+    //else if (fPageInfo.GetMajorVersion() < plVersion::GetMajorVersion())
+    //    return kPageOutOfDate;
 
     // Check the minor versions
     const plPageInfo::ClassVerVec& classVersions = fPageInfo.GetClassVersions();

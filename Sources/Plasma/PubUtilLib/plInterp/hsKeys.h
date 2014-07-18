@@ -72,6 +72,8 @@ struct hsKeyFrame
 
     /** Frame Time (in seconds) */
     float fFrameTime;
+
+    void ReadFrameTime(hsStream* stream);
 };
 
 struct hsPoint3Key : public hsKeyFrame

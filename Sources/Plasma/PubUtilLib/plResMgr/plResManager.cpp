@@ -64,6 +64,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "pnNetCommon/plNetApp.h"
 
 bool gDataServerLocal = false;
+uint16_t gCurrentPageVer = 0;
 
 /// Logging #define for easier use
 #define kResMgrLog(level, log) if (plResMgrSettings::Get().GetLoggingLevel() >= level) log
@@ -323,6 +324,10 @@ bool plResManager::ReadObject(plKeyImp* key)
     fReadingObject = true;
     bool ret = IReadObject(key, pageNode->OpenStream());
     fReadingObject = false;
+
+    // DEBUG
+    gCurrentPageVer = pageNode->GetPageInfo().GetMajorVersion();
+    // DEBUG
 
     if (!fQueuedReads.empty())
     {
@@ -1283,6 +1288,7 @@ bool plResManager::VerifyPages()
     hsTArray<plRegistryPageNode*> invalidPages, newerPages;
     PageMap::iterator it = fAllPages.begin();
 
+/*
     // Step 1: verify major/minor version changes
     if (plResMgrSettings::Get().GetFilterNewerPageVersions() ||
         plResMgrSettings::Get().GetFilterOlderPageVersions())
@@ -1308,6 +1314,7 @@ bool plResManager::VerifyPages()
             }
         }
     }
+*/
 
     // Handle all our invalid pages now
     if (invalidPages.GetCount() > 0)

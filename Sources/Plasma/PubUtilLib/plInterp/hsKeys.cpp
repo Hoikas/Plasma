@@ -43,11 +43,32 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "hsStream.h"
 #include <cmath>
 
+extern uint16_t gCurrentPageVer;
+
+void hsKeyFrame::ReadFrameTime(hsStream* stream)
+{
+    // So we can still read version 70...
+    switch (gCurrentPageVer)
+    {
+    case 70:
+        // frameNum * framesPerSec
+        fFrameTime = stream->ReadLE16() * 30.0f;
+        break;
+    case 71:
+        // we store frame time natively...
+        fFrameTime = stream->ReadLEFloat();
+        break;
+    default:
+        throw "crapola";
+        break;
+    }
+}
+
 ///////////////////////////////////////////////////////////////
 
 void hsPoint3Key::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fValue.Read(stream);
 }
 
@@ -66,7 +87,7 @@ bool hsPoint3Key::CompareValue(hsPoint3Key *key)
 
 void hsBezPoint3Key::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fInTan.Read(stream);
     fOutTan.Read(stream);
     fValue.Read(stream);
@@ -91,7 +112,7 @@ bool hsBezPoint3Key::CompareValue(hsBezPoint3Key *key)
 
 void hsScalarKey::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fValue = stream->ReadLEScalar();
 }
 
@@ -108,7 +129,7 @@ bool hsScalarKey::CompareValue(hsScalarKey *key)
 
 void hsBezScalarKey::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fInTan  = stream->ReadLEScalar();
     fOutTan = stream->ReadLEScalar();
     fValue  = stream->ReadLEScalar();
@@ -131,7 +152,7 @@ bool hsBezScalarKey::CompareValue(hsBezScalarKey *key)
 
 void hsQuatKey::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fValue.Read(stream);
 }
 
@@ -153,7 +174,7 @@ const float hsCompressedQuatKey32::k10BitScaleRange = 1023 / (2 * kOneOverRootTw
 
 void hsCompressedQuatKey32::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fData = stream->ReadLE32();
 }
 
@@ -294,7 +315,7 @@ const float hsCompressedQuatKey64::k21BitScaleRange = 2097151 / (2 * kOneOverRoo
 
 void hsCompressedQuatKey64::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fData[0] = stream->ReadLE32();
     fData[1] = stream->ReadLE32();
 }
@@ -509,7 +530,7 @@ void hsG3DSMaxKeyFrame::Set(const hsAffineParts &parts, float frameTime)
 
 void hsG3DSMaxKeyFrame::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fParts.Read(stream);
 }
 
@@ -528,7 +549,7 @@ bool hsG3DSMaxKeyFrame::CompareValue(hsG3DSMaxKeyFrame *key)
 
 void hsMatrix33Key::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     int32_t i,j;
     for(i=0;i<3;i++)
         for(j=0;j<3;j++)
@@ -553,7 +574,7 @@ bool hsMatrix33Key::CompareValue(hsMatrix33Key *key)
 
 void hsMatrix44Key::Read(hsStream *stream)
 {
-    fFrameTime = stream->ReadLEScalar();
+    ReadFrameTime(stream);
     fValue.Read(stream);
 }
 
