@@ -3469,6 +3469,12 @@ bool VaultGetMutualIgnore() {
 }
 
 //============================================================================
+void VaultSetMutualIgnore(bool status) {
+    // Despite the name, it doesn't actually wait... It also checks for a preexisting entry as well :)
+    VaultAddChronicleEntryAndWait(kChronicle_MutualIgnore, 2, plFormat("{}", (int)status).ToWchar());
+}
+
+//============================================================================
 void VaultDump (const wchar_t tag[], unsigned vaultId, FStateDump dumpProc) {
     LogMsg(kLogDebug, L"<---- ID:%u, Begin Vault%*s%s ---->", vaultId, tag ? 1 : 0, L" ", tag);
 

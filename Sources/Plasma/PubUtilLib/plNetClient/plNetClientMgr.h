@@ -396,6 +396,13 @@ public:
     void UpdateServerTimeOffset(plNetMessage* msg);
     void ResetServerTimeOffset(bool delayed=false);
 
+    /**
+     * Toggles the ehanced mutual ignore functionality
+     * \remarks This is done by iterating through the persistent ignore list (ie vault) and dispatching
+     * messages to those tards and ourselves.
+     */
+    void ToggleMutualIgnore(bool state);
+
 private:
     plNetClientComm             fNetClientComm;
     plNetClientCommMsgHandler   fNetClientCommMsgHandler;

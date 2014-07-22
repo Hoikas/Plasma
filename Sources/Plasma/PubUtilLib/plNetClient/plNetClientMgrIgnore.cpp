@@ -171,3 +171,32 @@ void plNetClientMgr::ICheckForIgnore(plNetTransportMember* mbr)
     if (mbr->GetNetApp()->GetFlagsBit(kRemoteIgnore))
         _ToggleAvatarState(mbr, false);
 }
+
+// ===================================================
+
+void plNetClientMgr::ToggleMutualIgnore(bool status)
+{
+    if (VaultGetMutualIgnore() == status)
+        return;
+
+    // If the world were a fair place, we would hook the above NodeChanged event, but Cyan's black box
+    // MOULa server chokes on those sometimes... Sigh.
+    if (hsRef<RelVaultNode> ignoreFolder = VaultGetIgnoreListFolder()) {
+        RelVaultNode::RefList ignoreList;
+        ignoreFolder->GetChildNodes(plVault::kNodeType_PlayerInfo, 1, &ignoreList);
+
+        // determine flags here
+        uint32_t flags = plIgnorePlayerMsg::kMutualIgnore | ((status) ? 0 : plIgnorePlayerMsg::kUnIgnore);
+
+        // Loop thru all players and send off the message to ourselves and the remote player
+        // This will cause both of us to make each other (in)visible.
+        for (auto ignoree : ignoreList) {
+            VaultPlayerInfoNode info(ignoree);
+            plIgnorePlayerMsg* msg = new plIgnorePlayerMsg(GetPlayerID(), info.GetPlayerId(), flags);
+            msg->Send();
+        }
+    }
+
+    // Save back to the vault
+    VaultSetMutualIgnore(status);
+}

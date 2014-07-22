@@ -2975,3 +2975,13 @@ PyObject* cyMisc::FindClones(pyKey* object) {
 
     return keyList;
 }
+
+bool cyMisc::IsMutualIgnoreEnabled()
+{
+    return VaultGetMutualIgnore();
+}
+
+void cyMisc::EnableMutualIgnore(bool state)
+{
+    plNetClientMgr::GetInstance()->ToggleMutualIgnore(state);
+}

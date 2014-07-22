@@ -958,6 +958,9 @@ public:
     static void VaultDownload(unsigned nodeId);
     static PyObject* CloneKey(pyKey* object, bool netForce);
     static PyObject* FindClones(pyKey* object);
+
+    static bool IsMutualIgnoreEnabled();
+    static void EnableMutualIgnore(bool status);
 };
 
 #endif  // cyMisc_h

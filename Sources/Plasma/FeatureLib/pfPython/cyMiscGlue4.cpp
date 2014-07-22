@@ -801,6 +801,22 @@ PYTHON_GLOBAL_METHOD_DEFINITION(PtVaultDownload, args, "Params: nodeId\nDownload
     PYTHON_RETURN_NONE;
 }
 
+PYTHON_GLOBAL_METHOD_DEFINITION_NOARGS(PtIsMutualIgnoreEnabled, "Returns if mutual ignore is enabled")
+{
+    PYTHON_RETURN_BOOL(cyMisc::IsMutualIgnoreEnabled());
+}
+
+PYTHON_GLOBAL_METHOD_DEFINITION(PtEnableMutualIgnore, args, "Params: status\nToggles the mutual ignore functionality")
+{
+    char status;
+    if (!PyArg_ParseTuple(args, "b", &status)) {
+        PyErr_SetString(PyExc_TypeError, "PtEnableMutualIgnore expects a boolean");
+        PYTHON_RETURN_ERROR;
+    }
+    cyMisc::EnableMutualIgnore(status != 0);
+    PYTHON_RETURN_NONE;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -877,4 +893,7 @@ void cyMisc::AddPlasmaMethods4(std::vector<PyMethodDef> &methods)
     PYTHON_GLOBAL_METHOD(methods, PtGetAIAvatarsByModelName);
     PYTHON_GLOBAL_METHOD(methods, PtForceVaultNodeUpdate);
     PYTHON_GLOBAL_METHOD(methods, PtVaultDownload);
+
+    PYTHON_GLOBAL_METHOD_NOARGS(methods, PtIsMutualIgnoreEnabled);
+    PYTHON_GLOBAL_METHOD(methods, PtEnableMutualIgnore);
 }
