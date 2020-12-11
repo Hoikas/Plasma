@@ -1,0 +1,34 @@
+{
+    "name": "plasma",
+    "version-string": "2.0.70.2",
+    "description": "Cyan Worlds' Plasma game engine",
+    "dependencies": [
+      {
+        "name": "curl",
+        "features": ["sspi"],
+        "platform": "windows"
+      },
+      {
+        "name": "curl",
+        "platform": "!windows"
+      },
+      "expat",
+      {
+        "name": "freetype",
+        "features": ["bzip2", "png", "zlib"]
+      },
+      "libjpeg-turbo",
+      "libogg",
+      "libpng",
+      "libvorbis",
+      "libvpx",
+      "openal-soft",
+      "openssl",
+      "opus",
+      "physx",
+      "python3",
+      "speex",
+      "string-theory",
+      "zlib"
+    ]
+  }
