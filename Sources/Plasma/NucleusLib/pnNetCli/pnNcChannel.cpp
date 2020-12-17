@@ -83,7 +83,7 @@ private:
 };
 
 struct NetMsgChannel : hsRefCnt {
-    NetMsgChannel() : hsRefCnt(0) { }
+    NetMsgChannel() : hsRefCnt(), m_protocol(), m_server(), m_largestRecv(), m_dh_g() { }
 
     uint32_t                m_protocol;
     bool                    m_server;

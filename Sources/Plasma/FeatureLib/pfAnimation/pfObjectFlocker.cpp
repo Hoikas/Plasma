@@ -435,15 +435,12 @@ hsPoint3 pfBoidGoal::PredictFuturePosition(const float predictionTime)
 ///////////////////////////////////////////////////////////////////////////////
 
 pfBoid::pfBoid(pfProximityDatabase& pd, pfObjectFlocker *flocker, plKey &key)
+    : fProximityToken(), fFlockerPtr(flocker), fObjKey(key), fWanderSide(), fWanderUp()
 {
     // allocate a token for this boid in the proximity database
-    fProximityToken = NULL;
     ISetupToken(pd);
 
     Reset();
-
-    fFlockerPtr = flocker;
-    fObjKey = key;
 
     IFlockDefaults();
 
@@ -451,15 +448,12 @@ pfBoid::pfBoid(pfProximityDatabase& pd, pfObjectFlocker *flocker, plKey &key)
 }
 
 pfBoid::pfBoid(pfProximityDatabase& pd, pfObjectFlocker *flocker, plKey &key, hsPoint3 &pos)
+    : fProximityToken(), fFlockerPtr(flocker), fObjKey(key), fWanderSide(), fWanderUp()
 {
     // allocate a token for this boid in the proximity database
-    fProximityToken = NULL;
     ISetupToken(pd);
 
     Reset();
-
-    fFlockerPtr = flocker;
-    fObjKey = key;
 
     SetPosition(pos);
 
@@ -469,15 +463,12 @@ pfBoid::pfBoid(pfProximityDatabase& pd, pfObjectFlocker *flocker, plKey &key, hs
 }
 
 pfBoid::pfBoid(pfProximityDatabase& pd, pfObjectFlocker *flocker, plKey &key, hsPoint3 &pos, float speed, hsVector3 &forward, hsVector3 &side, hsVector3 &up)
+    : fProximityToken(), fFlockerPtr(flocker), fObjKey(key), fWanderSide(), fWanderUp()
 {
     // allocate a token for this boid in the proximity database
-    fProximityToken = NULL;
     ISetupToken(pd);
 
     Reset();
-
-    fFlockerPtr = flocker;
-    fObjKey = key;
 
     SetPosition(pos);
     SetSpeed(speed);
