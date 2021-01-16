@@ -2,7 +2,7 @@
 # unless you're doing something really special. Note that GitHub's package server requires an
 # access token with scope package:read for this to work... To make matters worse, if GitHub sees
 # the token in-repo, it will automatically revoke it... Grrr...
-set(_NUGET_SOURCE "https://nuget.pkg.github.com/Hoikas/index.json")
+set(_NUGET_SOURCE "https://nuget.pkg.github.com/HoikasTestOrg/index.json")
 set(_NUGET_OWNER "Hoikas")
 # Python: print(*(ord(i) for i in token), sep=";")
 set(_NUGET_TOKEN_ASCII 55;50;102;97;56;51;57;98;52;50;56;99;97;99;98;97;99;57;53;99;50;98;48;50;49;98;56;56;57;102;53;54;102;55;57;101;48;51;52;99)
