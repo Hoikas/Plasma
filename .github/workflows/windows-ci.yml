@@ -43,10 +43,6 @@ jobs:
             -DPLASMA_BUILD_TESTS=ON `
             -DPLASMA_BUILD_TOOLS=ON `
             -DPLASMA_EXTERNAL_RELEASE=${{ matrix.cfg.external }} `
-            -DPLASMA_VCPKG_NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
-            -DPLASMA_VCPKG_NUGET_OWNER="${{ github.repository_owner }}" `
-            -DPLASMA_VCPKG_NUGET_TOKEN="${{ secrets.GITHUB_TOKEN }}" `
-            -DPLASMA_VCPKG_NUGET_RW=TRUE `
             ..
           cmake --build . --config "${{ matrix.cfg.type }}" -j 2
           cmake --install . --config "${{ matrix.cfg.type }}"
