@@ -55,22 +55,6 @@ class plPipeline;
 
 struct CamTrans
 {
-    // used when creating default track transitions at runtime
-    CamTrans(plKey to)
-    {
-        fTransTo = to;
-
-        fAccel = 60.0f;
-        fDecel = 60.0f;
-        fVelocity = 60.0f;
-        fPOADecel = 60.0f;
-        fPOAAccel = 60.0f;
-        fPOAVelocity = 60.0f;
-
-        fCutPos = false;
-        fCutPOA = false;
-        fIgnore = false;
-    }
     plKey       fTransTo;
 
     bool    fCutPos;
@@ -83,6 +67,11 @@ struct CamTrans
     float fPOADecel;
     float fPOAVelocity;
 
+    // used when creating default track transitions at runtime
+    CamTrans(plKey to)
+        : fTransTo(std::move(to)), fCutPos(), fCutPOA(), fIgnore(),
+          fAccel(60.f), fDecel(60.f), fVelocity(60.f), fPOAAccel(60.f),
+          fPOADecel(60.f), fPOAVelocity(60.f) { }
 };
 
 class plCameraModifier1 : public plSingleModifier
@@ -138,9 +127,10 @@ public:
     void            InSubworld(bool b) { fInSubLastUpdate = b; }
     void Read(hsStream* stream, hsResMgr* mgr) override;
     void Write(hsStream* stream, hsResMgr* mgr) override;
-    void AddTrans(CamTrans* t) { fTrans.emplace_back(t); }
-    size_t GetNumTrans() { return fTrans.size(); }
-    CamTrans* GetTrans(size_t i) const { return fTrans[i]; }
+    void AddTrans(CamTrans t) { fTrans.emplace_back(std::move(t)); }
+    size_t GetNumTrans() const { return fTrans.size(); }
+    const CamTrans* GetTrans(size_t i) const { return &fTrans[i]; }
+    CamTrans* GetTrans(size_t i) { return &fTrans[i]; }
     void SetSubject(plSceneObject* pObj); 
     plSceneObject* GetSubject();
 
@@ -157,12 +147,12 @@ private:
     hsPoint3                fFrom;
     hsPoint3                fAt;
     plCameraBrain1*         fBrain; // the 'logic' portion of the camera
-    std::vector<CamTrans*>  fTrans;
+    std::vector<CamTrans>   fTrans;
     plSceneObject*          fSubObj;
     float                   fFOVw;
     float                   fFOVh;
-    std::vector<plMessage*> fMessageQueue;
-    std::vector<plCameraMsg*> fFOVInstructions;
+    std::vector<hsRef<plMessage>> fMessageQueue;
+    std::vector<hsRef<plCameraMsg>> fFOVInstructions;
     bool                    fAnimated, fStartAnimOnPush, fStopAnimOnPop, fResetAnimOnPop;
     hsPoint3                fLastSubPos;
     hsPoint3                fLastSubPOA;

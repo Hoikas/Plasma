@@ -76,17 +76,6 @@ plCameraModifier1::plCameraModifier1()
 
 plCameraModifier1::~plCameraModifier1()
 {
-    for (CamTrans* trans : fTrans)
-        delete trans;
-    fTrans.clear();
-
-    for (plMessage* message : fMessageQueue)
-        hsRefCnt_SafeUnRef(message);
-    fMessageQueue.clear();
-
-    for (plCameraMsg* message : fFOVInstructions)
-        hsRefCnt_SafeUnRef(message);
-    fFOVInstructions.clear();
 }
 
 
@@ -170,7 +159,6 @@ bool plCameraModifier1::MsgReceive(plMessage* msg)
     {
         if (pCamMsg->Cmd(plCameraMsg::kAddFOVKeyframe))
         {
-            hsRefCnt_SafeRef(msg);
             fFOVInstructions.emplace_back(pCamMsg);
             return true;
         }
@@ -196,7 +184,6 @@ bool plCameraModifier1::MsgReceive(plMessage* msg)
     plAnimCmdMsg* pAnimMsg = plAnimCmdMsg::ConvertNoRef(msg);
     if (pAnimMsg)
     {
-        hsRefCnt_SafeRef(msg);
         msg->ClearReceivers();
         msg->AddReceiver(msg->GetSender());
         fMessageQueue.emplace_back(msg);
@@ -219,11 +206,9 @@ bool plCameraModifier1::MsgReceive(plMessage* msg)
                 }
             }
             else
-            if (pRefMsg->fType == kRefCallbackMsg && fMessageQueue[pRefMsg->fWhich] != nullptr)
+            if (pRefMsg->fType == kRefCallbackMsg && fMessageQueue[pRefMsg->fWhich])
             {
-                
-                plgDispatch::MsgSend(fMessageQueue[pRefMsg->fWhich]);
-                fMessageQueue[pRefMsg->fWhich] = nullptr;
+                plgDispatch::MsgSend(fMessageQueue[pRefMsg->fWhich].Release());
             }
         }
         else if( pRefMsg->GetContext() & (plRefMsg::kOnDestroy | plRefMsg::kOnRemove) )
@@ -321,34 +306,22 @@ void plCameraModifier1::Read(hsStream* stream, hsResMgr* mgr)
     hsKeyedObject::Read(stream, mgr);
     fBrain = nullptr;
     mgr->ReadKeyNotifyMe(stream, new plGenRefMsg(GetKey(), plRefMsg::kOnCreate, 0, kRefBrain), plRefFlags::kActiveRef);
+
     uint32_t count = stream->ReadLE32();
-    for (uint32_t i = 0; i < count; i++)
-    {
-        
-        plKey key = mgr->ReadKey(stream);
-        bool cutpos = stream->ReadBool();
-        bool cutpoa = stream->ReadBool();
-        bool ignore = stream->ReadBool();
-        float v = stream->ReadLEScalar();
-        float a = stream->ReadLEScalar();
-        float d = stream->ReadLEScalar();
-        float pV = stream->ReadLEScalar();
-        float pA = stream->ReadLEScalar();
-        float pD = stream->ReadLEScalar();
-
-        CamTrans* camTrans = new CamTrans(key);
-        camTrans->fAccel = a;
-        camTrans->fDecel = d;
-        camTrans->fVelocity = v;
-        camTrans->fPOAAccel = pA;
-        camTrans->fPOADecel = pD;
-        camTrans->fPOAVelocity = pV;
-        camTrans->fCutPos = cutpos;
-        camTrans->fCutPOA = cutpoa;
-        camTrans->fIgnore = ignore;
-
-        fTrans.emplace_back(camTrans);
+    fTrans.reserve(count);
+    for (uint32_t i = 0; i < count; i++) {
+        CamTrans& camTrans = fTrans.emplace_back(mgr->ReadKey(stream));
+        camTrans.fCutPos = stream->ReadBool();
+        camTrans.fCutPOA = stream->ReadBool();
+        camTrans.fIgnore = stream->ReadBool();
+        camTrans.fVelocity = stream->ReadLEScalar();
+        camTrans.fAccel = stream->ReadLEScalar();
+        camTrans.fDecel = stream->ReadLEScalar();
+        camTrans.fPOAVelocity = stream->ReadLEScalar();
+        camTrans.fPOAAccel = stream->ReadLEScalar();
+        camTrans.fPOADecel = stream->ReadLEScalar();
     }
+
     fFOVw = stream->ReadLEFloat();
     fFOVh = stream->ReadLEFloat();
     uint32_t n = stream->ReadLE32();
@@ -356,7 +329,7 @@ void plCameraModifier1::Read(hsStream* stream, hsResMgr* mgr)
     for (uint32_t i = 0; i < n; i++)
     {   
         plMessage* pMsg =  plMessage::ConvertNoRef(mgr->ReadCreatable(stream));
-        fMessageQueue[i] = pMsg;
+        fMessageQueue[i].Steal(pMsg);
     }
     for (uint32_t i = 0; i < n; i++)
     {   
@@ -368,7 +341,7 @@ void plCameraModifier1::Read(hsStream* stream, hsResMgr* mgr)
     for (uint32_t i = 0; i < n; i++)
     {
         plCameraMsg* pMsg =  plCameraMsg::ConvertNoRef(mgr->ReadCreatable(stream));
-        fFOVInstructions[i] = pMsg;
+        fFOVInstructions[i].Steal(pMsg);
     }
     fAnimated = stream->ReadBool();
     fStartAnimOnPush = stream->ReadBool();
@@ -383,34 +356,34 @@ void plCameraModifier1::Write(hsStream* stream, hsResMgr* mgr)
         mgr->WriteKey(stream, fBrain );
     
     stream->WriteLE32((uint32_t)fTrans.size());
-    for (CamTrans* trans : fTrans)
+    for (const auto& trans : fTrans)
     {   
-        mgr->WriteKey(stream, trans->fTransTo);
-        stream->WriteBool(trans->fCutPos);
-        stream->WriteBool(trans->fCutPOA);
-        stream->WriteBool(trans->fIgnore);
-        stream->WriteLEScalar(trans->fVelocity);
-        stream->WriteLEScalar(trans->fAccel);
-        stream->WriteLEScalar(trans->fDecel);
-        stream->WriteLEScalar(trans->fPOAVelocity);
-        stream->WriteLEScalar(trans->fPOAAccel);
-        stream->WriteLEScalar(trans->fPOADecel);
+        mgr->WriteKey(stream, trans.fTransTo);
+        stream->WriteBool(trans.fCutPos);
+        stream->WriteBool(trans.fCutPOA);
+        stream->WriteBool(trans.fIgnore);
+        stream->WriteLEScalar(trans.fVelocity);
+        stream->WriteLEScalar(trans.fAccel);
+        stream->WriteLEScalar(trans.fDecel);
+        stream->WriteLEScalar(trans.fPOAVelocity);
+        stream->WriteLEScalar(trans.fPOAAccel);
+        stream->WriteLEScalar(trans.fPOADecel);
     }
     stream->WriteLEFloat(fFOVw);
     stream->WriteLEFloat(fFOVh);
     stream->WriteLE32((uint32_t)fMessageQueue.size());
-    for (plMessage* message : fMessageQueue)
+    for (const auto& message : fMessageQueue)
     {
-        mgr->WriteCreatable(stream, message);
+        mgr->WriteCreatable(stream, message.Get());
     }
-    for (plMessage* message : fMessageQueue)
+    for (const auto& message : fMessageQueue)
     {
         mgr->WriteKey(stream, message->GetSender());
     }
     stream->WriteLE32((uint32_t)fFOVInstructions.size());
-    for (plCameraMsg* message : fFOVInstructions)
+    for (const auto& message : fFOVInstructions)
     {
-        mgr->WriteCreatable(stream, message);
+        mgr->WriteCreatable(stream, message.Get());
     }
     stream->WriteBool(fAnimated);
     stream->WriteBool(fStartAnimOnPush);

@@ -144,6 +144,13 @@ public:
     operator bool() const { return fObj != nullptr; }
     bool operator!() const { return fObj == nullptr; }
 
+    _Ref *Release()
+    {
+        _Ref* obj = fObj;
+        fObj = nullptr;
+        return obj;
+    }
+
     void Steal(_Ref *obj)
     {
         if (fObj)

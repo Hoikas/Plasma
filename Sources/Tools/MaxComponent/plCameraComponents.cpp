@@ -792,23 +792,21 @@ bool plCameraBaseComponent::Convert(plMaxNode *node, plErrorMsg *pErrMsg)
                             break;
                     }
                 }
-                CamTrans* camTrans = nullptr;
-                if (!pCamMod)
-                    camTrans = new CamTrans(nullptr);
-                else
-                    camTrans = new CamTrans(pCamMod->GetKey());
 
-                camTrans->fAccel = trans->fAccel;
-                camTrans->fDecel = trans->fDecel;
-                camTrans->fVelocity = trans->fVelocity;
-                camTrans->fPOAAccel = trans->fPOAAccel;
-                camTrans->fPOADecel = trans->fPOADecel;
-                camTrans->fPOAVelocity = trans->fPOAVelocity;
-                camTrans->fCutPOA = trans->fCutPOA;
-                camTrans->fCutPos = trans->fCutPos;
-                camTrans->fIgnore = trans->fIgnore;
+                plKey pCamKey = pCamMod ? pCamMod->GetKey() : nullptr;
+                CamTrans camTrans(pCamKey);
 
-                fModKeys[node]->AddTrans(camTrans); 
+                camTrans.fAccel = trans->fAccel;
+                camTrans.fDecel = trans->fDecel;
+                camTrans.fVelocity = trans->fVelocity;
+                camTrans.fPOAAccel = trans->fPOAAccel;
+                camTrans.fPOADecel = trans->fPOADecel;
+                camTrans.fPOAVelocity = trans->fPOAVelocity;
+                camTrans.fCutPOA = trans->fCutPOA;
+                camTrans.fCutPos = trans->fCutPos;
+                camTrans.fIgnore = trans->fIgnore;
+
+                fModKeys[node]->AddTrans(camTrans);
                 idx++;
             }
     
