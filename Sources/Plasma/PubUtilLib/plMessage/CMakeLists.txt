@@ -126,8 +126,6 @@ set(plMessage_HEADERS
 )
 
 add_library(plMessage STATIC ${plMessage_SOURCES} ${plMessage_HEADERS})
-plasma_optimize_target(plMessage UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
-
 target_link_libraries(plMessage
     PUBLIC
         CoreLib
@@ -151,6 +149,9 @@ target_link_libraries(plMessage
     INTERFACE
         pnFactory
 )
+
+plasma_optimize_target(plMessage UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plMessage)
 
 source_group("Source Files" FILES ${plMessage_SOURCES})
 source_group("Header Files" FILES ${plMessage_HEADERS})

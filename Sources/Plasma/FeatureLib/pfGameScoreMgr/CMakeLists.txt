@@ -19,5 +19,7 @@ target_link_libraries(
         pfMessage
 )
 
+plasma_sanitize_target(pfGameScoreMgr)
+
 source_group("Source Files" FILES ${pfGameScoreMgr_SOURCES})
 source_group("Header Files" FILES ${pfGameScoreMgr_HEADERS})

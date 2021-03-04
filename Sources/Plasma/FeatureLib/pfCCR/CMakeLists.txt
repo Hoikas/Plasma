@@ -17,5 +17,7 @@ target_link_libraries(
         pnNucleusInc
 )
 
+plasma_sanitize_target(pfCCR)
+
 source_group("Source Files" FILES ${pfCCR_SOURCES})
 source_group("Header Files" FILES ${pfCCR_HEADERS})

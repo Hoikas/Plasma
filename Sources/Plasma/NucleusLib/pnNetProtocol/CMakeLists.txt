@@ -45,6 +45,8 @@ target_link_libraries(
         pnUtils
 )
 
+plasma_sanitize_target(pnNetProtocol)
+
 source_group("Header Files" FILES ${pnNetProtocol_HEADERS})
 source_group("Private" FILES ${pnNetProtocol_PRIVATE})
 source_group("Private\\Cli2Auth" FILES ${pnNetProtocol_PROTO_CLI2AUTH})

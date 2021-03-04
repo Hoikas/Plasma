@@ -37,5 +37,7 @@ target_link_libraries(
         $<$<PLATFORM_ID:Windows>:ws2_32>
 )
 
+plasma_sanitize_target(pnNetCommon)
+
 source_group("Header Files" FILES ${pnNetCommon_HEADERS})
 source_group("Source Files" FILES ${pnNetCommon_SOURCES})

@@ -44,6 +44,7 @@ target_link_libraries(plSDL
 )
 
 plasma_optimize_target(plSDL PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plSDL)
 
 source_group("Source Files" FILES ${plSDL_SOURCES})
 source_group("Header Files" FILES ${plSDL_HEADERS})

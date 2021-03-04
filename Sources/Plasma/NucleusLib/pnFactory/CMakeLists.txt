@@ -16,5 +16,7 @@ target_link_libraries(
         pnNucleusInc
 )
 
+plasma_sanitize_target(pnFactory)
+
 source_group("Source Files" FILES ${pnFactory_SOURCES})
 source_group("Header Files" FILES ${pnFactory_HEADERS})

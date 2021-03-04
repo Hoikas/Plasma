@@ -48,6 +48,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(plParticleSystem PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plParticleSystem)
 
 source_group("Source Files" FILES ${plParticleSystem_SOURCES})
 source_group("Header Files" FILES ${plParticleSystem_HEADERS})

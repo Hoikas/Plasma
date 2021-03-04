@@ -31,5 +31,7 @@ target_link_libraries(
         expat::expat
 )
 
+plasma_sanitize_target(pfLocalizationMgr)
+
 source_group("Source Files" FILES ${pfLocalizationMgr_SOURCES})
 source_group("Header Files" FILES ${pfLocalizationMgr_HEADERS})

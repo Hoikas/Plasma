@@ -22,5 +22,7 @@ target_link_libraries(
         pnNetCommon
 )
 
+plasma_sanitize_target(pnDispatch)
+
 source_group("Source Files" FILES ${pnDispatch_SOURCES})
 source_group("Header Files" FILES ${pnDispatch_HEADERS})

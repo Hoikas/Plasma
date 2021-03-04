@@ -47,6 +47,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(plAnimation UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plAnimation)
 
 source_group("Source Files" FILES ${plAnimation_SOURCES})
 source_group("Header Files" FILES ${plAnimation_HEADERS})

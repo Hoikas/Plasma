@@ -24,5 +24,7 @@ target_link_libraries(
         pnUUID
 )
 
+plasma_sanitize_target(pnNetCli)
+
 source_group("Header Files" FILES ${pnNetCli_HEADERS})
 source_group("Source Files" FILES ${pnNetCli_SOURCES})

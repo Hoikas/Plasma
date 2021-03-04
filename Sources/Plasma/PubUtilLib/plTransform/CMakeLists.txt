@@ -20,5 +20,7 @@ target_link_libraries(
         plInterp
 )
 
+plasma_sanitize_target(plTransform)
+
 source_group("Source Files" FILES ${plTransform_SOURCES})
 source_group("Header Files" FILES ${plTransform_HEADERS})

@@ -13,5 +13,7 @@ target_link_libraries(
         CoreLib
 )
 
+plasma_sanitize_target(plClipboard)
+
 source_group("Source Files" FILES ${plClipboard_SOURCES})
 source_group("Header Files" FILES ${plClipboard_HEADERS})

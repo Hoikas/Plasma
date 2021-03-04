@@ -18,5 +18,7 @@ target_link_libraries(
         ZLIB::ZLIB
 )
 
+plasma_sanitize_target(plCompression)
+
 source_group("Source Files" FILES ${plCompression_SOURCES})
 source_group("Header Files" FILES ${plCompression_HEADERS})

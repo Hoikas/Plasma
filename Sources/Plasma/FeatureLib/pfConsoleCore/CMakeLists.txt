@@ -21,5 +21,7 @@ target_link_libraries(
         plFile
 )
 
+plasma_sanitize_target(pfConsoleCore)
+
 source_group("Source Files" FILES ${pfConsoleCore_SOURCES})
 source_group("Header Files" FILES ${pfConsoleCore_HEADERS})

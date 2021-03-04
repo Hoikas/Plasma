@@ -31,5 +31,7 @@ target_link_libraries(
         pnNucleusInc
 )
 
+plasma_sanitize_target(pnSceneObject)
+
 source_group("Header Files" FILES ${pnSceneObject_HEADERS})
 source_group("Source Files" FILES ${pnSceneObject_SOURCES})

@@ -38,6 +38,7 @@ target_link_libraries(plInterp
 )
 
 plasma_optimize_target(plInterp PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plInterp)
 
 source_group("Source Files" FILES ${plInterp_SOURCES})
 source_group("Header Files" FILES ${plInterp_HEADERS})

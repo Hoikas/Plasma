@@ -112,5 +112,7 @@ target_link_libraries(
 
 target_include_directories(plAvatar PRIVATE "${PLASMA_SOURCE_ROOT}/FeatureLib")
 
+plasma_sanitize_target(plAvatar)
+
 source_group("Source Files" FILES ${plAvatar_SOURCES})
 source_group("Header Files" FILES ${plAvatar_HEADERS})

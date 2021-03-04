@@ -31,5 +31,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(plAudible)
+
 source_group("Source Files" FILES ${plAudible_SOURCES})
 source_group("Header Files" FILES ${plAudible_HEADERS})

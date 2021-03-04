@@ -14,6 +14,7 @@ if(PLASMA_EXTERNAL_RELEASE)
     set_target_properties(plCrashHandler PROPERTIES OUTPUT_NAME "UruCrashHandler")
 endif(PLASMA_EXTERNAL_RELEASE)
 
+plasma_sanitize_target(plCrashHandler)
 
 install(
     TARGETS plCrashHandler

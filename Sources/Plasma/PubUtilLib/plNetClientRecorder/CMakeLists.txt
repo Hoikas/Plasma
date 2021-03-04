@@ -23,5 +23,7 @@ target_link_libraries(
         plStatusLog
 )
 
+plasma_sanitize_target(plNetClientRecorder)
+
 source_group("Source Files" FILES ${plNetClientRecorder_SOURCES})
 source_group("Header Files" FILES ${plNetClientRecorder_HEADERS})

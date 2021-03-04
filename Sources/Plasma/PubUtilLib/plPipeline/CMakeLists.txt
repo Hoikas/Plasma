@@ -137,6 +137,7 @@ target_link_libraries(plPipeline
 )
 
 plasma_optimize_target(plPipeline PRECOMPILED_HEADERS ${plPipeline_PCH})
+plasma_sanitize_target(plPipeline)
 
 target_include_directories(plPipeline PRIVATE "${PLASMA_SOURCE_ROOT}/FeatureLib")
 

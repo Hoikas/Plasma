@@ -18,5 +18,7 @@ target_link_libraries(
         plUnifiedTime
 )
 
+plasma_sanitize_target(plStatusLog)
+
 source_group("Source Files" FILES ${plStatusLog_SOURCES})
 source_group("Header Files" FILES ${plStatusLog_HEADERS})

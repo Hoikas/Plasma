@@ -39,6 +39,7 @@ target_link_libraries(
 
 # NOTE: Too many ODR violations and ambiguous names for UNITY_BUILD on this one.
 plasma_optimize_target(plNetGameLib PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plNetGameLib)
 
 source_group("Private" FILES ${plNetGameLib_PRIVATE})
 source_group("Header Files" FILES ${plNetGameLib_HEADERS})

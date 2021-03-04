@@ -301,6 +301,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(pfPython UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(pfPython)
 
 source_group("Source Files" FILES ${pfPython_SOURCES})
 source_group("Header Files" FILES ${pfPython_HEADERS})

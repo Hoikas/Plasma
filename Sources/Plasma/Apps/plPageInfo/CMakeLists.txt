@@ -21,6 +21,8 @@ target_link_libraries(
         plResMgr
 )
 
+plasma_sanitize_target(plPageInfo)
+
 install(
     TARGETS plPageInfo
     DESTINATION tools_cli

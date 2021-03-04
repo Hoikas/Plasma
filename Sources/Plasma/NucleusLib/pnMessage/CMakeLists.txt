@@ -79,6 +79,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(pnMessage PRECOMPILED_HEADERS Pch.h UNITY_BUILD)
+plasma_sanitize_target(pnMessage)
 
 source_group("Header Files" FILES ${pnMessage_HEADERS})
 source_group("Source Files" FILES ${pnMessage_SOURCES})

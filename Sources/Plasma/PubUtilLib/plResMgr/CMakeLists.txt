@@ -41,8 +41,6 @@ target_link_libraries(
         pnFactory
 )
 
-plasma_optimize_target(plResMgr PRECOMPILED_HEADERS Pch.h)
-
 # Good luck with this...
 option(PLASMA_RESMGR_DEBUGGING "Use mcn's ResManager debug console" OFF)
 target_compile_definitions(
@@ -56,6 +54,9 @@ target_link_libraries(
         $<$<BOOL:${PLASMA_RESMGR_DEBUGGING}>:pnInputCore>
         $<$<BOOL:${PLASMA_RESMGR_DEBUGGING}>:plInputCore>
 )
+
+plasma_optimize_target(plResMgr PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plResMgr)
 
 source_group("Source Files" FILES ${plResMgr_SOURCES})
 source_group("Header Files" FILES ${plResMgr_HEADERS})

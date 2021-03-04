@@ -20,5 +20,7 @@ target_link_libraries(
         plNetMessage
 )
 
+plasma_sanitize_target(plNetTransport)
+
 source_group("Source Files" FILES ${plNetTransport_SOURCES})
 source_group("Header Files" FILES ${plNetTransport_HEADERS})

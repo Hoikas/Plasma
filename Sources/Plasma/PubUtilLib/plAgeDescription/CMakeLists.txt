@@ -18,5 +18,7 @@ target_link_libraries(
         pnKeyedObject
 )
 
+plasma_sanitize_target(plAgeDescription)
+
 source_group("Source Files" FILES ${plAgeDescription_SOURCES})
 source_group("Header Files" FILES ${plAgeDescription_HEADERS})

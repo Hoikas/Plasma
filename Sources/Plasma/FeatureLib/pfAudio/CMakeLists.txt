@@ -32,5 +32,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(pfAudio)
+
 source_group("Source Files" FILES ${pfAudio_SOURCES})
 source_group("Header Files" FILES ${pfAudio_HEADERS})

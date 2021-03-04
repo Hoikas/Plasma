@@ -57,6 +57,8 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+plasma_sanitize_target(plResBrowser)
+
 source_group("Source Files" FILES ${plResBrowser_SOURCES} ${plResBrowser_MOC})
 source_group("Header Files" FILES ${plResBrowser_HEADERS})
 source_group("Resource Files" FILES ${plResBrowser_RCC} ${plResBrowser_UIC})

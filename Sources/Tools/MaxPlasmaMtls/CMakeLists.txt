@@ -130,6 +130,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(MaxPlasmaMtls PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(MaxPlasmaMtls)
 
 source_group("Header Files" FILES ${MaxPlasmaMtls_HEADERS})
 source_group("Header Files\\Layers" FILES ${MaxPlasmaMtls_HEADERS_Layers})

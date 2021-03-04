@@ -51,6 +51,7 @@ target_link_libraries(plPhysX
 )
 
 plasma_optimize_target(plPhysX UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plPhysX)
 
 source_group("Source Files" FILES ${plPhysX_SOURCES})
 source_group("Header Files" FILES ${plPhysX_HEADERS})

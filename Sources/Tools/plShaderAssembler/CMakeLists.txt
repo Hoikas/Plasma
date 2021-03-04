@@ -10,4 +10,6 @@ target_link_libraries(
         ${DirectX_LIBRARIES}
 )
 
+plasma_sanitize_target(plShaderAssembler)
+
 source_group("Source Files" FILES ${plShaderAssembler_SOURCES})

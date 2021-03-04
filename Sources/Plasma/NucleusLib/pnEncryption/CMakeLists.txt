@@ -21,5 +21,7 @@ target_link_libraries(
         OpenSSL::Crypto
 )
 
+plasma_sanitize_target(pnEncryption)
+
 source_group("Source Files" FILES ${pnEncryption_SOURCES})
 source_group("Header Files" FILES ${pnEncryption_HEADERS})

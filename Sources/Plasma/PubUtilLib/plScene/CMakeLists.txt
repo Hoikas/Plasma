@@ -52,6 +52,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(plScene UNITY_BUILD PRECOMPILED_HEADER Pch.h)
+plasma_sanitize_target(plScene)
 
 source_group("Source Files" FILES ${plScene_SOURCES})
 source_group("Header Files" FILES ${plScene_HEADERS})

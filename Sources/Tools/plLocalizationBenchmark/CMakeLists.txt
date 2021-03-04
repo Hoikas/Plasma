@@ -6,3 +6,5 @@ target_link_libraries(
         pfLocalizationMgr
         string_theory
 )
+
+plasma_sanitize_target(plLocalizationBenchmark)

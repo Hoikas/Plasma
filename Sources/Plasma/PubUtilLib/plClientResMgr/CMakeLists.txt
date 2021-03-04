@@ -16,5 +16,7 @@ target_link_libraries(
         plGImage
 )
 
+plasma_sanitize_target(plClientResMgr)
+
 source_group("Source Files" FILES ${plClientResMgr_SOURCES})
 source_group("Header Files" FILES ${plClientResMgr_HEADERS})

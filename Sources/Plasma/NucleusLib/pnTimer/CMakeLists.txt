@@ -21,5 +21,7 @@ target_link_libraries(
         pnNucleusInc
 )
 
+plasma_sanitize_target(pnTimer)
+
 source_group("Header Files" FILES ${pnTimer_HEADERS})
 source_group("Source Files" FILES ${pnTimer_SOURCES})

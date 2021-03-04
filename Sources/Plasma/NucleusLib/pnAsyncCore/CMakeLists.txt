@@ -29,5 +29,7 @@ target_link_libraries(
         plStatusLog # :(
 )
 
+plasma_sanitize_target(pnAsyncCore)
+
 source_group("Header Files" FILES ${pnAsyncCore_HEADERS})
 source_group("Private" FILES ${pnAsyncCore_PRIVATE})

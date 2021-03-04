@@ -30,5 +30,7 @@ target_link_libraries(
         plSDL
 )
 
+plasma_sanitize_target(plNetMessage)
+
 source_group("Source Files" FILES ${plNetMessage_SOURCES})
 source_group("Header Files" FILES ${plNetMessage_HEADERS})

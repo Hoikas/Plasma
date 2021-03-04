@@ -49,6 +49,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(pfConditional UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(pfConditional)
 
 source_group("Source Files" FILES ${pfConditional_SOURCES})
 source_group("Header Files" FILES ${pfConditional_HEADERS})

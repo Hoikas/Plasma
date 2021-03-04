@@ -50,5 +50,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(pfAnimation)
+
 source_group("Source Files" FILES ${pfAnimation_SOURCES})
 source_group("Header Files" FILES ${pfAnimation_HEADERS})

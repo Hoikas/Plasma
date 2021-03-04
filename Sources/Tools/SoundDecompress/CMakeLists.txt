@@ -35,6 +35,8 @@ target_link_libraries(
 
 target_include_directories(SoundDecompress PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
+plasma_sanitize_target(SoundDecompress)
+
 source_group("Source Files" FILES ${SoundDecompress_SOURCES})
 source_group("Header Files" FILES ${SoundDecompress_HEADERS})
 

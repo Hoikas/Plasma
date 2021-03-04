@@ -19,5 +19,7 @@ target_link_libraries(
         CoreLib
 )
 
+plasma_sanitize_target(plContainer)
+
 source_group("Source Files" FILES ${plContainer_SOURCES})
 source_group("Header Files" FILES ${plContainer_HEADERS})

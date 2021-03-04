@@ -21,5 +21,7 @@ target_link_libraries(
         CoreLib
 )
 
+plasma_sanitize_target(pnNetBase)
+
 source_group("Header Files" FILES ${pnNetBase_HEADERS})
 source_group("Source Files" FILES ${pnNetBase_SOURCES})

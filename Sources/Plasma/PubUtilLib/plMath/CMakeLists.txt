@@ -15,5 +15,7 @@ target_link_libraries(
         CoreLib
 )
 
+plasma_sanitize_target(plMath)
+
 source_group("Source Files" FILES ${plMath_SOURCES})
 source_group("Header Files" FILES ${plMath_HEADERS})

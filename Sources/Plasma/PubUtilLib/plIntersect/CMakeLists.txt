@@ -34,5 +34,7 @@ target_link_libraries(plIntersect
         plMessage
 )
 
+plasma_sanitize_target(plIntersect)
+
 source_group("Source Files" FILES ${plIntersect_SOURCES})
 source_group("Header Files" FILES ${plIntersect_HEADERS})

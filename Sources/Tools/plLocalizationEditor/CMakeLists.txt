@@ -56,6 +56,8 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+plasma_sanitize_target(plLocalizationEditor)
+
 source_group("Source Files" FILES ${plLocalizationEditor_SOURCES} ${plLocalizationEditor_MOC})
 source_group("Header Files" FILES ${plLocalizationEditor_HEADERS})
 source_group("Resource Files" FILES ${plLocalizationEditor_RCC} ${plLocalizationEditor_UIC})

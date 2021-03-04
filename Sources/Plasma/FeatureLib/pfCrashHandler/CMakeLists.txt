@@ -20,5 +20,7 @@ target_link_libraries(
         $<$<PLATFORM_ID:Windows>:Dbghelp>
 )
 
+plasma_sanitize_target(pfCrashHandler)
+
 source_group("Source Files" FILES ${pfCrashHandler_SOURCES})
 source_group("Header Files" FILES ${pfCrashHandler_HEADERS})

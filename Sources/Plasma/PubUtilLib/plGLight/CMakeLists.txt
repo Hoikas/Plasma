@@ -45,5 +45,7 @@ target_link_libraries(plGLight
         pnFactory
 )
 
+plasma_sanitize_target(plGLight)
+
 source_group("Source Files" FILES ${plGLight_SOURCES})
 source_group("Header Files" FILES ${plGLight_HEADERS})

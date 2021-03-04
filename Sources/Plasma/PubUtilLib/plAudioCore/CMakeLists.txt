@@ -41,5 +41,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(plAudioCore)
+
 source_group("Source Files" FILES ${plAudioCore_SOURCES})
 source_group("Header Files" FILES ${plAudioCore_HEADERS})

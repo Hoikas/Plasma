@@ -90,6 +90,7 @@ target_link_libraries(plSurface
 )
 
 plasma_optimize_target(plSurface UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plSurface)
 
 source_group("Source Files" FILES ${plSurface_SOURCES})
 source_group("Header Files" FILES ${plSurface_HEADERS})

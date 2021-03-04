@@ -49,5 +49,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(plInputCore)
+
 source_group("Source Files" FILES ${plInputCore_SOURCES})
 source_group("Header Files" FILES ${plInputCore_HEADERS})

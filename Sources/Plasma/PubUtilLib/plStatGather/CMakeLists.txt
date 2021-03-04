@@ -33,5 +33,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(plStatGather)
+
 source_group("Source Files" FILES ${plStatGather_SOURCES})
 source_group("Header Files" FILES ${plStatGather_HEADERS})

@@ -19,5 +19,7 @@ target_link_libraries(
         pnNucleusInc
 )
 
+plasma_sanitize_target(plUnifiedTime)
+
 source_group("Source Files" FILES ${plUnifiedTime_SOURCES})
 source_group("Header Files" FILES ${plUnifiedTime_HEADERS})

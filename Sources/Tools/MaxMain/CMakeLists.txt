@@ -120,6 +120,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(MaxMain PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(MaxMain)
 
 set_target_properties(MaxMain PROPERTIES OUTPUT_NAME "PlasmaMax")
 set_target_properties(MaxMain PROPERTIES SUFFIX ".gup")

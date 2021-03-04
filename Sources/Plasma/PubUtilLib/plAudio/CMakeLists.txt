@@ -64,6 +64,7 @@ target_link_libraries(plAudio
 )
 
 plasma_optimize_target(plAudio UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plAudio)
 
 source_group("Source Files" FILES ${plAudio_SOURCES})
 source_group("Header Files" FILES ${plAudio_HEADERS})

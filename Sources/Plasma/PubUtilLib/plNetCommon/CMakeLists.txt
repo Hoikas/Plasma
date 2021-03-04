@@ -46,6 +46,7 @@ target_link_libraries(plNetCommon
 )
 
 plasma_optimize_target(plNetCommon UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plNetCommon)
 
 source_group("Source Files" FILES ${plNetCommon_SOURCES})
 source_group("Header Files" FILES ${plNetCommon_HEADERS})

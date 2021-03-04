@@ -30,5 +30,7 @@ target_link_libraries(
 
 target_include_directories(plNetClientComm PRIVATE "${PLASMA_SOURCE_ROOT}/FeatureLib")
 
+plasma_sanitize_target(plNetClientComm)
+
 source_group("Source Files" FILES ${plNetClientComm_SOURCES})
 source_group("Header Files" FILES ${plNetClientComm_HEADERS})

@@ -34,6 +34,8 @@ if(PLASMA_EXTERNAL_RELEASE)
     set_target_properties(plUruLauncher PROPERTIES OUTPUT_NAME UruLauncher)
 endif(PLASMA_EXTERNAL_RELEASE)
 
+plasma_sanitize_target(plUruLauncher)
+
 install(
     TARGETS plUruLauncher
     DESTINATION client

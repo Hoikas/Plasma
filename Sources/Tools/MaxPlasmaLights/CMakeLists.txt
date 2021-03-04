@@ -43,6 +43,8 @@ target_link_libraries(
 )
 
 plasma_optimize_target(MaxPlasmaLights PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(MaxPlasmaLights)
+
 set_target_properties(MaxPlasmaLights PROPERTIES SUFFIX ".dlo")
 
 install(

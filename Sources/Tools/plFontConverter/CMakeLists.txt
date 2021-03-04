@@ -58,6 +58,8 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+plasma_sanitize_target(plFontConverter)
+
 source_group("Source Files" FILES ${plFontConverter_SOURCES} ${plFontConverter_MOC})
 source_group("Header Files" FILES ${plFontConverter_HEADERS})
 source_group("Resource Files" FILES ${plFontConverter_RCC} ${plFontConverter_UIC})

@@ -25,5 +25,7 @@ target_link_libraries(
         $<$<BOOL:${USE_WEBM}>:VPX::VPX>
 )
 
+plasma_sanitize_target(pfMoviePlayer)
+
 source_group("Source Files" FILES ${pfMoviePlayer_SOURCES})
 source_group("Header Files" FILES ${pfMoviePlayer_HEADERS})

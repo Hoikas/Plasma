@@ -38,6 +38,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(pfSurface UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(pfSurface)
 
 source_group("Source Files" FILES ${pfSurface_SOURCES})
 source_group("Header Files" FILES ${pfSurface_HEADERS})

@@ -146,6 +146,8 @@ if(PLASMA_EXTERNAL_RELEASE)
     set_target_properties(plClient PROPERTIES OUTPUT_NAME "UruExplorer")
 endif(PLASMA_EXTERNAL_RELEASE)
 
+plasma_sanitize_target(plClient)
+
 install(
     TARGETS plClient
     DESTINATION client

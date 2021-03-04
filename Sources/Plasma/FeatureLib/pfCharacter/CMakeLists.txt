@@ -29,5 +29,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(pfCharacter)
+
 source_group("Source Files" FILES ${pfCharacter_SOURCES})
 source_group("Header Files" FILES ${pfCharacter_HEADERS})

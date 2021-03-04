@@ -50,5 +50,7 @@ target_link_libraries(
 
 target_include_directories(pnNucleusInc INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
+plasma_sanitize_target(pnNucleusInc)
+
 source_group("Header Files" FILES ${pnNucleusInc_HEADERS})
 source_group("Source Files" FILES ${pnNucleusInc_SOURCES})

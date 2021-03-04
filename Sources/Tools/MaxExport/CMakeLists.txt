@@ -38,6 +38,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(MaxExport PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(MaxExport)
 
 source_group("Header Files" FILES ${MaxExport_HEADERS})
 source_group("Source Files" FILES ${MaxExport_SOURCES})

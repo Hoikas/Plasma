@@ -41,9 +41,10 @@ target_link_libraries(
         pnFactory
 )
 
-plasma_optimize_target(plVault PRECOMPILED_HEADERS Pch.h UNITY_BUILD)
-
 target_include_directories(plVault PRIVATE "${PLASMA_SOURCE_ROOT}/FeatureLib")
+
+plasma_optimize_target(plVault PRECOMPILED_HEADERS Pch.h UNITY_BUILD)
+plasma_sanitize_target(plVault)
 
 source_group("Source Files" FILES ${plVault_SOURCES})
 source_group("Header Files" FILES ${plVault_HEADERS})

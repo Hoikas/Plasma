@@ -37,5 +37,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(plAgeLoader)
+
 source_group("Source Files" FILES ${plAgeLoader_SOURCES})
 source_group("Header Files" FILES ${plAgeLoader_HEADERS})

@@ -23,5 +23,7 @@ target_link_libraries(
         plStatusLog
 )
 
+plasma_sanitize_target(pfPatcher)
+
 source_group("Source Files" FILES ${pfPatcher_SOURCES})
 source_group("Header Files" FILES ${pfPatcher_HEADERS})

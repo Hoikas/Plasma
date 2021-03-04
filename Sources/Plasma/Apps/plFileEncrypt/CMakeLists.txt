@@ -10,6 +10,8 @@ target_link_libraries(
         plFile
 )
 
+plasma_sanitize_target(plFileEncrypt)
+
 install(
     TARGETS plFileEncrypt
     DESTINATION tools_cli

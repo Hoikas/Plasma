@@ -45,5 +45,7 @@ target_link_libraries(
 
 target_include_directories(plPhysical PRIVATE "${PLASMA_SOURCE_ROOT}/FeatureLib")
 
+plasma_sanitize_target(plPhysical)
+
 source_group("Source Files" FILES ${plPhysical_SOURCES})
 source_group("Header Files" FILES ${plPhysical_HEADERS})

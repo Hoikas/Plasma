@@ -80,6 +80,7 @@ endif()
 
 include(BuildOptimizations)
 include(PythonUtils)
+include(Sanitizers)
 
 option(PLASMA_EXTERNAL_RELEASE "Is this release intended for the general public?" OFF)
 if(PLASMA_EXTERNAL_RELEASE)

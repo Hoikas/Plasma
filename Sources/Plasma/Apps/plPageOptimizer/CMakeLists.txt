@@ -24,6 +24,8 @@ target_link_libraries(
         plResMgr
 )
 
+plasma_sanitize_target(plPageOptimizer)
+
 install(
     TARGETS plPageOptimizer
     DESTINATION tools_cli

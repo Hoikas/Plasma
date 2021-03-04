@@ -15,6 +15,8 @@ target_link_libraries(
         Python3::Python
 )
 
+plasma_sanitize_target(plPythonPack)
+
 install(
     TARGETS plPythonPack
     DESTINATION tools_cli

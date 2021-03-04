@@ -23,5 +23,7 @@ target_link_libraries(
         $<$<PLATFORM_ID:Windows>:Shell32>
 )
 
+plasma_sanitize_target(plFile)
+
 source_group("Source Files" FILES ${plFile_SOURCES})
 source_group("Header Files" FILES ${plFile_HEADERS})

@@ -35,6 +35,8 @@ elseif(TARGET Security::Security)
     target_link_libraries(pfPasswordStore PRIVATE Security::Security)
 endif()
 
+plasma_sanitize_target(pfPasswordStore)
+
 source_group("Header Files" FILES ${pfPasswordStore_HEADERS})
 source_group("Source Files" FILES ${pfPasswordStore_SOURCES})
 

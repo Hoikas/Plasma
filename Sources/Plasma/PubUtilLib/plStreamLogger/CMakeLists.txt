@@ -14,5 +14,7 @@ target_link_libraries(
         pnNetCommon
 )
 
+plasma_sanitize_target(plStreamLogger)
+
 source_group("Source Files" FILES ${plStreamLogger_SOURCES})
 source_group("Header Files" FILES ${plStreamLogger_HEADERS})

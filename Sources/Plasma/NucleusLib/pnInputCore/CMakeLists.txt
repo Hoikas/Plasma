@@ -21,5 +21,7 @@ target_link_libraries(
 
 target_include_directories(pnInputCore PRIVATE "${PLASMA_SOURCE_ROOT}/PubUtilLib")
 
+plasma_sanitize_target(pnInputCore)
+
 source_group("Header Files" FILES ${pnInputCore_HEADERS})
 source_group("Source Files" FILES ${pnInputCore_SOURCES})

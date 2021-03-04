@@ -221,6 +221,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(MaxComponent UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(MaxComponent)
 
 source_group("Header Files" FILES ${MaxComponent_HEADERS})
 source_group("Resource Files" FILES ${MaxComponent_RESOURCES})

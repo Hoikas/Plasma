@@ -47,6 +47,8 @@ target_link_libraries(
         $<$<BOOL:${USE_VLD}>:${VLD_LIBRARY}>
 )
 
+plasma_sanitize_target(pnAsyncCoreExe)
+
 source_group("Source Files" FILES ${pnAsyncCoreExe_SOURCES})
 source_group("Header Files" FILES ${pnAsyncCoreExe_HEADERS})
 source_group("Private" FILES ${pnAsyncCoreExe_PRIVATE})

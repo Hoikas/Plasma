@@ -16,5 +16,7 @@ target_link_libraries(
         plPipeline
 )
 
+plasma_sanitize_target(plProgressMgr)
+
 source_group("Source Files" FILES ${plProgressMgr_SOURCES})
 source_group("Header Files" FILES ${plProgressMgr_HEADERS})

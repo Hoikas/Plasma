@@ -55,6 +55,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(plGImage PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(plGImage)
 
 source_group("Source Files" FILES ${plGImage_SOURCES})
 source_group("Header Files" FILES ${plGImage_HEADERS})

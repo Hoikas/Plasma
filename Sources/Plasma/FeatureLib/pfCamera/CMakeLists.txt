@@ -41,5 +41,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(pfCamera)
+
 source_group("Source Files" FILES ${pfCamera_SOURCES})
 source_group("Header Files" FILES ${pfCamera_HEADERS})

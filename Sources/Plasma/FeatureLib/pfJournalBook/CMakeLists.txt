@@ -29,5 +29,7 @@ target_link_libraries(
         pnFactory
 )
 
+plasma_sanitize_target(pfJournalBook)
+
 source_group("Source Files" FILES ${pfJournalBook_SOURCES})
 source_group("Header Files" FILES ${pfJournalBook_HEADERS})

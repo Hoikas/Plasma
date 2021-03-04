@@ -18,5 +18,7 @@ target_link_libraries(
         $<$<PLATFORM_ID:Windows>:rpcrt4>
 )
 
+plasma_sanitize_target(pnUUID)
+
 source_group("Source Files" FILES ${pnUUID_SOURCES})
 source_group("Header Files" FILES ${pnUUID_HEADERS})

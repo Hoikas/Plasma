@@ -87,6 +87,7 @@ target_link_libraries(
 )
 
 plasma_optimize_target(pfGameGUIMgr UNITY_BUILD PRECOMPILED_HEADERS Pch.h)
+plasma_sanitize_target(pfGameGUIMgr)
 
 source_group("Source Files" FILES ${pfGameGUIMgr_SOURCES})
 source_group("Header Files" FILES ${pfGameGUIMgr_HEADERS})
