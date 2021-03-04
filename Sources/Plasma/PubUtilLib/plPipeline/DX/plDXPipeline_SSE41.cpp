@@ -40,24 +40,34 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 *==LICENSE==*/
 
-#ifndef HeadSpinConfigHDefined
-#define HeadSpinConfigHDefined
+#include "plDXPipeline.h"
 
-/* Compiler settings */
-#cmakedefine HAVE_CPUID
-#cmakedefine HS_AVX2
-#cmakedefine HS_AVX
-#cmakedefine HS_SSE42
-#cmakedefine HS_SSE41
-#cmakedefine HS_SSE4
-#cmakedefine HS_SSE3
-#cmakedefine HS_SSE2
-#cmakedefine HS_SSE1
+#include <smmintrin.h>
 
-/* External library usage */
-#cmakedefine USE_SPEEX
-#cmakedefine USE_OPUS
-#cmakedefine USE_VPX
-#cmakedefine USE_WEBM
+static inline void ISkinDpSSE41(const float* src, float* dst, const __m128& mc0,
+                                const __m128& mc1, const __m128& mc2, const __m128& mwt)
+{
+    enum { DP_F4_X = 0xF1, DP_F4_Y = 0xF2, DP_F4_Z = 0xF4 };
 
-#endif
+    __m128 msr = _mm_load_ps(src);
+    __m128 _r =        _mm_dp_ps(msr, mc0, DP_F4_X);
+    _r = _mm_or_ps(_r, _mm_dp_ps(msr, mc1, DP_F4_Y));
+    _r = _mm_or_ps(_r, _mm_dp_ps(msr, mc2, DP_F4_Z));
+
+    __m128 _dst = _mm_load_ps(dst);
+    _dst = _mm_add_ps(_dst, _mm_mul_ps(_r, mwt));
+    _mm_store_ps(dst, _dst);
+}
+
+void plDXPipeline::ISkinVertexSSE41(const hsMatrix44& xfm, float wgt,
+                                    const float* pt_src, float* pt_dst,
+                                    const float* vec_src, float* vec_dst)
+{
+    __m128 mc0 = _mm_load_ps(xfm.fMap[0]);
+    __m128 mc1 = _mm_load_ps(xfm.fMap[1]);
+    __m128 mc2 = _mm_load_ps(xfm.fMap[2]);
+    __m128 mwt = _mm_set_ps1(wgt);
+
+    ISkinDpSSE41(pt_src, pt_dst, mc0, mc1, mc2, mwt);
+    ISkinDpSSE41(vec_src, vec_dst, mc0, mc1, mc2, mwt);
+}

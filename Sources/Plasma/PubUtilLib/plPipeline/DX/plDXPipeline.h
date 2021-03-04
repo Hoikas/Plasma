@@ -630,6 +630,16 @@ protected:
                                          uint8_t , uint32_t, uint8_t *, uint32_t,
                                          uint32_t, uint16_t);
     static hsCpuFunctionDispatcher<blend_vert_buffer_ptr> blend_vert_buffer;
+
+    static void ISkinVertexFPU(const hsMatrix44& xfm, float wgt,
+                               const float* pt_src, float* pt_dst,
+                               const float* vec_src, float* vec_dst);
+    static void ISkinVertexSSE3(const hsMatrix44& xfm, float wgt,
+                                const float* pt_src, float* pt_dst,
+                                const float* vec_src, float* vec_dst);
+    static void ISkinVertexSSE41(const hsMatrix44& xfm, float wgt,
+                                 const float* pt_src, float* pt_dst,
+                                 const float* vec_src, float* vec_dst);
 };
 
 

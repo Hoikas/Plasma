@@ -91,6 +91,8 @@ target_link_libraries(
 )
 target_include_directories(CoreLib PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
+plasma_target_simd_sources(CoreLib SSE3 hsMatrix44_SSE3.cpp)
+
 plasma_optimize_target(CoreLib PRECOMPILED_HEADERS _CoreLibPch.h)
 plasma_sanitize_target(CoreLib)
 

@@ -47,9 +47,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 //
 //     == Example Usage ==
 //
-//  #ifdef HS_SIMD_INCLUDE
-//  #   include HS_SIMD_INCLUDE
-//  #endif
+//  #include "hsSIMD.h"
 //
 //  float my_func_fpu() {
 //    ...
@@ -75,55 +73,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #ifndef hsCpuID_inc
 #define hsCpuID_inc
 
-#if defined __AVX2__ || _MSC_VER >= 1600
-#define HS_AVX2
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "immintrin.h"
-#endif
-#endif
-#if defined __AVX__ || _MSC_VER >= 1600
-#define HS_AVX
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "immintrin.h"
-#endif
-#endif
-#if defined __SSE4_2__ || _MSC_VER >= 1600
-#define HS_SSE42
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "nmmintrin.h"
-#endif
-#endif
-#if defined __SSE4_1__ || _MSC_VER >= 1600
-#define HS_SSE41
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "smmintrin.h"
-#endif
-#endif
-#if defined __SSSE3__ || _MSC_VER >= 1600
-#define HS_SSSE3
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "tmmintrin.h"
-#endif
-#endif
-#if defined __SSE3__ || _MSC_VER >= 1400
-#define HS_SSE3
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "pmmintrin.h"
-#endif
-#endif
-#if defined __SSE2__ || _MSC_VER >= 1300
-#define HS_SSE2
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "emmintrin.h"
-#endif
-#endif
-#if defined __SSE__ || _MSC_VER >= 1300
-#define HS_SSE1
-#ifndef HS_SIMD_INCLUDE
-# define HS_SIMD_INCLUDE "xmmintrin.h"
-#endif
-#endif
-
+#include "hsConfig.h"
 
 struct hsCpuId {
     bool has_sse1;

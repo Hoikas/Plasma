@@ -127,10 +127,6 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 #include <algorithm>
 
-#ifdef HS_SIMD_INCLUDE
-#  include HS_SIMD_INCLUDE
-#endif
-
 //#define MF_TOSSER
 
 int mfCurrentTest = 100;
@@ -1857,9 +1853,9 @@ void plDXPipeline::IPrintDeviceInitError()
     char err[16];
     switch(plLocalization::GetLanguage())
     {
-        case plLocalization::kFrench:   strcpy(err, "Erreur"); strcpy(str, "Erreur d'initialisation de votre carte graphique. Les valeurs par défaut de ses paramètres ont été rétablis. ");    break;
+        case plLocalization::kFrench:   strcpy(err, "Erreur"); strcpy(str, "Erreur d'initialisation de votre carte graphique. Les valeurs par dï¿½faut de ses paramï¿½tres ont ï¿½tï¿½ rï¿½tablis. ");    break;
         case plLocalization::kGerman:   strcpy(err, "Fehler");  strcpy(str, "Bei der Initialisierung Ihrer Grafikkarte ist ein Fehler aufgetreten. Standardeinstellungen werden wiederhergestellt."); break;
-        case plLocalization::kSpanish:  strcpy(err, "Error"); strcpy(str, "Ocurrió un error al inicializar tu tarjeta de vídeo. Hemos restaurado los ajustes por defecto. "); break;
+        case plLocalization::kSpanish:  strcpy(err, "Error"); strcpy(str, "Ocurriï¿½ un error al inicializar tu tarjeta de vï¿½deo. Hemos restaurado los ajustes por defecto. "); break;
         case plLocalization::kItalian:  strcpy(err, "Errore");  strcpy(str, "Errore di inizializzazione della scheda video. Sono state ripristinate le impostazioni predefinite."); break;
         default:                        strcpy(err, "Error"); strcpy(str, "There was an error initializing your video card. We have reset it to its Default settings."); break;
     }
@@ -8756,7 +8752,7 @@ inline void inlTESTPOINT(const hsPoint3& destP,
 //  format, blends them into the destination buffer given without the blending
 //  info.
 
-static inline void ISkinVertexFPU(const hsMatrix44& xfm, float wgt,
+void plDXPipeline::ISkinVertexFPU(const hsMatrix44& xfm, float wgt,
                                   const float* pt_src, float* pt_dst,
                                   const float* vec_src, float* vec_dst)
 {
@@ -8794,71 +8790,6 @@ static inline void ISkinVertexFPU(const hsMatrix44& xfm, float wgt,
         vec_dst[1] += (srcX * m10 + srcY * m11 + srcZ * m12) * wgt;
         vec_dst[1] += (srcX * m20 + srcY * m21 + srcZ * m22) * wgt;
     }
-}
-
-#ifdef HS_SSE3
-static inline void ISkinDpSSE3(const float* src, float* dst, const __m128& mc0,
-                               const __m128& mc1, const __m128& mc2, const __m128& mwt)
-{
-    __m128 msr = _mm_load_ps(src);
-    __m128 _x  = _mm_mul_ps(_mm_mul_ps(mc0, msr), mwt);
-    __m128 _y  = _mm_mul_ps(_mm_mul_ps(mc1, msr), mwt);
-    __m128 _z  = _mm_mul_ps(_mm_mul_ps(mc2, msr), mwt);
-
-    __m128 hbuf1 = _mm_hadd_ps(_x, _y);
-    __m128 hbuf2 = _mm_hadd_ps(_z, _z);
-    hbuf1 = _mm_hadd_ps(hbuf1, hbuf2);
-    __m128 _dst = _mm_load_ps(dst);
-    _dst = _mm_add_ps(_dst, hbuf1);
-    _mm_store_ps(dst, _dst);
-}
-#endif // HS_SSE3
-
-static inline void ISkinVertexSSE3(const hsMatrix44& xfm, float wgt,
-                                   const float* pt_src, float* pt_dst,
-                                   const float* vec_src, float* vec_dst)
-{
-#ifdef HS_SSE3
-    __m128 mc0 = _mm_load_ps(xfm.fMap[0]);
-    __m128 mc1 = _mm_load_ps(xfm.fMap[1]);
-    __m128 mc2 = _mm_load_ps(xfm.fMap[2]);
-    __m128 mwt = _mm_set_ps1(wgt);
-
-    ISkinDpSSE3(pt_src, pt_dst, mc0, mc1, mc2, mwt);
-    ISkinDpSSE3(vec_src, vec_dst, mc0, mc1, mc2, mwt);
-#endif // HS_SSE3
-}
-
-#ifdef HS_SSE41
-static inline void ISkinDpSSE41(const float* src, float* dst, const __m128& mc0,
-                                const __m128& mc1, const __m128& mc2, const __m128& mwt)
-{
-    enum { DP_F4_X = 0xF1, DP_F4_Y = 0xF2, DP_F4_Z = 0xF4 };
-
-    __m128 msr = _mm_load_ps(src);
-    __m128 _r =        _mm_dp_ps(msr, mc0, DP_F4_X);
-    _r = _mm_or_ps(_r, _mm_dp_ps(msr, mc1, DP_F4_Y));
-    _r = _mm_or_ps(_r, _mm_dp_ps(msr, mc2, DP_F4_Z));
-
-    __m128 _dst = _mm_load_ps(dst);
-    _dst = _mm_add_ps(_dst, _mm_mul_ps(_r, mwt));
-    _mm_store_ps(dst, _dst);
-}
-#endif // HS_SSE41
-
-static inline void ISkinVertexSSE41(const hsMatrix44& xfm, float wgt,
-                                    const float* pt_src, float* pt_dst,
-                                    const float* vec_src, float* vec_dst)
-{
-#ifdef HS_SSE41
-    __m128 mc0 = _mm_load_ps(xfm.fMap[0]);
-    __m128 mc1 = _mm_load_ps(xfm.fMap[1]);
-    __m128 mc2 = _mm_load_ps(xfm.fMap[2]);
-    __m128 mwt = _mm_set_ps1(wgt);
-
-    ISkinDpSSE41(pt_src, pt_dst, mc0, mc1, mc2, mwt);
-    ISkinDpSSE41(vec_src, vec_dst, mc0, mc1, mc2, mwt);
-#endif // HS_SSE41
 }
 
 typedef void(*skin_vert_ptr)(const hsMatrix44&, float, const float*, float*, const float*, float*);

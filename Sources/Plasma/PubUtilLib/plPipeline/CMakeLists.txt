@@ -136,6 +136,14 @@ target_link_libraries(plPipeline
         pnFactory
 )
 
+if(PLASMA_PIPELINE STREQUAL "DirectX")
+    plasma_target_simd_sources(plPipeline
+        SOURCE_GROUP "DX\\Source Files"
+        SSE3 DX/plDXPipeline_SSE3.cpp
+        SSE41 DX/plDXPipeline_SSE41.cpp
+    )
+endif()
+
 plasma_optimize_target(plPipeline PRECOMPILED_HEADERS ${plPipeline_PCH})
 plasma_sanitize_target(plPipeline)
 
