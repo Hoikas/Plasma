@@ -8,8 +8,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { generator: Visual Studio 16 2019, arch: Win32, qt-arch: win32_msvc2019, qt-version: 5.15.2,  str: windows-x86 }
-          - { generator: Visual Studio 16 2019, arch: x64, qt-arch: win64_msvc2019_64, qt-version: 5.15.2,  str: windows-x64 }
+          - { vcvars: x86, qt-arch: win32_msvc2019, qt-version: 5.15.2,  str: windows-x86 }
+          - { vcvars: amd64, qt-arch: win64_msvc2019_64, qt-version: 5.15.2,  str: windows-x64 }
         cfg:
           - { external: OFF, type: RelWithDebInfo, str: internal-release }
           - { external: OFF, type: Debug, str: internal-debug }
@@ -30,24 +30,30 @@ jobs:
           dir: ${{ github.workspace }}/qt
 
       - name: Configure
+        shell: cmd
         run: |
-          cmake `
-            -G "${{ matrix.platform.generator }}" -A "${{ matrix.platform.arch }}" `
-            -DPLASMA_BUILD_TESTS=ON `
-            -DPLASMA_BUILD_TOOLS=ON `
-            -DPLASMA_EXTERNAL_RELEASE=${{ matrix.cfg.external }} `
-            -DPLASMA_VCPKG_NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
-            -DPLASMA_VCPKG_NUGET_OWNER="${{ github.repository_owner }}" `
-            -DPLASMA_VCPKG_NUGET_TOKEN="${{ secrets.GITHUB_TOKEN }}" `
-            -DPLASMA_VCPKG_NUGET_RW=TRUE `
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform.vcvars }}
+          cmake ^
+            -G Ninja ^
+            -DPLASMA_BUILD_TESTS=ON ^
+            -DPLASMA_BUILD_TOOLS=ON ^
+            -DPLASMA_EXTERNAL_RELEASE=${{ matrix.cfg.external }} ^
+            -DPLASMA_VCPKG_NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" ^
+            -DPLASMA_VCPKG_NUGET_OWNER="${{ github.repository_owner }}" ^
+            -DPLASMA_VCPKG_NUGET_TOKEN="${{ secrets.GITHUB_TOKEN }}" ^
+            -DPLASMA_VCPKG_NUGET_RW=TRUE ^
             -S . -B build
 
       - name: Build
+        shell: cmd
         run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform.vcvars }}
           cmake --build build --config "${{ matrix.cfg.type }}" -j 2
 
       - name: Install
+        shell: cmd
         run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform.vcvars }}
           cmake --build build --target INSTALL --config "${{ matrix.cfg.type }}" -j 2
 
       - name: Upload Artifacts
@@ -58,7 +64,9 @@ jobs:
           path: build/install
 
       - name: Test
+        shell: cmd
         run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.platform.vcvars }}
           cmake --build build --target check --config "${{ matrix.cfg.type }}" -j 2
 
 
