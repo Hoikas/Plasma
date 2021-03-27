@@ -359,9 +359,9 @@ class xDialogStartUp(ptResponder):
                         self.ToggleColor(GUIDiag4b, k4bPlayer03)
                     else:
                         fixedPlayerName = playerName.strip()
-                        (fixedPlayerName, whitespacefixedcount) = re.subn("\s{2,}|[\t\n\r\f\v]", " ", fixedPlayerName)
+                        (fixedPlayerName, whitespacefixedcount) = re.subn(R"\s{2,}|[\t\n\r\f\v]", " ", fixedPlayerName)
                         
-                        (fixedPlayerName, RogueCount,) = re.subn('[\x00-\x1f]', '', fixedPlayerName)
+                        (fixedPlayerName, RogueCount,) = re.subn(R"[\x00-\x1f]", "", fixedPlayerName)
                         if RogueCount > 0 or whitespacefixedcount > 0:
                             if RogueCount > 0:
                                 errorString = "Warning, you entered invalid characters in your player name.  The invalid characters have been removed, please make sure your player name is still what you want."

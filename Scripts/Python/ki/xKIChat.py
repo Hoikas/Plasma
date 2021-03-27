@@ -1481,7 +1481,7 @@ class CommandsProcessor:
             return
 
         # Parse common dice notation
-        dice_opt = re.match("^(\d+)d(\d+)$", dice_str)
+        dice_opt = re.match(R"^(\d+)d(\d+)$", dice_str)
         if not dice_opt:
             self.chatMgr.AddChatLine(None, "I'm sorry, I don't know how to roll {}.".format(dice_str), kChat.SystemMessage)
             return
