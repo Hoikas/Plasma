@@ -381,7 +381,7 @@ void plPlasmaMAXLayer::RefreshBitmaps()
 //  Returns the filename of the ith bitmap. Makes sure we have the latest
 //  version from assetMan as well, if applicable.
 
-bool    plPlasmaMAXLayer::GetBitmapFileName( char *destFilename, int maxLength, int index /* = 0 */ )
+bool    plPlasmaMAXLayer::GetBitmapFileName( TCHAR* destFilename, int maxLength, int index /* = 0 */ )
 {
 #ifdef MAXASS_AVAILABLE
     jvUniqueId targetAssetId;
@@ -400,7 +400,7 @@ bool    plPlasmaMAXLayer::GetBitmapFileName( char *destFilename, int maxLength, 
     if (GetPBBitmap(index) == nullptr)
         return false;
 
-    strncpy( destFilename, GetPBBitmap( index )->bi.Name(), maxLength );
+    _tcsncpy( destFilename, GetPBBitmap( index )->bi.Name(), maxLength );
     return true;
 }
 

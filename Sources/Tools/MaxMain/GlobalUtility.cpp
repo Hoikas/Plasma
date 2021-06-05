@@ -298,8 +298,8 @@ DWORD_PTR PlasmaMax::Control(DWORD parameter)
                     // - Colin
     //              if (assetId.IsEmpty())
                     {
-                        char fileName[MAX_PATH];
-                        if (layer->GetBitmapFileName(fileName, sizeof(fileName), iBmp))
+                        TCHAR fileName[MAX_PATH];
+                        if (layer->GetBitmapFileName(fileName, std::size(fileName), iBmp))
                         {
                             int texIdx = texInfo.size();
                             texInfo.resize(texIdx+1);
