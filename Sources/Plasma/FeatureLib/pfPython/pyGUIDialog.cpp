@@ -193,7 +193,7 @@ bool pyGUIDialog::IsEnabled()
     return false;
 }
 
-const char* pyGUIDialog::GetName()
+ST::string pyGUIDialog::GetName() const
 {
     if ( fGCkey )
     {
@@ -201,7 +201,7 @@ const char* pyGUIDialog::GetName()
         if ( pdmod )
             return pdmod->GetName();
     }
-    return "";
+    return {};
 }
 
 
