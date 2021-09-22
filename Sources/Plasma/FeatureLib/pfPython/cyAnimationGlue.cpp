@@ -224,6 +224,11 @@ PYTHON_METHOD_DEFINITION(ptAnimation, backwards, args)
     PYTHON_RETURN_NONE;
 }
 
+PYTHON_METHOD_DEFINITION_NOARGS(ptAnimation, getLength)
+{
+    return PyFloat_FromDouble(self->fThis->GetLength());
+}
+
 PYTHON_METHOD_DEFINITION(ptAnimation, setLoopStart, args)
 {
     float time;
@@ -292,6 +297,7 @@ PYTHON_START_METHODS_TABLE(ptAnimation)
     PYTHON_METHOD(ptAnimation, skipToTime, "Params: time\nSkip the animation to time (don't play)"),
     PYTHON_METHOD(ptAnimation, looped, "Params: loopedFlag\nTurn on and off looping of the animation"),
     PYTHON_METHOD(ptAnimation, backwards, "Params: backwardsFlag\nTurn on and off playing the animation backwards"),
+    PYTHON_METHOD_NOARGS(ptAnimation, getLength, "Gets the length of the animation in seconds"),
     PYTHON_METHOD(ptAnimation, setLoopStart, "Params: loopStart\nSets the loop starting position\n"
                 "- 'loopStart' is the number of seconds from the absolute beginning of the animation"),
     PYTHON_METHOD(ptAnimation, setLoopEnd, "Params: loopEnd\nSets the loop ending position\n"

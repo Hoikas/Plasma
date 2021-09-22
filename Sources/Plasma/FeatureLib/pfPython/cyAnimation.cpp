@@ -51,8 +51,15 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "pyKey.h"
 
 #include "cyAnimation.h"
-#include "plMessage/plAnimCmdMsg.h"
+
+#include "pnKeyedObject/plMsgForwarder.h"
 #include "pnMessage/plEventCallbackMsg.h"
+
+#include "plAnimation/plAGAnimInstance.h"
+#include "plAnimation/plAGMasterMod.h"
+#include "plInterp/plAnimTimeConvert.h"
+#include "plMessage/plAnimCmdMsg.h"
+#include "plSurface/plLayerAnimation.h"
 
 
 cyAnimation::cyAnimation()
@@ -443,6 +450,43 @@ void cyAnimation::Backwards(bool backwards)
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////
+//
+//  Function   : GetLength
+//
+//  PURPOSE    : Gets the length of the animation in seconds
+//
+float cyAnimation::GetLength() const
+{
+    float length = 0.f;
+
+    const auto eat_agmaster = [&length](plAGMasterMod* ag) {
+        for (size_t i = 0; i < ag->GetNumAnimations(); ++i) {
+            const plAnimTimeConvert* atc = ag->GetAnimInstance(i)->GetTimeConvert();
+            float atcLength = atc->GetEnd() - atc->GetBegin();
+            if (length < atcLength)
+                length = atcLength;
+        }
+    };
+
+    for (const plKey& anim : fRecvr) {
+        hsKeyedObject* anim = fRecvr[0]->ObjectIsLoaded();
+        if (plLayerAnimationBase* layer = plLayerAnimationBase::ConvertNoRef(anim)) {
+            if (length < layer->GetLength())
+                length = layer->GetLength();
+        } else if (plAGMasterMod* ag = plAGMasterMod::ConvertNoRef(anim)) {
+            eat_agmaster(ag);
+        } else if (plMsgForwarder* fwd = plMsgForwarder::ConvertNoRef(anim)) {
+            for (size_t i = 0; i < fwd->GetNumForwardKeys(); ++i) {
+                plAGMasterMod* ag = plAGMasterMod::ConvertNoRef(fwd->GetForwardKey(i)->ObjectIsLoaded());
+                if (ag)
+                    eat_agmaster(ag);
+            }
+        }
+    }
+
+    return length;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1185,6 +1185,10 @@ class ptAnimation:
 However, if the parent is not a modifier or not loaded, then None is returned."""
         pass
 
+    def getLength(self) -> float:
+        """Gets the length of the animation in seconds."""
+        pass
+
     def incrementBackward(self):
         """Step the animation backward a frame"""
         pass

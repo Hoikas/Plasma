@@ -133,6 +133,9 @@ public:
     //
     virtual void Backwards(bool backwards);
 
+    // Gets the length of the animation in seconds
+    float GetLength() const;
+
 
     // Sets the start and end of the looping points in the animation
     //

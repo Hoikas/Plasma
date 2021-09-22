@@ -73,6 +73,8 @@ public:
     bool MsgReceive(plMessage* msg) override;
 
     void AddForwardKey(plKey key);
+    size_t GetNumForwardKeys() const { return fForwardKeys.size(); }
+    plKey GetForwardKey(size_t i) const { return fForwardKeys[i]; }
 };
 
 #endif // plMsgForwarder_h_inc

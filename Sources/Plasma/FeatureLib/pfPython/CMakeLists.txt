@@ -283,6 +283,7 @@ target_link_libraries(
         plGImage
         plGLight
         plInputCore
+        plInterp
         plModifier
         plNetClient
         plNetClientComm
