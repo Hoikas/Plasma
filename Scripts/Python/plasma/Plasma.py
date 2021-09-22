@@ -1257,6 +1257,10 @@ Such as a game master, only running on the client that owns a particular object"
         """Skip to the end of the animation loop (don't play)"""
         pass
 
+    def skipToPercentage(self, percentage: float) -> None:
+        """Skip the animation to the specified percentage (0 to 1)"""
+        pass
+
     def skipToTime(self,time):
         """Skip the animation to time (don't play)"""
         pass

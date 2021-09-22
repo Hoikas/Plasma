@@ -115,6 +115,11 @@ public:
     //
     virtual void PlayToPercentage(float zeroToOne);  
 
+    //  Jump the animation to the specified percentage
+    //  Doesn't start or stop playing of animation
+    //
+    void SkipToPercentage(float zeroToOne) const;
+
     //  Jump the animation to the specified time
     //  Doesn't start or stop playing of animation
     //

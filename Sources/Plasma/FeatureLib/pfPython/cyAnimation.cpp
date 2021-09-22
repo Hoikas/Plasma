@@ -293,6 +293,42 @@ void cyAnimation::PlayToPercentage(float zeroToOne)
 
 /////////////////////////////////////////////////////////////////////////////
 //
+//  Function   : SkipToPercentage
+//  PARAMETERS : zeroToOne
+//
+//  PURPOSE    : Jump the animation to the specified percentage
+//             : Doesn't start or stop playing of animation
+//
+void cyAnimation::SkipToPercentage(float zeroToOne) const
+{
+    // must have a receiver!
+    if (!fRecvr.empty()) {
+        // create message
+        plAnimCmdMsg* pMsg = new plAnimCmdMsg;
+        // check if this needs to be network forced to all clients
+        if (fNetForce) {
+            // set the network propagate flag to make sure it gets to the other clients
+            pMsg->SetBCastFlag(plMessage::kNetPropagate);
+            pMsg->SetBCastFlag(plMessage::kNetForce);
+        }
+        if (fSender)
+            pMsg->SetSender(fSender);
+
+        // add all our receivers to the message receiver list
+        for (const plKey& rcKey : fRecvr)
+            pMsg->AddReceiver(rcKey);
+
+        // set the notetrack name (if there is one)
+        if (fAnimName != nullptr)
+            pMsg->SetAnimName(fAnimName);
+        pMsg->SetCmd(plAnimCmdMsg::kGoToPercent);
+        pMsg->fTime = zeroToOne;
+        plgDispatch::MsgSend(pMsg);   // whoosh... off it goes
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
 //  Function   : SkipToTime
 //  PARAMETERS : 
 //

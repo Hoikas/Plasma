@@ -177,6 +177,17 @@ PYTHON_METHOD_DEFINITION(ptAnimation, playToPercentage, args)
     PYTHON_RETURN_NONE;
 }
 
+PYTHON_METHOD_DEFINITION(ptAnimation, skipToPercentage, args)
+{
+    float percent;
+    if (!PyArg_ParseTuple(args, "f", &percent)) {
+        PyErr_SetString(PyExc_TypeError, "skipToPercentage requires one floating-point argument");
+        PYTHON_RETURN_ERROR;
+    }
+    self->fThis->SkipToPercentage(percent);
+    PYTHON_RETURN_NONE;
+}
+
 PYTHON_METHOD_DEFINITION(ptAnimation, skipToTime, args)
 {
     float time;
@@ -277,6 +288,7 @@ PYTHON_START_METHODS_TABLE(ptAnimation)
     PYTHON_METHOD(ptAnimation, playRange, "Params: start,end\nPlay the animation from start to end"),
     PYTHON_METHOD(ptAnimation, playToTime, "Params: time\nPlay the animation to the specified time"),
     PYTHON_METHOD(ptAnimation, playToPercentage, "Params: zeroToOne\nPlay the animation to the specified percentage (0 to 1)"),
+    PYTHON_METHOD(ptAnimation, skipToPercentage, "Params: zeroToOne\nSkip the animation to the specified percentage (0 to 1)"),
     PYTHON_METHOD(ptAnimation, skipToTime, "Params: time\nSkip the animation to time (don't play)"),
     PYTHON_METHOD(ptAnimation, looped, "Params: loopedFlag\nTurn on and off looping of the animation"),
     PYTHON_METHOD(ptAnimation, backwards, "Params: backwardsFlag\nTurn on and off playing the animation backwards"),
