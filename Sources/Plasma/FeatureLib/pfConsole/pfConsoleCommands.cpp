@@ -2284,6 +2284,11 @@ PF_CONSOLE_CMD( App,        // groupName
     PrintString(str);
 }
 
+PF_CONSOLE_CMD(App, Crash, "", "")
+{
+    *((int*)0) = 0;
+}
+
 #endif // LIMIT_CONSOLE_COMMANDS
 
 PF_CONSOLE_CMD( App,            // groupName
