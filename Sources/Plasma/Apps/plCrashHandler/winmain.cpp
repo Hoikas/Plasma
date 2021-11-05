@@ -59,6 +59,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 
 // ===================================================
 
+static ST::string s_crashReason;
 static std::vector<plStackEntry> s_stackTrace;
 
 // ===================================================
@@ -68,6 +69,7 @@ static inline ST::string IBuildCrashString()
     ST::string_stream ss;
     ss << plProduct::ProductString() << '\n';
     ss << hsSystemInfo::AsString() << '\n';
+    ss << "Unhandled Exception: " << s_crashReason << '\n';
     ss << "\nStack Trace:\n";
     for (size_t i = 0; i < s_stackTrace.size(); ++i) {
         const plStackEntry& entry = s_stackTrace[i];
@@ -85,6 +87,8 @@ static inline ST::string IBuildCrashString()
         if (i + 1 < s_stackTrace.size())
             ss << '\n';
     }
+    if (s_stackTrace.empty())
+        ss << "(No trace captured)";
     return ss.to_string();
 }
 
@@ -165,6 +169,12 @@ static inline void ILayoutStackTrace(HWND hwnd)
 
 static void ILayoutDialog(HWND dialog)
 {
+    if (!s_crashReason.empty()) {
+        wchar_t buffy[1024];
+        UINT numchars = GetDlgItemTextW(dialog, IDC_STATUS_TEXT, buffy, std::size(buffy));
+        SetDlgItemTextW(dialog, IDC_STATUS_TEXT, ST::format("{} {}", buffy, s_crashReason).to_wchar().data());
+    }
+
     SetDlgItemTextW(dialog, IDC_PRODUCTSTRING, plProduct::ProductString().to_wchar().data());
     ILayoutStackTrace(dialog);
     Button_SetNote(GetDlgItem(dialog, IDC_COPYBUTTON), L"Copy the crash information to the clipboard for pasting elsewhere.");
@@ -251,7 +261,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     plCrashSrv srv(parser.GetString(kArgCrashFile));
     plCrashResult result;
-    std::tie(result, s_stackTrace) = srv.HandleCrash();
+    std::tie(result, s_crashReason, s_stackTrace) = srv.HandleCrash();
     if (result == plCrashResult::kClientCrashed)
         IShowCrashDialog(hInstance);
 

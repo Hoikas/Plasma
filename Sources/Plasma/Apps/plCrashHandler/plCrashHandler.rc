@@ -2,15 +2,13 @@
 //
 #include "resource.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -35,7 +33,8 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "\r\n"
+    "#define WIN32_LEAN_AND_MEAN\r\n"
+    "#include <windows.h>\r\n"
     "\0"
 END
 
@@ -53,18 +52,18 @@ END
 // Dialog
 //
 
-IDD_DIALOG DIALOGEX 0, 0, 305, 294
+IDD_DIALOG DIALOGEX 0, 0, 305, 327
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
     CONTROL         IDB_BITMAP,IDB_BITMAP,"Static",SS_BITMAP | SS_SUNKEN,7,7,286,36
-    LTEXT           "Unfortunately, URU has experienced a serious error and had to exit. Please report the following information to the developers.",IDC_STATUS_TEXT,19,57,266,17
+    LTEXT           "Unfortunately, URU has experienced a serious error and had to exit. Please report the following information to the developers:",IDC_STATUS_TEXT,19,57,266,28
     GROUPBOX        "",IDC_STATIC,7,46,291,49
     RTEXT           "Product String",IDC_PRODUCTSTRING,19,85,272,8
-    CONTROL         "",IDC_CRASHLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,104,291,107
-    CONTROL         "Copy",IDC_COPYBUTTON,"Button",BS_COMMANDLINK | BS_MULTILINE | WS_TABSTOP,7,216,291,36
-    CONTROL         "Quit",IDC_QUITBUTTON,"Button",BS_COMMANDLINK | BS_MULTILINE | WS_TABSTOP,7,257,291,36
+    CONTROL         "",IDC_CRASHLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,103,291,119
+    CONTROL         "Copy crash information",IDC_COPYBUTTON,"Button",BS_COMMANDLINK | BS_MULTILINE | WS_TABSTOP,7,227,291,41
+    CONTROL         "Quit",IDC_QUITBUTTON,"Button",BS_COMMANDLINK | BS_MULTILINE | WS_TABSTOP,7,275,291,41
 END
 
 
@@ -81,7 +80,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 298
         TOPMARGIN, 7
-        BOTTOMMARGIN, 283
+        BOTTOMMARGIN, 316
     END
 END
 #endif    // APSTUDIO_INVOKED

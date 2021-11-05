@@ -70,7 +70,7 @@ class plCrashSrv : public plCrashBase
     HANDLE fLinkH;
 #endif
 
-    std::vector<plStackEntry> IHandleCrash();
+    std::tuple<ST::string, std::vector<plStackEntry>> IHandleCrash();
 
 public:
     plCrashSrv(const ST::string& file);
@@ -83,7 +83,7 @@ public:
      * trace will be generated, if supported.
      */
     [[nodiscard]]
-    std::tuple<plCrashResult, std::vector<plStackEntry>> HandleCrash();
+    std::tuple<plCrashResult, ST::string, std::vector<plStackEntry>> HandleCrash();
 };
 
 #endif // _pfCrashSrv_h_

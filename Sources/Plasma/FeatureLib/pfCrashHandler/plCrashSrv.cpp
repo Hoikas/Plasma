@@ -102,7 +102,65 @@ static inline bool IGetCrashedThreadContext(HANDLE process, const LPEXCEPTION_PO
     return true;
 }
 
-std::vector<plStackEntry> plCrashSrv::IHandleCrash()
+static inline bool IReadExceptionCode(HANDLE process, const LPEXCEPTION_POINTERS ptrs, DWORD& reason)
+{
+    if (process == GetCurrentProcess()) {
+        reason = ptrs->ExceptionRecord->ExceptionCode;
+        return true;
+    }
+
+    EXCEPTION_POINTERS ex{};
+    SIZE_T nread;
+    BOOL result = ReadProcessMemory(process, ptrs, &ex, sizeof(ex), &nread);
+    if (result == FALSE || nread != sizeof(ex))
+        return false;
+
+    EXCEPTION_RECORD rec{};
+    result = ReadProcessMemory(process, ex.ExceptionRecord, &rec, sizeof(rec), &nread);
+    if (result == FALSE || nread != sizeof(rec))
+        return false;
+
+    reason = rec.ExceptionCode;
+    return true;
+}
+
+static inline ST::string IGetExceptionReason(HANDLE process, const LPEXCEPTION_POINTERS ptrs)
+{
+    ST::string reason = ST_LITERAL("Unknown");
+    HMODULE ntdll = GetModuleHandleW(L"ntdll");
+    if (!ntdll)
+        return reason;
+
+    typedef ULONG(WINAPI* RtlNtStatusToDosError)(LONG); // Really RtlNtStatusToDosError(NTSTATUS)
+    RtlNtStatusToDosError dosError = (RtlNtStatusToDosError)GetProcAddress(ntdll, "RtlNtStatusToDosError");
+    if (!dosError)
+        return reason;
+
+    DWORD ex;
+    if (!IReadExceptionCode(process, ptrs, ex))
+        return reason;
+
+    wchar_t* msg = nullptr;
+    auto result = FormatMessageW(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_HMODULE,
+        ntdll,
+        dosError(ex),
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPWSTR)&msg,
+        0,
+        nullptr
+    );
+    if (result && msg) {
+        reason = ST::string::from_wchar(msg, result, ST::assume_valid).trim();
+        reason = ST::format("{} (0x{08x})", reason, ex);
+        LocalFree(msg);
+    } else {
+        reason = ST::format("0x{08x}", ex);
+    }
+    return reason;
+}
+
+std::tuple<ST::string, std::vector<plStackEntry>> plCrashSrv::IHandleCrash()
 {
     plFileName dumpPath = plFileName::Join(plFileSystem::GetLogPath(), "crash.dmp");
     HANDLE file = CreateFileW(dumpPath.WideString().data(),
@@ -129,14 +187,14 @@ std::vector<plStackEntry> plCrashSrv::IHandleCrash()
     } else {
         ST::printf(stderr, "Unable to read the crashed thread's context. No stack trace will be available.");
     }
-    return trace;
+    return std::make_tuple(IGetExceptionReason(fLink->fClientProcess, fLink->fExceptionPtrs), trace);
 }
 
 #else
 #   error "Implement plCrashSrv for this platform"
 #endif
 
-std::tuple<plCrashResult, std::vector<plStackEntry>> plCrashSrv::HandleCrash()
+std::tuple<plCrashResult, ST::string, std::vector<plStackEntry>> plCrashSrv::HandleCrash()
 {
     if (!fLink)
         FATAL("plCrashMemLink is nil!");
@@ -145,22 +203,28 @@ std::tuple<plCrashResult, std::vector<plStackEntry>> plCrashSrv::HandleCrash()
     fLink->fSrvReady = true; // mark us as ready to receive crashes
 
 #ifdef HS_BUILD_FOR_WIN32
-    // In Win32 land we have to hackily handle the client process exiting, so we'll wait on both
-    // the crashed semaphore and the client process...
-    HANDLE hack[2] = { fLink->fClientProcess, fCrashed->GetHandle() };
-    DWORD result = WaitForMultipleObjects(std::size(hack), hack, FALSE, INFINITE);
-    hsAssert(result != WAIT_FAILED, "WaitForMultipleObjects failed");
+    {
+        // In Win32 land we have to hackily handle the client process exiting, so we'll wait on both
+        // the crashed semaphore and the client process...
+        HANDLE hack[2] = { fLink->fClientProcess, fCrashed->GetHandle() };
+        DWORD result = WaitForMultipleObjects(std::size(hack), hack, FALSE, INFINITE);
+        hsAssert(result != WAIT_FAILED, "WaitForMultipleObjects failed");
+    }
 #else
     fCrashed->Wait();
 #endif
 
-    std::tuple<plCrashResult, std::vector<plStackEntry>> retval;
-    if (fLink->fCrashed)
-        retval = std::make_tuple(plCrashResult::kClientCrashed, IHandleCrash());
-    else
-        retval = std::make_tuple<plCrashResult, std::vector<plStackEntry>>(plCrashResult::kClientExited, {});
+    plCrashResult result;
+    ST::string reason;
+    std::vector<plStackEntry> trace;
+    if (fLink->fCrashed) {
+        result = plCrashResult::kClientCrashed;
+        std::tie(reason, trace) = IHandleCrash();
+    } else {
+        result = plCrashResult::kClientExited;
+    }
 
     fLink->fSrvReady = false;
     fHandled->Signal(); // Tell CrashCli we handled it
-    return retval;
+    return std::make_tuple(result, reason, trace);
 }
