@@ -226,9 +226,10 @@ static void IShowCrashDialog(HINSTANCE hInstance)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    enum { kArgCrashFile };
+    enum { kArgCrashFile, kArgForceShow };
     const plCmdArgDef cmdLineArgs[] = {
-        { kCmdArgRequired | kCmdTypeString, "file",  kArgCrashFile }
+        { kCmdArgRequired | kCmdTypeString, "file", kArgCrashFile },
+        { kCmdArgFlagged | kCmdTypeBool, "force", kArgForceShow },
     };
 
     // Don't use pCmdLine because plCmdParser doesn't like it.
@@ -239,8 +240,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     plCmdParser parser(cmdLineArgs, std::size(cmdLineArgs));
     if (!parser.Parse(args)) {
-        hsMessageBox("You should never run this manually.", "Error", hsMessageBoxNormal, hsMessageBoxIconExclamation);
-        return 1;
+        if (parser.GetBool(kArgForceShow)) {
+            IShowCrashDialog(hInstance);
+            return 0;
+        } else {
+            hsMessageBox("You should never run this manually.", "Error", hsMessageBoxNormal, hsMessageBoxIconExclamation);
+            return 1;
+        }
     }
 
     plCrashSrv srv(parser.GetString(kArgCrashFile));
