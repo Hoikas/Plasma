@@ -177,7 +177,7 @@ class city(ptResponder):
 
     def OnSDLNotify(self,VARname,SDLname,playerID,tag):
         ageSDL = PtGetAgeSDL()
-        PtDebugPrint("city.OnSDLNotify():\t VARname: %s, SDLname: %s, tag: %s, value: %d" % (VARname,SDLname,tag,ageSDL[VARname][0]))
+        PtDebugPrint(f"city.OnSDLNotify():\t {VARname=}, {SDLname=}, {tag=}, value={ageSDL[VARname][0]}")
 
         if VARname in sdlS1FinaleBahro:
 #            if not self.sceneobject.isLocallyOwned():
@@ -188,7 +188,7 @@ class city(ptResponder):
 
 
     def ILoadS1FinaleBahro(self,bahro,state):
-        PtDebugPrint("city.ILoadS1FinaleBahro(): bahro = %d, load = %d" % (bahro,state))
+        PtDebugPrint(f"city.ILoadS1FinaleBahro(): {bahro=}, {state=}")
 #        if not self.sceneobject.isLocallyOwned():
 #            return
         if state:

@@ -133,7 +133,7 @@ class xKI(ptModifier):
         self.id = 199
         self.version = MaxVersionNumber
         self.folderOfDevices = DeviceFolder(PtGetLocalizedString("KI.Folders.Devices"))
-        PtDebugPrint("xKI: Max version {} - minor version {}.".format(MaxVersionNumber, MinorVersionNumber))
+        PtDebugPrint(f"xKI: Max version {MaxVersionNumber} - minor version {MinorVersionNumber}.")
 
         # Prepare the GUI's default state.
         self.KIGUIInitialized = False
@@ -458,7 +458,7 @@ class xKI(ptModifier):
     # event, such as a book being offered.
     def OnNotify(self, state, ID, events):
 
-        PtDebugPrint("xKI.OnNotify(): Notify state = {}, ID = {}.".format(state, ID), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.OnNotify(): Notify {state=}, {ID=}.", level=kDebugDumpLevel)
         # Is it a notification from the scene input interface or PlayerBook?
         for event in events:
             if event[0] == kOfferLinkingBook:
@@ -578,7 +578,7 @@ class xKI(ptModifier):
             ptGUIControlButton(KIMini.dialog.getControlFromTag(kJalakMiniIconBtn)).enable()
         elif ID == KIJalakBtnLights.id:
             btnID = int(KIJalakBtnLights.getState())
-            SendNote(self.key, self.jalakScript, "{}".format(btnID))
+            SendNote(self.key, self.jalakScript, str(btnID))
             PtAtTimeCallback(self.key, kJalakBtnDelaySeconds, kTimers.JalakBtnDelay)
 
     ## Called by Plasma when a page has been loaded.
@@ -612,7 +612,7 @@ class xKI(ptModifier):
     # Delegates the appropriate response to the correct handler.
     def OnGUINotify(self, ID, control, event):
 
-        PtDebugPrint("xKI.OnGUINotify(): ID = {}, event = {}, control = {}.".format(ID, event, control), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.OnGUINotify(): {ID=}, {event=}, {control=}.")
         if ID == KIBlackbar.id:
             self.ProcessNotifyBlackbar(control, event)
         elif ID == KIMicroBlackbar.id:
@@ -654,7 +654,7 @@ class xKI(ptModifier):
     # messages can also be sent from the Python to Plasma and back.
     def OnKIMsg(self, command, value):
 
-        PtDebugPrint("xKI.OnKIMsg(): command = {} value = {}.".format(command, value), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.OnKIMsg(): {command=}, {value=}.", level=kDebugDumpLevel)
         if self.markerGameManager.OnKIMsg(command, value):
             return
 
@@ -753,20 +753,20 @@ class xKI(ptModifier):
         elif command == kUpgradeKILevel:
             if value >= kLowestKILevel and value <= kHighestKILevel:
                 if value > self.KILevel:
-                    PtDebugPrint("xKI.OnKIMsg(): Upgrading from KI level {} to new KI level of {}.".format(self.KILevel, value), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.OnKIMsg(): Upgrading from KI level {self.KILevel} to new KI level of {value}.", level=kWarningLevel)
                     self.RemoveKILevel(self.KILevel)
                     self.KILevel = value
                     self.chatMgr.KILevel = self.KILevel
                     self.UpdateKILevelChronicle()
                     self.WearKILevel(self.KILevel)
                 else:
-                    PtDebugPrint("xKI.OnKIMsg(): Ignoring, trying to upgrade from KI level {} to new KI level of {}.".format(self.KILevel, value), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.OnKIMsg(): Ignoring, trying to upgrade from KI level {self.KILevel} to new KI level of {value}.", level=kWarningLevel)
                     self.MakeSureWeWereKILevel()
             else:
-                PtDebugPrint("xKI.OnKIMsg(): Invalid KI level {}.".format(value), level=kErrorLevel)
+                PtDebugPrint(f"xKI.OnKIMsg(): Invalid KI level {value}.")
         elif command == kDowngradeKILevel:
             if value == self.KILevel:
-                PtDebugPrint("xKI.OnKIMsg(): Remove KI level of {}.".format(value), level=kWarningLevel)
+                PtDebugPrint(f"xKI.OnKIMsg(): Remove KI level of {value}.", level=kWarningLevel)
                 if value == kNormalKI:
                     self.RemoveKILevel(kNormalKI)
                     self.KILevel = kMicroKI
@@ -774,9 +774,9 @@ class xKI(ptModifier):
                     self.UpdateKILevelChronicle()
                     self.WearKILevel(self.KILevel)
                 else:
-                    PtDebugPrint("xKI.OnKIMsg(): Ignoring, can't remove to any lower than {}.".format(value), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.OnKIMsg(): Ignoring, can't remove to any lower than {value}.", level=kWarningLevel)
             else:
-                PtDebugPrint("xKI.OnKIMsg(): Ignoring, trying to remove KI Level {}, but currently at {}.".format(value, self.KILevel), level=kWarningLevel)
+                PtDebugPrint(f"xKI.OnKIMsg(): Ignoring, trying to remove KI Level {value}, but currently at {self.KILevel}." level=kWarningLevel)
         elif command == kSetPrivateChatChannel:
             self.chatMgr.privateChatChannel = value
         elif command == kUnsetPrivateChatChannel:
@@ -891,7 +891,7 @@ class xKI(ptModifier):
                 if value == 30:
                     msg = PtGetLocalizedString("KI.Errors.InvitesDisabled")
                 else:
-                    msg = "Error occured trying to send invite: " + str(value)
+                    msg = f"Error occured trying to send invite: {value}"
                 self.chatMgr.AddChatLine(None, msg, kChat.SystemMessage)
 
         elif command == kRegisterImager:
@@ -924,7 +924,7 @@ class xKI(ptModifier):
                 args = value.split()
                 GZGame = int(args[0])
             except:
-                PtDebugPrint("xKI.OnKIMsg(): Cannot Update Marker Display, invalid Parameters: {}.".format(value))
+                PtDebugPrint(f"xKI.OnKIMsg(): Cannot Update Marker Display, invalid Parameters: {value}.")
                 return
             if GZGame == -1:
                 self.GZFlashUpdate(value)
@@ -1131,20 +1131,20 @@ class xKI(ptModifier):
         # Save the image to the filesystem.
         basePath = os.path.join(PtGetUserPath(), kImages.Directory)
         if not PtCreateDir(basePath):
-            PtDebugPrint("xKI.OnScreenCaptureDone(): Unable to create \"{}\" directory. Image not saved to disk.".formatZ(basePath))
+            PtDebugPrint(f"xKI.OnScreenCaptureDone(): Unable to create \"{basePath}\" directory. Image not saved to disk.")
             return
 
-        imageList = glob.iglob(os.path.join(basePath, "{}[0-9][0-9][0-9][0-9].png".format(kImages.FileNameTemplate)))
+        imageList = glob.iglob(os.path.join(basePath, f"{kImages.FileNameTemplate}[0-9][0-9][0-9][0-9].png"))
         imageNumbers = [int(os.path.basename(img)[7:-4]) for img in imageList] + [0]
         missingNumbers = set(range(1, max(imageNumbers))).difference(set(imageNumbers))
         if len(missingNumbers) > 0:
             firstMissing = min(missingNumbers)
         else:
             firstMissing = max(imageNumbers) + 1
-        tryName = os.path.join(basePath, "{}{:04d}.png".format(kImages.FileNameTemplate, firstMissing))
+        tryName = os.path.join(basePath, f"{kImages.FileNameTemplate}{firstMissing:04d}.png")
 
-        PtDebugPrint("xKI.OnScreenCaptureDone(): Saving image to \"{}\".".format(tryName), level=kWarningLevel)
-        gpsLocation = "{} {} {}".format(self.dniCoords.getTorans(), self.dniCoords.getHSpans(), self.dniCoords.getVSpans())
+        PtDebugPrint(f"xKI.OnScreenCaptureDone(): Saving image to \"{tryName}\".", level=kWarningLevel)
+        gpsLocation = f"{self.dniCoords.getTorans()} {self.dniCoords.getHSpans()} {self.dniCoords.getVSpans()}"
         metadata = {
             "Explorer" : PtGetLocalPlayer().getPlayerName(),
             "Location" : gpsLocation,
@@ -1191,7 +1191,7 @@ class xKI(ptModifier):
     ## Called by Plasma on receipt of a high-level player vault event.
     def OnVaultNotify(self, event, tupData):
 
-        PtDebugPrint("xKI.OnVaultNotify(): Event = {} and data = {}.".format(event, tupData), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.OnVaultNotify(): {event=}, {tupData=}.", level=kDebugDumpLevel)
         if not tupData:
             PtDebugPrint("xKI.OnVaultNotify(): Bailing, no Age data.")
             return
@@ -1218,20 +1218,20 @@ class xKI(ptModifier):
                     else:
                         PtDebugPrint("xKI.OnVaultNotify(): Unknown tuple data type. ", level=kErrorLevel)
             else:
-                PtDebugPrint("xKI.OnVaultNotify(): Unknown event {}.".format(event), level=kWarningLevel)
+                PtDebugPrint(f"xKI.OnVaultNotify(): Unknown event {event}.", level=kWarningLevel)
         else:
             PtDebugPrint("xKI.OnVaultNotify(): BigKI dialog was not loaded, waiting.", level=kDebugDumpLevel)
 
     ## Called by Plasma on receipt of a low-level player vault event.
     def OnVaultEvent(self, event, tupData):
 
-        PtDebugPrint("xKI.VaultEvent(): Event = {} and data = {}.".format(event, tupData), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.VaultEvent(): {event=}, {tupData=}.", level=kDebugDumpLevel)
         self.HandleVaultTypeEvents(event, tupData)
 
     ## Called by Plasma on receipt of a low-level Age vault event.
     def OnAgeVaultEvent(self, event, tupData):
 
-        PtDebugPrint("xKI.OnAgeVaultEvent(): Event = {} and data = {}.".format(event, tupData), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.OnAgeVaultEvent(): {event=}, {tupData=}.", level=kDebugDumpLevel)
         self.HandleVaultTypeEvents(event, tupData)
 
     ## Called by Plasma when a marker has been captured by the player.
@@ -1253,7 +1253,7 @@ class xKI(ptModifier):
                     if points < 0:
                         points = 0
                     pelletTextBox.setString(str(points))
-                    PtDebugPrint("xKI.OnGameScoreMsg(): PelletDrop score: {}.".format(points), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.OnGameScoreMsg(): PelletDrop score: {points}.", level=kWarningLevel)
                 elif self.scoreOpCur == kPellets.ScoreFetchMineForUpload:
                     self.scoreSource = score
                     self.DoScoreOp(kPellets.ScoreFetchUploadDestination)
@@ -1484,15 +1484,15 @@ class xKI(ptModifier):
         if len(respList) > 0:
             PtDebugPrint("xKI.DoKILight(): Responder list:", level=kDebugDumpLevel)
             for resp in respList:
-                PtDebugPrint("                 {}".format(resp.getName()))
+                PtDebugPrint(f"                 {resp.getName()}")
                 if resp.getName() == thisResp:
-                    PtDebugPrint("xKI.DoKILight(): Found KI light resp: {}.".format(thisResp), level=kDebugDumpLevel)
+                    PtDebugPrint(f"xKI.DoKILight(): Found KI light resp: {thisResp}.", level=kDebugDumpLevel)
                     atResp = ptAttribResponder(42)
                     atResp.__setvalue__(resp)
                     atResp.run(self.key, avatar=LocalAvatar, fastforward=ff)
                     if state:
                         PtAtTimeCallback(self.key, remaining, kTimers.LightStop)
-                        PtDebugPrint("xKI.DoKILight(): Light was on in previous age, turning on for remaining ", remaining, " seconds.", level=kWarningLevel)
+                        PtDebugPrint(f"xKI.DoKILight(): Light was on in previous age, turning on for remaining {remaining} seconds.", level=kWarningLevel)
                         curTime = PtGetDniTime()
                         self.lightStop = (remaining + curTime)
                         self.lightOn = True
@@ -1551,7 +1551,7 @@ class xKI(ptModifier):
 
         if score:
             hoodInfoUpdate = PtFindActivator("PythHoodInfoImagerUpdater")
-            PtDebugPrint("xKI.UploadPelletScore(): HoodInfoUpdate: {}.".format(hoodInfoUpdate), level=kDebugDumpLevel)
+            PtDebugPrint(f"xKI.UploadPelletScore(): {hoodInfoUpdate=}", level=kDebugDumpLevel)
             if hoodInfoUpdate:
                 notify = ptNotify(self.key)
                 notify.clearReceivers()
@@ -1559,10 +1559,10 @@ class xKI(ptModifier):
                 notify.netPropagate(1)
                 notify.netForce(1)
                 notify.setActivate(1.0)
-                sName = "Score={}".format(PtGetLocalPlayer().getPlayerName())
+                sName = f"Score={PtGetLocalPlayer().getPlayerName()}"
                 notify.addVarNumber(sName, score)
                 notify.send()
-                PtDebugPrint("xKI.UploadPelletScore(): Sending score notify: {} {}.".format(sName, score), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.UploadPelletScore(): Sending score notify: {sName} {score}.", level=kDebugDumpLevel)
         else:
             self.DoScoreOp(kPellets.ScoreFetchMineForUpload)
 
@@ -1641,7 +1641,7 @@ class xKI(ptModifier):
                 error = 0
                 if entry is not None:
                     gameString = entry.chronicleGetValue()
-                    PtDebugPrint("xKI.DetermineGZ(): Game string is: \"{}\".".format(gameString), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.DetermineGZ(): Game string is: \"{gameString}\".", level=kWarningLevel)
                     args = gameString.split()
                     if len(args) == 3:
                         try:
@@ -1704,7 +1704,7 @@ class xKI(ptModifier):
     ## Update the GZ globals using provided values, not the Chronicle.
     def GZFlashUpdate(self, gameString):
 
-        PtDebugPrint("xKI.GZFlashUpdate(): Game string is: \"{}\".".format(gameString), level=kWarningLevel)
+        PtDebugPrint(f"xKI.GZFlashUpdate(): Game string is: \"{gameString}\".", level=kWarningLevel)
         args = gameString.split()
         if len(args) == 3:
             try:
@@ -1758,7 +1758,7 @@ class xKI(ptModifier):
         if self.gGZPlaying:
             vault = ptVault()
             entry = vault.findChronicleEntry(kChronicleGZGames)
-            upString = "{} {}:{} {}:{}".format(self.gGZPlaying, self.gMarkerGottenColor, self.gMarkerToGetColor, self.gMarkerGottenNumber, self.gMarkerToGetNumber)
+            upString = f"{self.gGZPlaying} {self.gMarkerGottenColor}:{self.gMarkerToGetColor} {self.gMarkerGottenNumber}:{self.gMarkerToGetNumber}"
             if entry is not None:
                 entry.chronicleSetValue(upString)
                 entry.save()
@@ -1795,7 +1795,7 @@ class xKI(ptModifier):
                     # Save update to Chronicle.
                     self.UpdateGZGamesChronicle()
                 else:
-                    PtDebugPrint("xKI.CaptureGZMarker(): Invalid marker serial number of {}.".format(self.gGZMarkerInRange))
+                    PtDebugPrint(f"xKI.CaptureGZMarker(): Invalid marker serial number of {self.gGZMarkerInRange}.")
                     return
             else:
                 PtDebugPrint("xKI.CaptureGZMarker(): No Chronicle entry found.")
@@ -1952,7 +1952,7 @@ class xKI(ptModifier):
         self.BigKIRefreshFolderDisplay()
 
         # Create the Marker Game node.
-        PtDebugPrint("xKI.FinishCreateMarkerGame(): Creating Vault node with name = \"{}\".".format(gameName), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.FinishCreateMarkerGame(): Creating Vault node with name = \"{gameName}\".", level=kDebugDumpLevel)
         markerGameNode = ptVaultMarkerGameNode()
         markerGameNode.setCreatorNodeID(PtGetLocalClientID())
         markerGameNode.setGameName(gameName)
@@ -1980,10 +1980,10 @@ class xKI(ptModifier):
             if self.KILevel > kMicroKI and not self.KIDisabled:
                 self.UpdateKIUsage()
                 if self.CanMakeMarker():
-                    markerName = "{} marker".format(self.markerGameManager.game_name)
+                    markerName = f"{self.markerGameManager.game_name} marker"
                     avaCoord = PtGetLocalAvatar().position()
                     self.markerGameManager.AddMarker(PtGetAgeName(), avaCoord, markerName)
-                    PtDebugPrint("xKI.CreateAMarker(): Creating marker at: ({}, {}, {}).".format(avaCoord.getX(), avaCoord.getY(), avaCoord.getZ()))
+                    PtDebugPrint(f"xKI.CreateAMarker(): Creating marker at: ({avaCoord.getX()}, {avaCoord.getY()}, {avaCoord.getZ()}).")
                 else:
                     self.ShowKIFullErrorMsg("FullMarkers")
 
@@ -2225,7 +2225,7 @@ class xKI(ptModifier):
                 # Make sure that the user has at least a microKI.
                 self.UpdateKILevelChronicle()
         self.chatMgr.KILevel = self.KILevel
-        PtDebugPrint("xKI.DetermineKILevel(): The KI Level is {}.".format(self.KILevel), level=kWarningLevel)
+        PtDebugPrint(f"xKI.DetermineKILevel(): The KI Level is {self.KILevel}." level=kWarningLevel)
 
         # Set the KI Marker Level.
         self.gKIMarkerLevel = 0
@@ -2240,7 +2240,7 @@ class xKI(ptModifier):
                 PtDebugPrint("xKI.DetermineKILevel(): Chronicle entry error with the KI's Marker Level, resetting to the default value.", level=kErrorLevel)
                 entry.chronicleSetValue(str(self.gKIMarkerLevel))
                 entry.save()
-        PtDebugPrint("xKI.DetermineKILevel(): The KI Marker Level is {}.".format(self.gKIMarkerLevel), level=kWarningLevel)
+        PtDebugPrint(f"xKI.DetermineKILevel(): The KI Marker Level is {self.gKIMarkerLevel}.", level=kWarningLevel)
 
         entry = vault.findChronicleEntry("feather")
         if entry is None:
@@ -2254,16 +2254,16 @@ class xKI(ptModifier):
     ## Upgrade the KI Marker Level to a new setting.
     def UpgradeKIMarkerLevel(self, newLevel):
 
-        PtDebugPrint("xKI.UpgradeKIMarkerLevel(): KI Marker Level going from {} to {}.".format(self.gKIMarkerLevel, newLevel), level=kWarningLevel)
+        PtDebugPrint(f"xKI.UpgradeKIMarkerLevel(): KI Marker Level going from {self.gKIMarkerLevel} to {newLevel}.", level=kWarningLevel)
         if self.KILevel > kMicroKI and newLevel > self.gKIMarkerLevel:
             self.gKIMarkerLevel = newLevel
             vault = ptVault()
             entry = vault.findChronicleEntry(kChronicleKIMarkerLevel)
             if entry is None:
-                PtDebugPrint("xKI.UpgradeKIMarkerLevel(): Chronicle entry not found, set to {}.".format(self.gKIMarkerLevel), level=kWarningLevel)
+                PtDebugPrint(f"xKI.UpgradeKIMarkerLevel(): Chronicle entry not found, set to {self.gKIMarkerLevel}.", level=kWarningLevel)
                 vault.addChronicleEntry(kChronicleKIMarkerLevel, kChronicleKIMarkerLevelType, str(self.gKIMarkerLevel))
             else:
-                PtDebugPrint("xKI.UpgradeKIMarkerLevel(): Upgrading existing KI Marker Level to {}.".format(self.gKIMarkerLevel), level=kWarningLevel)
+                PtDebugPrint(f"xKI.UpgradeKIMarkerLevel(): Upgrading existing KI Marker Level to {self.gKIMarkerLevel}.", level=kWarningLevel)
                 entry.chronicleSetValue(str(self.gKIMarkerLevel))
                 entry.save()
 
@@ -2313,7 +2313,7 @@ class xKI(ptModifier):
             for SDLVar, page in xLinkingBookDefs.xYeeshaPages:
                 FoundValue = psnlSDL.findVar(SDLVar)
                 if FoundValue is not None:
-                    PtDebugPrint("xKI.GetYeeshaPageDefs(): The previous value of the SDL variable \"{}\" is {}.".format(SDLVar, FoundValue.getInt()), level=kDebugDumpLevel)
+                    PtDebugPrint(f"xKI.GetYeeshaPageDefs(): The previous value of the SDL variable \"{SDLVar}\" is {FoundValue.getInt()}.", level=kDebugDumpLevel)
                     state = FoundValue.getInt() % 10
                     if state != 0:
                         active = 1
@@ -2322,9 +2322,9 @@ class xKI(ptModifier):
                         try:
                             pageDefs += page % (active)
                         except LookupError:
-                            pageDefs += "<pb><pb>Bogus page {}".format(SDLVar)
+                            pageDefs += f"<pb><pb>Bogus page {SDLVar}"
         else:
-            PtDebugPrint("xKI.GetYeeshaPageDefs(): Trying to access the Chronicle psnlSDL failed: psnlSDL = \"{}\".".format(psnlSDL), level=kErrorLevel)
+            PtDebugPrint(f"xKI.GetYeeshaPageDefs(): Trying to access the Chronicle psnlSDL failed: psnlSDL = \"{psnlSDL}\".", level=kErrorLevel)
         return pageDefs
 
     ## Turns on and off the Yeesha pages' SDL values.
@@ -2345,7 +2345,7 @@ class xKI(ptModifier):
                 elif state == 4 and not on:
                     value = 2
                 if value is not None:
-                    PtDebugPrint("xKI.ToggleYeeshaPageSDL(): Setting {} to {}.".format(varName, value), level=kDebugDumpLevel)
+                    PtDebugPrint(f"xKI.ToggleYeeshaPageSDL(): Setting {varName} to {value}.", level=kDebugDumpLevel)
                     ypageSDL.setInt((size * 10) + value)
                     vault.updatePsnlAgeSDL(psnlSDL)
 
@@ -2365,7 +2365,7 @@ class xKI(ptModifier):
             vault.addChronicleEntry(kChronicleCensorLevel, kChronicleCensorLevelType, str(self.censorLevel))
         else:
             self.censorLevel = int(entry.chronicleGetValue())
-        PtDebugPrint("xKI.DetermineCensorLevel(): The censor level is {}.".format(self.censorLevel), level=kWarningLevel)
+        PtDebugPrint(f"xKI.DetermineCensorLevel(): The censor level is {self.censorLevel}.", level=kWarningLevel)
 
     def GetCensorLevel(self):
         return self.censorLevel
@@ -2386,7 +2386,7 @@ class xKI(ptModifier):
         else:
             fontSize = int(entry.chronicleGetValue())
             self.SetFontSize(fontSize)
-        PtDebugPrint("xKI.DetermineFontSize(): The saved font size is {}.".format(fontSize), level=kWarningLevel)
+        PtDebugPrint(f"xKI.DetermineFontSize(): The saved font size is {fontSize}.", level=kWarningLevel)
 
     ## Saves the current font size to the Chronicle.
     def SaveFontSize(self):
@@ -2399,7 +2399,7 @@ class xKI(ptModifier):
             entry.save()
         else:
             vault.addChronicleEntry(kChron.FontSize, kChron.FontSizeType, str(fontSize))
-        PtDebugPrint("xKI.SaveFontSize(): Saving font size of {}.".format(fontSize), level=kWarningLevel)
+        PtDebugPrint(f"xKI.SaveFontSize(): Saving font size of {fontSize}.", level=kWarningLevel)
 
     ## Returns the font size currently applied to the KI.
     def GetFontSize(self):
@@ -2408,7 +2408,7 @@ class xKI(ptModifier):
     ## Applies the specified font size.
     def SetFontSize(self, fontSize):
 
-        PtDebugPrint("xKI.SetFontSize(): Setting font size to {}.".format(fontSize), level=kWarningLevel)
+        PtDebugPrint(f"xKI.SetFontSize(): Setting font size to {fontSize}.", level=kWarningLevel)
         if self.KILevel < kNormalKI:
             mKIdialog = KIMicro.dialog
         else:
@@ -2463,7 +2463,7 @@ class xKI(ptModifier):
                 PtDebugPrint("xKI.DetermineFadeTime(): Fade time disabled.", level=kWarningLevel)
             else:
                 self.chatMgr.fadeEnableFlag = True
-        PtDebugPrint("xKI.DetermineFadeTime(): The saved fade time is {}.".format(self.chatMgr.ticksOnFull), level=kWarningLevel)
+        PtDebugPrint(f"xKI.DetermineFadeTime(): The saved fade time is {self.chatMgr.ticksOnFull}.", level=kWarningLevel)
 
     ## Saves the current fading time to the Chronicle.
     def SaveFadeTime(self):
@@ -2475,7 +2475,7 @@ class xKI(ptModifier):
             entry.save()
         else:
             vault.addChronicleEntry(kChron.FadeTime, kChron.FadeTimeType, str(self.chatMgr.ticksOnFull))
-        PtDebugPrint("xKI.SaveFadeTime(): Saving Fade Time of {}.".format(self.chatMgr.ticksOnFull), level=kWarningLevel)
+        PtDebugPrint(f"xKI.SaveFadeTime(): Saving Fade Time of {self.chatMgr.ticksOnFull}.", level=kWarningLevel)
 
     ## Start the fade timer.
     # This gets called each time the user does something in relation to the
@@ -2688,7 +2688,7 @@ class xKI(ptModifier):
 
         self.BKPlayerSelected = None
         sendToField = ptGUIControlTextBox(BigKI.dialog.getControlFromTag(kGUI.BKIPlayerLine))
-        sendToField.setStringW("<" + str(message) + ">")
+        sendToField.setStringW(f"<{message}>")
         sendToButton = ptGUIControlButton(BigKI.dialog.getControlFromTag(kGUI.BKIToPlayerButton))
         sendToButton.hide()
 
@@ -2783,16 +2783,16 @@ class xKI(ptModifier):
         currPos = control.getScrollPos()
         if direction == 1:
             if currPos < control.getScrollRange():
-                PtDebugPrint("xKI.ScrollPlayerList(): Scrolling player list up from {} to {}.".format(currPos, currPos + 1), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ScrollPlayerList(): Scrolling player list up from {currPos} to {currPos + 1}.", level=kDebugDumpLevel)
                 control.setScrollPos(currPos + 1)
             else:
-                PtDebugPrint("xKI.ScrollPlayerList(): Not scrolling player list up from {}.".format(currPos), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ScrollPlayerList(): Not scrolling player list up from {currPos}.", level=kDebugDumpLevel)
         else:
             if currPos > 0:
-                PtDebugPrint("xKI.ScrollPlayerList(): Scrolling player list down from {} to {}.".format(currPos, currPos - 1), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ScrollPlayerList(): Scrolling player list down from {currPos} to {CurrPos - 1}.", level=kDebugDumpLevel)
                 control.setScrollPos(currPos - 1)
             else:
-                PtDebugPrint("xKI.ScrollPlayerList(): Not scrolling player list down from {}.".format(currPos), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ScrollPlayerList(): Not scrolling player list down from {currPos}.", level=kDebugDumpLevel)
         self.CheckScrollButtons()
         mKIdialog.refreshAllControls()
         self.ResetFadeState()
@@ -2808,7 +2808,7 @@ class xKI(ptModifier):
             mKIdialog = KIMini.dialog
         control = ptGUIControlListBox(KIMini.dialog.getControlFromTag(kGUI.PlayerList))
         currentPos = control.getScrollPos()
-        PtDebugPrint("xKI.CheckScrollButtons(): Current position = {} and range = {}.".format(currentPos, control.getScrollRange()), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.CheckScrollButtons(): {currentPos=}, range={control.getScrollRange()}.", level=kDebugDumpLevel)
         try:
             dbtn = ptGUIControlButton(mKIdialog.getControlFromTag(kGUI.miniPlayerListDown))
             if currentPos == 0:
@@ -2928,7 +2928,7 @@ class xKI(ptModifier):
                     else:
                         playerlist.addStringWithColor(PLR.playerGetName(), kColors.AgenBlueDk,kSelectDetermined)
                 else:
-                    PtDebugPrint("xKI.RefreshPlayerListDisplay(): Unknown player element type {}.".format(PLR.getType()), level=kErrorLevel)
+                    PtDebugPrint(f"xKI.RefreshPlayerListDisplay(): Unknown player element type {PLR.getType()}.", level=kErrorLevel)
             elif isinstance(plyr, ptPlayer):
                 preText = " "
                 postText = " "
@@ -2937,12 +2937,12 @@ class xKI(ptModifier):
                         preText = ">"
                         postText = "<"
                 if plyr.getPlayerName() != "":
-                    playerlist.addStringWithColor(preText + plyr.getPlayerName() + postText, kColors.DniSelectable, kSelectUseGUIColor)
+                    playerlist.addStringWithColor(f"{preText}{plyr.getPlayerName()}{postText}", kColors.DniSelectable, kSelectUseGUIColor)
                 else:
                     if plyr.getPlayerID() != 0:
-                        playerlist.addStringWithColor(preText + "[ID:{:08d}]".format(plyr.getPlayerID()) + postText, kColors.DniSelectable, kSelectDetermined)
+                        playerlist.addStringWithColor(f"{preText}[ID:{plyr.getPlayerID():08d}]{postText}", kColors.DniSelectable, kSelectDetermined)
                     else:
-                        playerlist.addStringWithColor(preText + "?unknown user?" + postText, kColors.DniSelectable, kSelectDetermined)
+                        playerlist.addStringWithColor(f"{preText}?unknown user?{postText}", kColors.DniSelectable, kSelectDetermined)
             elif isinstance(plyr, KIFolder):
                 playerlist.closeBranch()
                 playerlist.addBranchW(plyr.name.upper(), 1)
@@ -2973,7 +2973,7 @@ class xKI(ptModifier):
                     PtDebugPrint("xKI.RefreshPlayerListDisplay(): Previous player matches class.", level=kDebugDumpLevel)
                     # And finally, was it the same object?
                     if self.previouslySelectedPlayer == plyr:
-                        PtDebugPrint("xKI.RefreshPlayerListDisplay(): Previous player matches object, setting to {}.".format(idx), level=kDebugDumpLevel)
+                        PtDebugPrint(f"xKI.RefreshPlayerListDisplay(): Previous player matches object, setting to {idx}.", level=kDebugDumpLevel)
                         newSelection = idx
                         # Found him, stop looking.
                         self.previouslySelectedPlayer = None
@@ -2989,7 +2989,7 @@ class xKI(ptModifier):
             # Put the caret back to the regular prompt.
             caret = ptGUIControlTextBox(KIMini.dialog.getControlFromTag(kGUI.ChatCaretID))
             caret.setString(">")
-        PtDebugPrint("xKI.RefreshPlayerListDisplay(): Setting new selection to {}.".format(newSelection), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.RefreshPlayerListDisplay(): Setting new selection to {newSelection}.", level=kDebugDumpLevel)
         playerlist.setSelection(newSelection)
         self.previouslySelectedPlayer = None
 
@@ -3127,7 +3127,7 @@ class xKI(ptModifier):
     ## Refresh the display of the miniKI indicator bars.
     def RefreshMiniKIMarkerDisplay(self):
 
-        PtDebugPrint("xKI.RefreshMiniKIMarkerDisplay(): Refreshing {}:{}.".format(self.gMarkerGottenNumber, self.gMarkerToGetNumber), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.RefreshMiniKIMarkerDisplay(): Refreshing {self.gMarkerGottenNumber}:{self.gMarkerToGetNumber}.", level=kDebugDumpLevel)
         if self.KILevel > kMicroKI:
             if self.gMarkerGottenNumber == self.gMarkerToGetNumber and (self.gMarkerToGetNumber % 25) == 0:
                 xMyMaxMarkers = self.gMarkerToGetNumber
@@ -3250,7 +3250,7 @@ class xKI(ptModifier):
                         if self.originalminiKICenter is not None:
                             dragbar = ptGUIControlDragBar(KIMini.dialog.getControlFromTag(kGUI.miniDragBar))
                             self.lastminiKICenter = dragbar.getObjectCenter()
-                            PtDebugPrint("xKI.ToggleKISize(): Distance to original = {}.".format(self.lastminiKICenter.distance(self.originalminiKICenter)), level=kDebugDumpLevel)
+                            PtDebugPrint(f"xKI.ToggleKISize(): Distance to original = {self.lastminiKICenter.distance(self.originalminiKICenter)}.", level=kDebugDumpLevel)
                             # If they are close, then snap it to original.
                             if self.lastminiKICenter.distance(self.originalminiKICenter) < 0.027:
                                 self.lastminiKICenter = self.originalminiKICenter
@@ -3689,13 +3689,13 @@ class xKI(ptModifier):
 
         ageText = ptGUIControlTextBox(BigKI.dialog.getControlFromTag(kGUI.BKICurAgeNameID))
         ageName = GetAgeName().replace("(null)", "").strip()
-        PtDebugPrint("xKI.BigKISetStatics(): Displaying age name of {}.".format(ageName), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.BigKISetStatics(): Displaying age name of {ageName}.", level=kDebugDumpLevel)
         ageText.setStringW(ageName)
         playerText = ptGUIControlTextBox(BigKI.dialog.getControlFromTag(kGUI.BKPlayerName))
         IDText = ptGUIControlTextBox(BigKI.dialog.getControlFromTag(kGUI.BKPlayerID))
         localPlayer = PtGetLocalPlayer()
         playerText.setString(localPlayer.getPlayerName())
-        IDText.setString("[ID:{:08d}]".format(localPlayer.getPlayerID()))
+        IDText.setString(f"[ID:{localPlayer.getPlayerID():08d}]")
         self.UpdatePelletScore()
         self.BigKIRefreshHoodStatics()
 
@@ -3891,7 +3891,7 @@ class xKI(ptModifier):
                                 # Add to the master Age folder folder.
                                 masterAgeFolder.addNode(nFolder)
                             else:
-                                PtDebugPrint("xKI.BigKIRefreshFolderList(): Could not create folder for {}.".format(self.GetAgeInstanceName()), level=kErrorLevel)
+                                PtDebugPrint(f"xKI.BigKIRefreshFolderList(): Could not create folder for {self.GetAgeInstanceName()}.", level=kErrorLevel)
         else:
             PtDebugPrint("xKI.BigKIRefreshFolderList(): Could not find the Master Age jounal folder.", level=kErrorLevel)
 
@@ -3984,18 +3984,19 @@ class xKI(ptModifier):
                 myAgeLink = myAgeLink.upcastToAgeLinkNode()
                 myAge = myAgeLink.getAgeInfo()
                 if myAge is not None:
+                    myAgeName = GetAgeName(myAge)
                     if self.CanAgeInviteVistors(myAge, myAgeLink) and myAge.getAgeFilename() not in kAges.Hide:
-                        PtDebugPrint("xKI.BigKIRefreshAgeVisitorFolders(): Refreshing visitor list for {}.".format(GetAgeName(myAge)), level=kDebugDumpLevel)
-                        folderName = xCensor.xCensor(PtGetLocalizedString("KI.Config.OwnerVisitors", [GetAgeName(myAge)]), self.censorLevel)
+                        PtDebugPrint(f"xKI.BigKIRefreshAgeVisitorFolders(): Refreshing visitor list for {myAgeName}.", level=kDebugDumpLevel)
+                        folderName = xCensor.xCensor(PtGetLocalizedString("KI.Config.OwnerVisitors", [myAgeName]), self.censorLevel)
                         if folderName not in self.BKPlayerFolderDict:
                             # Add the new Age Visitors folder.
-                            PtDebugPrint("xKI.BigKIRefreshAgeVisitorFolders(): Adding visitor list for {}.".format(GetAgeName(myAge)), level=kDebugDumpLevel)
+                            PtDebugPrint(f"xKI.BigKIRefreshAgeVisitorFolders(): Adding visitor list for {myAgeName}.", level=kDebugDumpLevel)
                             self.BKPlayerListOrder.append(folderName)
                         self.BKPlayerFolderDict[folderName] = myAge
                 else:
-                    PtDebugPrint("xKI.BigKIRefreshAgeVisitorFolders(): Age info for {} is not ready yet.".format(myAgeLink.getUserDefinedName()), level=kErrorLevel)
+                    PtDebugPrint(f"xKI.BigKIRefreshAgeVisitorFolders(): Age info for {myAgeLink.getUserDefinedName()} is not ready yet.")
         except AttributeError:
-            PtDebugPrint("xKI.BigKIRefreshAgeVisitorFolders(): Error finding Age Visitors folder.", level=kErrorLevel)
+            PtDebugPrint("xKI.BigKIRefreshAgeVisitorFolders(): Error finding Age Visitors folder.")
 
     ## Refresh the configuration folder listing for owned Ages.
     # This is currently only used for Neighborhoods.
@@ -4015,18 +4016,19 @@ class xKI(ptModifier):
                 myAgeLink = myAgeLink.upcastToAgeLinkNode()
                 myAge = myAgeLink.getAgeInfo()
                 if myAge is not None:
+                    myAgeName = GetAgeName(myAge)
                     if myAge.getAgeFilename() == "Neighborhood":
-                        PtDebugPrint("xKI.BigKIRefreshAgesOwnedFolder(): Refreshing owner configuration for Age {}.".format(GetAgeName(myAge)), level=kDebugDumpLevel)
-                        configName = xCensor.xCensor(PtGetLocalizedString("KI.Config.OwnerConfig", [GetAgeName(myAge)]), self.censorLevel)
+                        PtDebugPrint(f"xKI.BigKIRefreshAgesOwnedFolder(): Refreshing owner configuration for Age {myAgeName}.", level=kDebugDumpLevel)
+                        configName = xCensor.xCensor(PtGetLocalizedString("KI.Config.OwnerConfig", [myAgeName]), self.censorLevel)
                         if configName not in self.BKConfigFolderDict:
                             # Add the new Age configuration.
-                            PtDebugPrint("xKI: adding owner config for Age {}.".format(GetAgeName(myAge)), level=kDebugDumpLevel)
+                            PtDebugPrint(f"xKI: adding owner config for Age {myAgeName}.", level=kDebugDumpLevel)
                             self.BKConfigListOrder.append(configName)
                         self.BKConfigFolderDict[configName] = myAge
                 else:
-                    PtDebugPrint("xKI.BigKIRefreshAgesOwnedFolder(): Age info for {} is not ready yet.".format(myAgeLink.getUserDefinedName()), level=kErrorLevel)
+                    PtDebugPrint(f"xKI.BigKIRefreshAgesOwnedFolder(): Age info for {myAgeLink.getUserDefinedName()} is not ready yet.")
         except AttributeError:
-            PtDebugPrint("xKI.BigKIRefreshAgesOwnedFolder(): Error finding Age folder.", level=kErrorLevel)
+            PtDebugPrint("xKI.BigKIRefreshAgesOwnedFolder(): Error finding Age folder.")
 
     ## Reget the contents of the selected content list.
     def BigKINewContentList(self):
@@ -4222,17 +4224,17 @@ class xKI(ptModifier):
                         continue
 
                     if (self.onlyGetPMsFromBuddies and not buddies.playerlistHasPlayer(ref.getSaverID())) or ignores.playerlistHasPlayer(ref.getSaverID()):
-                        PtDebugPrint("xKI.BigKIProcessContentList(): Remove from inbox because it's from {}.".format(ref.getSaver().playerGetName()), level=kWarningLevel)
+                        PtDebugPrint(f"xKI.BigKIProcessContentList(): Remove from inbox because it's from {ref.getSaver().playerGetName()}.", level=kWarningLevel)
                         # Remove from the list.
                         removeList.insert(0, idx)
                         # Only remove from inbox if specified.
                         if removeInboxStuff:
-                            PtDebugPrint("xKI.BigKIProcessContentList(): Really removed from inbox because it's from {}, this time.".format(ref.getSaver().playerGetName()), level=kWarningLevel)
+                            PtDebugPrint(f"xKI.BigKIProcessContentList(): Really removed from inbox because it's from {ref.getSaver().playerGetName()}, this time.", level=kWarningLevel)
                             # Remove from inbox (how will this work?).
                             element = ref.getChild()
                             inbox.removeNode(element)
         if removeList:
-            PtDebugPrint("xKI.BigKIProcessContentList(): Removing {} contents from being displayed.".format(len(removeList)), level=kWarningLevel)
+            PtDebugPrint(f"xKI.BigKIProcessContentList(): Removing {len(removeList)} contents from being displayed.", level=kWarningLevel)
         for removeidx in removeList:
             del self.BKContentList[removeidx]
 
@@ -4277,7 +4279,7 @@ class xKI(ptModifier):
                 createField.setString(" ")
                 createBtn.hide()
                 if len(self.BKFolderListOrder) != 0:
-                    PtDebugPrint("xKI.BigKIRefreshContentListDisplay(): Index error: self.BKFolderSelected = {} and list = {}.".format(self.BKFolderSelected, self.BKFolderListOrder), level=kWarningLevel)
+                    PtDebugPrint(f"xKI.BigKIRefreshContentListDisplay(): Index error: {self.BKFolderSelected=}, {self.BKFolderListOrder=}.", level=kWarningLevel)
                 return
             ID = kGUI.BKILMOffsetLine01
             if len(self.BKContentList) != 0:
@@ -4380,7 +4382,7 @@ class xKI(ptModifier):
                                         # Probably still downloading because of lag.
                                         contentTitle.setString("--[Downloading]--")
                                         contentTitle.setForeColor(kColors.DniYellow)
-                                        PtDebugPrint("xKI.BigKIRefreshContentListDisplay(): Unknown data type in content list: type = {}.".format(element.getType()), level=kErrorLevel)
+                                        PtDebugPrint(f"xKI.BigKIRefreshContentListDisplay(): Unknown data type in content list: type = {element.getType()}.", level=kErrorLevel)
                                     contentTitle.show()
                                     try:
                                         tupTime = time.gmtime(PtGMTtoDniTime(element.getModifyTime()))
@@ -4488,7 +4490,7 @@ class xKI(ptModifier):
             return
         dataType = element.getType()
         if dataType != PtVaultNodeTypes.kTextNoteNode:
-            PtDebugPrint("xKI.BigKIDisplayJournalEntry(): Wrong element type {}.".format(dataType), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKIDisplayJournalEntry(): Wrong element type {dataType}.")
             return
         element = element.upcastToTextNoteNode()
         # Display the content on the screen.
@@ -4533,7 +4535,7 @@ class xKI(ptModifier):
                 PtDebugPrint("xKI.BigKICreateJournalNote(): Journal not ready.", level=kErrorLevel)
                 return None
         except KeyError:
-            PtDebugPrint("xKI.BigKICreateJournalNote(): Could not find journal for this Age: {}.".format(self.GetAgeInstanceName()), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKICreateJournalNote(): Could not find journal for this Age: {self.GetAgeInstanceName()}.")
 
     ## Display a KI Picture in the KI.
     def BigKIDisplayPicture(self):
@@ -4564,7 +4566,7 @@ class xKI(ptModifier):
             return
         dataType = element.getType()
         if dataType != PtVaultNodeTypes.kImageNode:
-            PtDebugPrint("xKI.BigKIDisplayPicture(): Wrong element type {}.".format(dataType), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKIDisplayPicture(): Wrong element type {dataType}.")
             return
         element = element.upcastToImageNode()
         # Display the content on the screen.
@@ -4594,7 +4596,7 @@ class xKI(ptModifier):
     ## Create and display a new KI Picture in the Journal.
     def BigKICreateJournalImage(self, image, useScreenShot=False):
 
-        PtDebugPrint("xKI.BigKICreateJournalImage(): Create a KI Picture from {}.".format(image), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.BigKICreateJournalImage(): Create a KI Picture from {image}.", level=kDebugDumpLevel)
         # If there is no folder list, then make one.
         if not self.BKFolderListOrder:
             self.BigKIRefreshFolderList()
@@ -4617,7 +4619,7 @@ class xKI(ptModifier):
                 PtDebugPrint("xKI.BigKICreateJournalImage(): Journal not ready.", level=kErrorLevel)
                 return None
         except KeyError:
-            PtDebugPrint("xKI.BigKICreateJournalImage(): Could not find journal for this Age: {}.".format(self.GetAgeInstanceName()), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKICreateJournalImage(): Could not find journal for this Age: {self.GetAgeInstanceName()}.", level=kErrorLevel)
 
     ## Display a player entry.
     def BigKIDisplayPlayerEntry(self):
@@ -4648,7 +4650,7 @@ class xKI(ptModifier):
             # Display the content on the screen.
             plyName.setString(xCensor.xCensor(self.BKCurrentContent.getPlayerName(), self.censorLevel))
             plyName.show()
-            IDText = "{:08d}".format(self.BKCurrentContent.getPlayerID())
+            IDText = f"{self.BKCurrentContent.getPlayerID():08d}"
             plyID.setString(IDText)
             plyID.show()
             plyDetail.setStringW(PtGetLocalizedString("KI.Player.InAge", [GetAgeName()]))
@@ -4663,13 +4665,13 @@ class xKI(ptModifier):
             return
         dataType = element.getType()
         if dataType != PtVaultNodeTypes.kPlayerInfoNode:
-            PtDebugPrint("xKI.BigKIDisplayPlayerEntry(): Wrong element type {}.".format(dataType), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKIDisplayPlayerEntry(): Wrong element type {dataType}.")
             return
         element = element.upcastToPlayerInfoNode()
         # Display the content on the screen.
         plyName.setString(xCensor.xCensor(element.playerGetName(), self.censorLevel))
         plyName.show()
-        IDText = "{:08d}".format(element.playerGetID())
+        IDText = f"{element.playerGetID():08d}"
         plyID.setString(IDText)
         plyID.show()
         if element.playerIsOnline():
@@ -4754,10 +4756,10 @@ class xKI(ptModifier):
             return
         dataType = element.getType()
         if dataType != PtVaultNodeTypes.kMarkerGameNode:
-            PtDebugPrint("xKI.BigKIDisplayMarkerGame(): Cannot process this node, wrong data type: {}.".format(element.getType()), level=kErrorLevel)
+            PtDebugPrint(f"xKI.BigKIDisplayMarkerGame(): Cannot process this node, wrong data type: {element.getType()}.")
             return
         element = element.upcastToMarkerGameNode()
-        PtDebugPrint("xKI.BigKIDisplayMarkerGame(): Starting Marker Game KI Display Manager, loading game: {}.".format(element.getGameName()), level=kDebugDumpLevel)
+        PtDebugPrint(f"xKI.BigKIDisplayMarkerGame(): Starting Marker Game KI Display Manager, loading game: {element.getGameName()}.", level=kDebugDumpLevel)
 
         ## This was previously BigKIFinishDisplayMarkerGame()
         questGameFinished = False
@@ -4885,7 +4887,7 @@ class xKI(ptModifier):
                     torans = coord.getTorans()
                     hSpans = coord.getHSpans()
                     vSpans = coord.getVSpans()
-                    mlbMarkerList.addStringW("[{}:{},{},{}] {}".format(FilterAgeName(age), torans, hSpans, vSpans, xCensor.xCensor(desc, self.censorLevel)))
+                    mlbMarkerList.addStringW(f"[{FilterAgeName(age)}:{torans},{hSpans},{vSpans}] {xCensor.xCensor(desc, self.censorLevel)}")
                 mlbMarkerList.unlock()
 
                 # Refresh the scroll position
@@ -4984,7 +4986,7 @@ class xKI(ptModifier):
                     torans = coord.getTorans()
                     hSpans = coord.getHSpans()
                     vSpans = coord.getVSpans()
-                    mlbMarkerList.addStringW("[{}:{},{},{}] {}".format(FilterAgeName(age), torans, hSpans, vSpans, xCensor.xCensor(desc, self.censorLevel)))
+                    mlbMarkerList.addStringW(f"[{FilterAgeName(age)}:{torans},{hSpans},{vSpans}] {xCensor.xCensor(desc, self.censorLevel)}")
                 else:
                     questGameFinished = False
             mlbMarkerTextTB.hide()
@@ -5025,7 +5027,7 @@ class xKI(ptModifier):
         except:
             creatorName = ""
 
-        mrkfldOwner.setStringW(PtGetLocalizedString("KI.MarkerGame.OwnerTitle") + " {} [ID:{:08d}]".format(creatorName, creatorID))
+        mrkfldOwner.setStringW(f"{PtGetLocalizedString('KI.MarkerGame.OwnerTitle')} {creatorName} [ID:{creatorID:08d}]")
         mrkfldOwner.show()
         # TODO: time limit
         mtbGameTime.hide()
@@ -5270,12 +5272,12 @@ class xKI(ptModifier):
                 # Set the new title.
                 myAge.setAgeUserDefinedName(control.getStringW())
                 myAge.save()
-                PtDebugPrint("xKI.SaveAgeNameFromEdit(): Updating title to \"{}\".".format(control.getStringW()), level=kDebugDumpLevel )
+                PtDebugPrint(f"xKI.SaveAgeNameFromEdit(): Updating title to \"{control.getStringW()}\".", level=kDebugDumpLevel)
             else:
-                PtDebugPrint("xKI.SaveAgeNameFromEdit(): Escape hit.", level=kDebugDumpLevel )
+                PtDebugPrint("xKI.SaveAgeNameFromEdit(): Escape hit.", level=kDebugDumpLevel)
             newTitle = myAge.getDisplayName()
         except LookupError:
-            PtDebugPrint("xKI.SaveAgeNameFromEdit(): The current Age could not be found.", level=kDebugDumpLevel )
+            PtDebugPrint("xKI.SaveAgeNameFromEdit(): The current Age could not be found.", level=kDebugDumpLevel)
             myAge = None
         control.hide()
         # Re-enable the button and text.
@@ -5303,7 +5305,7 @@ class xKI(ptModifier):
                             element.setGameName(control.getStringW())
                             title.setString(control.getStringW())
                             element.save()
-                            PtDebugPrint("xKI.SaveMarkerGameNameFromEdit(): Updating title to \"{}\".".format(newText), level=kDebugDumpLevel)
+                            PtDebugPrint(f"xKI.SaveMarkerGameNameFromEdit(): Updating title to \"{newText}\".", level=kDebugDumpLevel)
                             self.RefreshPlayerList()
                         else:
                             PtDebugPrint("xKI.SaveMarkerGameNameFromEdit(): Escape hit.", level=kDebugDumpLevel)
@@ -5370,7 +5372,7 @@ class xKI(ptModifier):
             elif bbID == kGUI.OptionsMenuButtonID:
                 PtShowDialog("OptionsMenuGUI")
             else:
-                PtDebugPrint("xKI.ProcessNotifyBlackbar(): Don't know this control bbID = {}.".format(bbID), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyBlackbar(): Don't know this control {bbID=}.", level=kDebugDumpLevel)
         elif event == kInterestingEvent:
             plybkCB = ptGUIControlCheckBox(KIBlackbar.dialog.getControlFromTag(kGUI.PlayerBookCBID))
             try:
@@ -5417,7 +5419,7 @@ class xKI(ptModifier):
             elif bbID == kGUI.OptionsMenuButtonID:
                 PtShowDialog("OptionsMenuGUI")
             else:
-                PtDebugPrint("xKI.ProcessNotifyMicroBlackbar(): Don't know this control bbID = {}.".format(bbID), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyMicroBlackbar(): Don't know this control {bbID=}.", level=kDebugDumpLevel)
         elif event == kInterestingEvent:
             plybkCB = ptGUIControlCheckBox(KIMicroBlackbar.dialog.getControlFromTag(kGUI.PlayerBookCBID))
             try:
@@ -5863,7 +5865,7 @@ class xKI(ptModifier):
                             pass
                         elif isinstance(self.BKPlayerSelected, Device):
                             if self.BKPlayerSelected.name in self.imagerMap:
-                                sName = "Upload={}".format(self.BKPlayerSelected.name)
+                                sName = f"Upload={self.BKPlayerSelected.name}"
                                 SendNote(self.key, self.imagerMap[self.BKPlayerSelected.name], sName, sendElement.getID())
                             toPlayerBtn.hide()
                         elif isinstance(self.BKPlayerSelected, ptVaultNode):
@@ -6072,7 +6074,7 @@ class xKI(ptModifier):
             elif kiID == kGUI.BKIKIFadeTime:
                 slidePerTime = float(control.getMax() - control.getMin()) / float(kChat.FadeTimeMax)
                 self.chatMgr.ticksOnFull = int(control.getValue() / slidePerTime + 0.25)
-                PtDebugPrint("xKI.ProcessNotifySettingsExpanded(): FadeTime set to {}.".format(self.chatMgr.ticksOnFull), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifySettingsExpanded(): FadeTime set to {self.chatMgr.ticksOnFull}.", level=kDebugDumpLevel)
                 if self.chatMgr.ticksOnFull == kChat.FadeTimeMax:
                     self.chatMgr.fadeEnableFlag = False
                     PtDebugPrint("KISettings: FadeTime disabled.", level=kDebugDumpLevel)
@@ -6096,27 +6098,27 @@ class xKI(ptModifier):
             audio = ptAudioControl()
             if plID == kGUI.BKISoundFXVolSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): SoundFX being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): SoundFX being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setSoundFXVolume(setting / 10)
             elif plID == kGUI.BKIMusicVolSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): Music being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): Music being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setMusicVolume(setting / 10)
             elif plID == kGUI.BKIVoiceVolSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): Voice being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): Voice being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setVoiceVolume(setting / 10)
             elif plID == kGUI.BKIAmbienceVolSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): Ambience being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): Ambience being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setAmbienceVolume(setting / 10)
             elif plID == kGUI.BKIMicLevelSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): MicLevel being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): MicLevel being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setMicLevel(setting / 10)
             elif plID == kGUI.BKIGUIVolSlider:
                 setting = control.getValue()
-                PtDebugPrint("xKI.ProcessNotifyVolumeExpanded(): MicLevel being changed to {:g} (into {:g}).".format(setting, setting / 10), level=kDebugDumpLevel)
+                PtDebugPrint(f"xKI.ProcessNotifyVolumeExpanded(): MicLevel being changed to {setting:g} (into {setting / 10:g}).", level=kDebugDumpLevel)
                 audio.setGUIVolume(setting / 10)
 
     ## Process notifications originating from an expanded Age Owner mode in the BigKI.
@@ -6143,9 +6145,9 @@ class xKI(ptModifier):
                     makePublic = 1
                     if myAge.isPublic():
                         makePublic = 0
-                        PtDebugPrint("xKI.ProcessNotifyAgeOwnerExpanded(): Making {} private.".format(myAge.getDisplayName()), level=kDebugDumpLevel)
+                        PtDebugPrint(f"xKI.ProcessNotifyAgeOwnerExpanded(): Making {myAge.getDisplayName()} private.", level=kDebugDumpLevel)
                     else:
-                        PtDebugPrint("xKI.ProcessNotifyAgeOwnerExpanded(): Making {} public.".format(myAge.getDisplayName()), level=kDebugDumpLevel)
+                        PtDebugPrint(f"xKI.ProcessNotifyAgeOwnerExpanded(): Making {myAge.getDisplayName()} public.", level=kDebugDumpLevel)
                     vault.setAgePublic(myAgeStruct, makePublic)
                     # Let the refresh re-enable the public button.
                     control.disable()
@@ -6186,7 +6188,7 @@ class xKI(ptModifier):
                         descript = ptGUIControlMultiLineEdit(KIAgeOwnerExpanded.dialog.getControlFromTag(kGUI.BKAgeOwnerDescription))
                         myAge = self.BKConfigFolderDict[self.BKConfigListOrder[self.BKFolderSelected]]
                         if myAge is not None:
-                            PtDebugPrint("xKI.ProcessNotifyAgeOwnerExpanded(): Age description updated for {}.".format(myAge.getDisplayName()), level=kDebugDumpLevel)
+                            PtDebugPrint(f"xKI.ProcessNotifyAgeOwnerExpanded(): Age description updated for {myAge.getDisplayName()}.", level=kDebugDumpLevel)
                             myAge.setAgeDescription(descript.getString())
                             myAge.save()
                         else:
@@ -6197,7 +6199,7 @@ class xKI(ptModifier):
                     descript = ptGUIControlMultiLineEdit(KIAgeOwnerExpanded.dialog.getControlFromTag(kGUI.BKAgeOwnerDescription))
                     myAge = self.BKConfigFolderDict[self.BKConfigListOrder[self.BKFolderSelected]]
                     if myAge is not None:
-                        PtDebugPrint("xKI.ProcessNotifyAgeOwnerExpanded(): Age description updated for {}.".format(myAge.getDisplayName()), level=kDebugDumpLevel)
+                        PtDebugPrint(f"xKI.ProcessNotifyAgeOwnerExpanded(): Age description updated for {myAge.getDisplayName()}.", level=kDebugDumpLevel)
                         buff = descript.getString()
                         myAge.setAgeDescription(buff)
                         myAge.save()
@@ -6418,10 +6420,11 @@ class xKI(ptModifier):
         elif event == PtVaultCallbackTypes.kVaultDisconnected:
             PtDebugPrint("xKI.HandleVaultTypeEvents(): Disconnected from the Vault.", level=kDebugDumpLevel)
         elif event == PtVaultCallbackTypes.kVaultNodeSaved:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): A node is being saved (ID = {}, type = {}).".format(tupData[0].getID(), tupData[0].getType()), level=kDebugDumpLevel)
-            if tupData[0].getType() == PtVaultNodeTypes.kPlayerInfoNode:
+            id, type = tupData[0].getID(), tupData[0].getType()
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): A node is being saved ({ID=}, {type=}).", level=kDebugDumpLevel)
+            if type == PtVaultNodeTypes.kPlayerInfoNode:
                 self.RefreshPlayerList()
-            elif tupData[0].getType() == PtVaultNodeTypes.kAgeInfoNode:
+            elif type == PtVaultNodeTypes.kAgeInfoNode:
                 self.BigKISetStatics()
                 self.BigKIRefreshFolderList()
                 self.BigKIOnlySelectedToButtons()
@@ -6429,13 +6432,14 @@ class xKI(ptModifier):
             self.BigKIRefreshContentList()
             self.BigKIRefreshContentListDisplay()
         elif event == PtVaultCallbackTypes.kVaultNodeInitialized:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): A node has been initalized (ID = {}, type = {}).".format(tupData[0].getID(), tupData[0].getType()), level=kDebugDumpLevel)
+            id, type = tupData[0].getID(), tupData[0].getType()
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): A node has been initalized ({ID=}, {type=}).", level=kDebugDumpLevel)
             if self.KILevel > kMicroKI:
                 self.BigKICheckElementRefresh(tupData[0])
         elif event == PtVaultCallbackTypes.kVaultNodeAdded:
             PtDebugPrint("xKI.HandleVaultTypeEvents(): A node has been added.", level=kDebugDumpLevel)
         elif event == PtVaultCallbackTypes.kVaultNodeRefAdded:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): A node reference has been added (childID = {}, parentID = {}).".format(tupData[0].getChildID(), tupData[0].getParentID()), level=kDebugDumpLevel)
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): A node reference has been added (childID = {tupData[0].getChildID()}, parentID = {tupData[0].getParentID()}).", level=kDebugDumpLevel)
             if self.KILevel > kMicroKI:
                 folder = tupData[0].getParent()
                 folder = folder.upcastToFolderNode()
@@ -6460,7 +6464,7 @@ class xKI(ptModifier):
                     self.BigKIRefreshFolderList()
                 self.BigKICheckFolderRefresh(folder)
         elif event == PtVaultCallbackTypes.kVaultRemovingNodeRef:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): A node reference is being removed (childID = {}, parentID = {}).".format(tupData[0].getChildID(), tupData[0].getParentID()), level=kDebugDumpLevel)
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): A node reference is being removed (childID = {tupData[0].getChildID()}, parentID = {tupData[0].getParentID()}).", level=kDebugDumpLevel)
         elif event == PtVaultCallbackTypes.kVaultNodeRefRemoved:
             PtDebugPrint("xKI.HandleVaultTypeEvents(): A node reference has been removed (childID, parentID): ", tupData, level=kDebugDumpLevel)
             if self.KILevel > kMicroKI:
@@ -6468,9 +6472,9 @@ class xKI(ptModifier):
                     self.BigKIDisplayMarkerGame()
                 self.BigKICheckFolderRefresh()
         elif event == PtVaultCallbackTypes.kVaultOperationFailed:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): A Vault operation failed (operation, resultCode): ", tupData, level=kDebugDumpLevel)
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): A Vault operation failed (operation, resultCode): {tupData}", level=kDebugDumpLevel)
         else:
-            PtDebugPrint("xKI.HandleVaultTypeEvents(): Unknown Vault event: {}.".format(event), level=kWarningLevel)
+            PtDebugPrint(f"xKI.HandleVaultTypeEvents(): Unknown Vault event: {event}.", level=kWarningLevel)
 
 
     #~~~~~~~~~~~~~~~~~~~~~#

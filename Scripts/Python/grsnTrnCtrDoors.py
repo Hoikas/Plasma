@@ -293,16 +293,16 @@ class grsnTrnCtrDoors(ptResponder):
     def UpdateRespStack (self):
         #Updates the Responder List
         old = self.grsnDoorStack.pop(0)
-        PtDebugPrint("grsnTrnCtrDoors: Getting rid of Resp: %s" % (old))
+        PtDebugPrint(f"grsnTrnCtrDoors: Getting rid of Resp: {old}")
         if len(self.grsnDoorStack):            
             PtDebugPrint("grsnTrnCtrDoors: There's at lest one more Resp to play.")
             code = self.grsnDoorStack[0]            
-            PtDebugPrint("Playing command: %s" % (code))
+            PtDebugPrint(f"Playing command: {code}")
             self.ExecCode(code)
 
     def UpdateDoorState (self, StateNum):
         self.SDL['grsnDoorState'] = (StateNum,)
-        self.SendNote('DoorState='+str(StateNum))
+        self.SendNote(f'DoorState={StateNum}')
 
     def ExecCode(self, code):
         if code == "doorOpenResponder":
@@ -310,5 +310,5 @@ class grsnTrnCtrDoors(ptResponder):
         elif code == "doorCloseResponder":
             doorCloseResponder.run(self.key,netPropagate=0)
         else:
-            PtDebugPrint("grsnTrnCtrDoors.ExecCode(): ERROR! Invalid code '%s'." % (code))
+            PtDebugPrint(f"grsnTrnCtrDoors.ExecCode(): ERROR! Invalid code '{code}'.")
             self.grsnDoorStack.pop(0)

@@ -67,7 +67,7 @@ class xHighLevelStarTrekDoor(ptModifier):
         self.id = 5310
         self.version = 3
 
-        PtDebugPrint("DEBUG: xHighLevelStarTrekDoor.__init__: v. %d" % self.version)
+        PtDebugPrint(f"DEBUG: xHighLevelStarTrekDoor.__init__: v. {self.version}")
         
         self.PrevDoorState = 0
         self.DoorState = 0
@@ -101,8 +101,8 @@ class xHighLevelStarTrekDoor(ptModifier):
             self.SDL['DoorState'] = (0,)
             self.DoorState = self.SDL['DoorState'][0]
          
-        PtDebugPrint("xHighLevelStarTrekDoor: self.SDL = %d" % self.DoorState)
-        PtDebugPrint("xHighLevelStarTrekDoor: Player List = %d" % len(PtGetPlayerList()))
+        PtDebugPrint(f"xHighLevelStarTrekDoor: {self.DoorState=} " % self.DoorState)
+        PtDebugPrint(f"xHighLevelStarTrekDoor: {len(PtGetPlayerList())=}")
 
         if len(PtGetPlayerList()) > 0:
             
@@ -141,11 +141,11 @@ class xHighLevelStarTrekDoor(ptModifier):
         ageSDL = PtGetAgeSDL()
         if VARname == strDoorEnabledVar.value:
             self.DoorEnabled = ageSDL[strDoorEnabledVar.value][0]
-            PtDebugPrint("HighLevelStarTrekDoor.OnSDLNotify: updated doorEnabled to %d" % self.DoorEnabled)
+            PtDebugPrint(f"HighLevelStarTrekDoor.OnSDLNotify: updated doorEnabled to {self.DoorEnabled}")
         elif VARname == strDoorClosedVar.value:
             doorClosed = ageSDL[strDoorClosedVar.value][0]
-            PtDebugPrint("HighLevelStarTrekDoor.OnSDLNotify: Door Closed SDL Updated to: %d" % doorClosed)
-            PtDebugPrint("HighLevelStarTrekDoor.OnSDLNotify: Player who updated SDL: ", playerID)
+            PtDebugPrint(f"HighLevelStarTrekDoor.OnSDLNotify: Door Closed SDL Updated to: {doorClosed}")
+            PtDebugPrint(f"HighLevelStarTrekDoor.OnSDLNotify: Player who updated SDL: {playerID}")
             if playerID == 0 and self.sceneobject.isLocallyOwned():
                 if doorClosed == 0:
                     self.SendNote("respOpenDoor;1")
@@ -193,14 +193,14 @@ class xHighLevelStarTrekDoor(ptModifier):
             
             elif events[0][1].find('respOpenDoor') != -1 or events[0][1].find('respCloseDoor') != -1:
                 self.DoorStack.append(events[0][1])
-                PtDebugPrint("xHighLevelStarTrekDoor: New list is: %s" % (str(self.DoorStack)))
+                PtDebugPrint(f"xHighLevelStarTrekDoor: New list is: {self.DoorStack}")
                 
                 if len(self.DoorStack) == 1:
                     PtDebugPrint("xHighLevelStarTrekDoor: List is only one command long, so I'm playing it")
                     code = self.DoorStack[0]
-                    #PtDebugPrint("xHighLevelStarTrekDoor: Timer set to : %d" % self.respondertime)
+                    #PtDebugPrint(f"xHighLevelStarTrekDoor: Timer set to : {self.respondertime}")
                     #PtAtTimeCallback(self.key,self.respondertime,1)
-                    PtDebugPrint("xHighLevelStarTrekDoor: Playing command: %s" % (code))
+                    PtDebugPrint(f"xHighLevelStarTrekDoor: Playing command: {code}")
                     self.ExecCode(code)
                     if self.DoorStack[0].find('fastforward=1') != -1:
                         self.UpdateRespStack()
@@ -208,13 +208,13 @@ class xHighLevelStarTrekDoor(ptModifier):
 
 
             elif events[0][1].find('DoorState') != -1 and events[0][1].find('rgnTriggerEnter') == -1 and events[0][1].find('rgnTriggerExit') == -1 and events[0][1].find('Responder') == -1:
-                #PtDebugPrint("xHighLevelStarTrekDoor: Events = ", events[0][1].lstrip('DoorState='))
+                #PtDebugPrint(f"xHighLevelStarTrekDoor: Events = {events[0][1].lstrip('DoorState=')}")
                 curState = int(events[0][1].lstrip('DoorState='))
-                PtDebugPrint("xHighLevelStarTrekDoor: Door State Updated to %d" % curState)
-                #PtDebugPrint("xHighLevelStarTrekDoor: Door State SDL Set to %d" % self.SDL['DoorState'][0])
+                PtDebugPrint(f"xHighLevelStarTrekDoor: Door State Updated to curState")
+                #PtDebugPrint(f"xHighLevelStarTrekDoor: Door State SDL Set to {self.SDL['DoorState'][0]}")
                 if curState != self.DoorState:
                     self.DoorState = curState
-                    PtDebugPrint("xHighLevelStarTrekDoor: Door state is now %d" % self.DoorState)
+                    PtDebugPrint(f"xHighLevelStarTrekDoor: Door state is now {self.DoorState}")
                 return
 
                     
@@ -281,11 +281,11 @@ class xHighLevelStarTrekDoor(ptModifier):
         #PtClearTimerCallbacks(self.key)
         #Updates the Responder List
         old = self.DoorStack.pop(0)
-        PtDebugPrint("xHighLevelStarTrekDoor: Getting rid of Resp: %s" % (old))
+        PtDebugPrint(f"xHighLevelStarTrekDoor: Getting rid of Resp: {old}")
         if len(self.DoorStack):
             PtDebugPrint("xHighLevelStarTrekDoor: There's at lest one more Resp to play.")
             code = self.DoorStack[0]            
-            PtDebugPrint("Playing command: %s" % (code))
+            PtDebugPrint(f"Playing command: {code}")
             #PtDebugPrint("xHighLevelStarTrekDoor: Timer set to : %d" % self.respondertime)
             #PtAtTimeCallback(self.key,self.respondertime,1)
             self.ExecCode(code)
@@ -298,7 +298,7 @@ class xHighLevelStarTrekDoor(ptModifier):
             ageSDL = PtGetAgeSDL()
             self.DoorState = StateNum
             self.SDL['DoorState'] = (StateNum,)
-            self.SendNote('DoorState='+str(StateNum))
+            self.SendNote(f'DoorState={StateNum}')
             PtClearTimerCallbacks(self.key)
             PtAtTimeCallback(self.key, 30, 1)
             if self.DoorEnabled == 0:
@@ -356,8 +356,8 @@ class xHighLevelStarTrekDoor(ptModifier):
                 else:
                     respCloseDoor.run(self.key,netPropagate=0)
             else:
-                PtDebugPrint("xHighLevelStarTrekDoor.ExecCode(): ERROR! Invalid tag '%s'." % (tag))
+                PtDebugPrint(f"xHighLevelStarTrekDoor.ExecCode(): ERROR! Invalid tag '{tag}'.")
                 self.DoorStack.pop(0)
         except:
-            PtDebugPrint("xStandardDoor.ExecCode(): ERROR! Invalid code '%s'." % (code))
+            PtDebugPrint(f"xStandardDoor.ExecCode(): ERROR! Invalid code '{code}'.")
             self.DoorStack.pop(0)

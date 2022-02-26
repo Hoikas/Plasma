@@ -224,7 +224,7 @@ class kdshTreeRingsSolution(ptModifier):
     def OnServerInitComplete(self):
         ageSDL = PtGetAgeSDL()        
         if ageSDL == None:
-            PtDebugPrint("kdshTreeRingsResp.OnFirstUpdate():\tERROR---missing age SDL (%s)" % varstring.value)
+            PtDebugPrint(f"kdshTreeRingsResp.OnFirstUpdate():\tERROR---missing age SDL ({varstring.value})")
 
         ageSDL.setNotify(self.key,"OuterRing01",0.0)
         ageSDL.setNotify(self.key,"MiddleRing01",0.0)
@@ -246,28 +246,28 @@ class kdshTreeRingsSolution(ptModifier):
         ageSDL = PtGetAgeSDL()
         for i in ("Outer", "Middle", "Inner"):
             for j in ("1", "2", "3"):
-                ring = "{location}Ring0{idx}".format(location=i, idx=j)
-                ring_attrib = "{ring}_0{bearing}".format(ring=ring, bearing=ageSDL[ring][0])
+                ring = f"{i}Ring0{j}".format
+                ring_attrib = f"{ring}_0{ageSDL[ring][0]}"
                 globals()[ring_attrib].animation.skipToEnd()
-                PtDebugPrint("\t{} = {}".format(ring, ageSDL[ring][0]), level=kWarningLevel)
+                PtDebugPrint(f"\t{ring} = {ageSDL[ring][0]}", level=kWarningLevel)
 
         
     def OnSDLNotify(self,VARname,SDLname,playerID,tag):
         global StillSolved
         ageSDL = PtGetAgeSDL()             
-        #~ PtDebugPrint("kdshTreeRingsSolution.OnSDLNotify():\t VARname:%s, playerID:%s, tag:%s" % (VARname,playerID,tag))
+        #~ PtDebugPrint(f"kdshTreeRingsSolution.OnSDLNotify():\t {VARname=}, {playerID=}, {tag=}")
 
         StillSolved = False
         newbearing = ageSDL[VARname][0]
         #~ PtDebugPrint("VARname = ", VARname, "newbear = ", newbearing)
-        globals()["{id}_0{bearing}".format(id=VARname, bearing=newbearing)].animation.play()
+        globals()[f"{VARname}_0{newbearing}"].animation.play()
         
         if "3" in VARname: 
             #~ PtDebugPrint("TRS: Nothing to ff. VARname = ", VARname)
             pass
         else:
             # this runs the animation on the "fake" ring in front of the GUI
-            animname= "GUI{id}_0{bearing}".format(id="".join(VARname.split("Ring")), bearing=newbearing)
+            animname= f"GUI{''.join(VARname.split('Ring'))}_0{newbearing}"
             globals()[animname].animation.play()
 
 ###
@@ -285,9 +285,9 @@ class kdshTreeRingsSolution(ptModifier):
         InnerRing03 = ageSDL["InnerRing03"][0]
             
         PtDebugPrint("Current Scope Positions [Outer, Middle, Inner]:")
-        PtDebugPrint("\tRing #1: [", OuterRing01 ,", ",MiddleRing01,", ",InnerRing01," ]")
-        PtDebugPrint("\tRing #2: [", OuterRing02 ,", ",MiddleRing02,", ",InnerRing02," ]")
-        PtDebugPrint("\tRing #3: [", OuterRing03 ,", ",MiddleRing03,", ",InnerRing03," ]")
+        PtDebugPrint(f"\tRing #1: [{OuterRing01}, {MiddleRing01}, {InnerRing01}, ]")
+        PtDebugPrint(f"\tRing #2: [{OuterRing02}, {MiddleRing02}, {InnerRing02}, ]")
+        PtDebugPrint(f"\tRing #3: [{OuterRing03}, {MiddleRing03}, {InnerRing03}, ]")
         
         if OuterRing01 ==   5 and\
             MiddleRing01 == 6 and\
@@ -317,22 +317,20 @@ class kdshTreeRingsSolution(ptModifier):
             ScopeNumber = 3
         else:
             PtDebugPrint("ERROR: Not sure who the notify came from.")
-            PtDebugPrint("id = ", id)
+            PtDebugPrint(f"{id=}")
             return
             
         ageSDL = PtGetAgeSDL()        
         if ageSDL == None:
-            PtDebugPrint("kdshTreeRings.OnFirstUpdate():\tERROR---missing age SDL (%s)" % varstring.value)
+            PtDebugPrint(f"kdshTreeRings.OnFirstUpdate():\tERROR---missing age SDL ({varstring.value})")
 
         for bearing in ("Outer", "Middle", "Inner"):
-            sdl_var = "{location}Ring0{idx}".format(location=bearing, idx=ScopeNumber-1)
-            attrib_name = "GUI{location}0{idx}_0{newbearing}".format(location=bearing,
-                                                                     idx=ScopeNumber-1,
-                                                                     newbearing=ageSDL[sdl_var][0])
+            sdl_var = f"{bearing}Ring0{ScopeNumber-1}"
+            attrib_name = f"GUI{bearing}0{ScopeNumber-1}_0{ageSDL[sdl_var][0]}"
             globals()[attrib_name].animation.skipToEnd()
 
         # this runs the animation on the "fake" ring in front of the GUI
-        #~ animname= "GUI{id}_0{bearing}".format(id="".join(VARname.split("Ring")), bearing=newbearing)
+        #~ animname= f"GUI{''.join(VARname.split('Ring'))}_0{newbearing}"
         #~ globals()[animname].animation.play()
 
     def OnTimer(self,timer):

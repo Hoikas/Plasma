@@ -270,7 +270,7 @@ class nb01RPSGame(ptResponder, object):
         super(nb01RPSGame, self).__init__()
         self.id = 20000
         self.version = 10
-        PtDebugPrint("nb01RPSGame.__init__():\tversion={}".format(self.version), level=kDebugDumpLevel)
+        PtDebugPrint(f"nb01RPSGame.__init__():\tversion={self.version}", level=kDebugDumpLevel)
 
         # This holds my Heek score. This prevents server-spamming.
         self._score = None # will get it from a CB
@@ -346,7 +346,7 @@ class nb01RPSGame(ptResponder, object):
                 seat = self.players.index(kinum)
             except ValueError:
                 return
-            PtDebugPrint("nb01RPSGame.OnAvatarPage():\tPlayer #{} is leaving during the game!".format(kinum), level=kWarningLevel)
+            PtDebugPrint(f"nb01RPSGame.OnAvatarPage():\tPlayer #{kinum} is leaving during the game!", level=kWarningLevel)
             self._CleanupPosition(seat)
             self.SDL.setIndex(SDL_PLAYERS, seat, 0)
 
@@ -368,7 +368,7 @@ class nb01RPSGame(ptResponder, object):
                     PtDebugPrint("nb01RPSGame.OnGameScoreMsg():\tProblem fetching leaderboard")
                 self._wantHighScores = False
             else:
-                raise RuntimeError("Invalid score operation: {}".format(self._waitingOnScoreOp))
+                raise RuntimeError(f"Invalid score operation: {self._waitingOnScoreOp}")
             self._waitingOnScoreOp = SCORE_OP_NONE
             self._RequestGameScore()
         elif isinstance(msg, ptGameScoreUpdateMsg):
@@ -378,7 +378,7 @@ class nb01RPSGame(ptResponder, object):
         if VARname in self._sdl_cbs:
             self._sdl_cbs[VARname](playerID)
         else:
-            raise RuntimeError("Got an SDL notify for {}, but no CB".format(VARname))
+            raise RuntimeError(f"Got an SDL notify for {VARname}, but no CB")
 
     def OnNotify(self, state, id, events):
         """Handle Plasma Notification Messages"""
@@ -527,7 +527,7 @@ class nb01RPSGame(ptResponder, object):
 
             win = seat in winners
             state = "win" if win else "lose"
-            PtDebugPrint("nb01RPSGame._FinishRound():\t- Position {}: {}".format(seat, state), level=kWarningLevel)
+            PtDebugPrint(f"nb01RPSGame._FinishRound():\t- Position {seat}: {state}", level=kWarningLevel)
             if win:
                 var = SCORE_VAR[selection]
                 old_score = self.SDL[var][seat]
@@ -557,7 +557,7 @@ class nb01RPSGame(ptResponder, object):
     def _IsTheGameAfoot(self, playerID):
         """Detects how many players are at the table and starts/kills the game as appropriate."""
         players = self.num_players
-        PtDebugPrint("nb01RPSGame._IsTheGameAfoot():\tThere are now {} player(s)".format(players), level=kWarningLevel)
+        PtDebugPrint(f"nb01RPSGame._IsTheGameAfoot():\tThere are now {players} player(s)" level=kWarningLevel)
         if players < 2:
             # There's not enough players to continue playing, so we need to murder the game state.
             self._round_played = False
@@ -601,7 +601,7 @@ class nb01RPSGame(ptResponder, object):
 
         points = kwargs.get(str(PtGetLocalClientID()), None)
         if points is not None:
-            PtDebugPrint("nb01RPSGame._OnGameOver():\tAdding {} points to our Heek score".format(points), level=kWarningLevel)
+            PtDebugPrint(f"nb01RPSGame._OnGameOver():\tAdding {points} points to our Heek score", level=kWarningLevel)
             self._ChangeMyScore(points)
         self._round_played = False
 
@@ -750,7 +750,7 @@ class nb01RPSGame(ptResponder, object):
             self._lights[seat][selection - 1][light].playRange(start, end)
 
     def _UpdateScoreLights(self, seat, selection, old_score, new_score, win):
-        PtDebugPrint("nb01RPSGame._UpdateScoreLights():\tOld: {}, New: {}".format(old_score, new_score), level=kWarningLevel)
+        PtDebugPrint(f"nb01RPSGame._UpdateScoreLights():\tOld: {old_score}, New: {new_score}", level=kWarningLevel)
         start = 0 if win else min(2, old_score)
         end = min(2, new_score)
         for i in range(start, end):
@@ -817,7 +817,7 @@ class nb01RPSGame(ptResponder, object):
             if infoID == info.getID():
                 return info.playerGetName()
         else:
-            PtDebugPrint("nb01RPSGame._GetPlayerNameFromPlayerInfoID():\tFailed to find PlayerInfo {}".format(infoID))
+            PtDebugPrint(f"nb01RPSGame._GetPlayerNameFromPlayerInfoID():\tFailed to find PlayerInfo {infoID}")
             return ""
 
     def _GotHoodHeekScores(self, scores):
@@ -837,7 +837,7 @@ class nb01RPSGame(ptResponder, object):
                 score = fixed_scores[owner]
                 if score < 1:
                     break
-                text += "  {} - {} has {} points\n".format(num, owner_name, score)
+                text += f"  {num} - {owner_name} has {score} points\n"
                 num += 1
                 if num > MAX_NUM_HIGH_SCORES:
                     break
@@ -892,7 +892,7 @@ class nb01RPSGame(ptResponder, object):
         """
         temp = [None] * 5
         for i in range(len(temp)):
-            temp[i] = globals()["{}{}{}".format(prefix, i, suffix)]
+            temp[i] = globals()[f"{prefix}{i}{suffix}"]
         return tuple(temp)
 
     def _MakeShutterAnimTuple(self, anim):
@@ -900,7 +900,7 @@ class nb01RPSGame(ptResponder, object):
         for i in range(len(temp)):
             seat_shutters = [None] * 3
             for j in range(len(seat_shutters)):
-                name = "buttonshutter{0}{1}".format(i+1, j+1)
+                name = f"buttonshutter{i+1}{j+1}"
                 seat_shutters[j] = anim.byObject[name]
             temp[i] = tuple(seat_shutters)
         return tuple(temp)
@@ -914,7 +914,7 @@ class nb01RPSGame(ptResponder, object):
                 category = []
                 for k in range(2):
                     light = (i + 1) * 10 + k + 1
-                    name = "GTdummy{}Glare{}".format(cat_names[j], light)
+                    name = f"GTdummy{cat_names[j]}Glare{light}"
                     category.append(anim.byObject[name])
                 seat_categories.append(category)
             temp.append(seat_categories)
@@ -945,12 +945,12 @@ class nb01RPSGame(ptResponder, object):
         type = args["type"]
         del args["type"]
         if type not in self._event_handlers:
-            PtDebugPrint("nb01RPSGame._HandleVariableNotify():\tPyEvent '{}' doesn't have a handler!".format(type))
+            PtDebugPrint(f"nb01RPSGame._HandleVariableNotify():\tPyEvent '{type}' doesn't have a handler!")
             return False
         try:
             self._event_handlers[type](**args)
         except TypeError:
-            PtDebugPrint("nb01RPSGame._HandleVariableNotify():\tPyEvent '{}' has bad kwargs".format(type))
+            PtDebugPrint(f"nb01RPSGame._HandleVariableNotify():\tPyEvent '{type}' has bad kwargs")
         return True
 
     def _SendPyNotifyMsg(self, contents):

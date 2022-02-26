@@ -82,7 +82,7 @@ class ahnyPressurePlates(ptModifier):
         self.id = 5947
         version = 1
         self.version = version
-        PtDebugPrint("__init__ahnyPressurePlates v%d " % (version))
+        PtDebugPrint(f"__init__ahnyPressurePlates v{version}"
 
     ###########################
     def OnFirstUpdate(self):
@@ -158,7 +158,7 @@ class ahnyPressurePlates(ptModifier):
         global objZoneList
         global LocalAvatar
         
-        #PtDebugPrint("ahnyPressurePlates.OnNotify: state=%s id=%d events=" % (state, id), events)
+        #PtDebugPrint(f"ahnyPressurePlates.OnNotify: {state=} {id=} {events=}")
 
         if id == zones.id:
             for event in events:
@@ -172,13 +172,13 @@ class ahnyPressurePlates(ptModifier):
                             ageSDL = PtGetAgeSDL()
                             index = objZoneList.index(zoneName)
                             occupiedZones = list(ageSDL[SDLOccupied.value])
-                            #PtDebugPrint("Zone: %s Index: %d Occupied: %s" % (zoneName,index,str(occupiedZones)))
+                            #PtDebugPrint(f"{zoneName=}, {index=}, {occupiedZones=}")
                             if event[1] == 1: #We are entering
                                 if occupiedZones[index] != 255: #avoid overflow
                                     occupiedZones[index]= occupiedZones[index] + 1
                                 if respLightList != [] and occupiedZones[index]==1: # if we are now equal to one run the responder 
                                     respClockLights.run(self.key, state='on', objectName=respLightList[index], netForce=1 )
-                                PtDebugPrint("%s - enter %s" % (str(occupiedZones), str(index)))
+                                PtDebugPrint(f"{occupiedZones} - enter {index}")
                             else: #this should be exiting
                                 if occupiedZones[index] != 0: #only subtract if we are not zero don't want to overflow
                                     occupiedZones[index] = occupiedZones[index] -1
@@ -190,9 +190,9 @@ class ahnyPressurePlates(ptModifier):
 
                                     if (respLightList != []) and (occupiedZones[index] == 0):# 
                                         respClockLights.run(self.key, state='off', objectName=respLightList[index] , netForce=1)
-                                PtDebugPrint("%s - exit %s" % (str(occupiedZones), str(index)))
+                                PtDebugPrint(f"{occupiedZones} - exit {index}")
                             ageSDL[SDLOccupied.value] = tuple(occupiedZones)
-                            #PtDebugPrint("Occupied: %s" % (str(occupiedZones)))
+                            #PtDebugPrint(f"{occupiedZones=}")
 
         # is it a clickable book on a pedestal?
         elif id == bookClickable.id and PtFindAvatar(events) == PtGetLocalAvatar() and state:
@@ -212,10 +212,10 @@ class ahnyPressurePlates(ptModifier):
             for event in events:
                 # is it from the OpenBook? (we only have one book to worry about)
                 if event[0] == PtEventType.kBook:
-                    PtDebugPrint("ahnyPressurePlates: BookNotify  event=%d, id=%d" % (event[1],event[2]))
+                    PtDebugPrint(f"ahnyPressurePlates: BookNotify  event={event[1]}, id={event[2]}")
                     if event[1] == PtBookEventTypes.kNotifyImageLink:
                         if event[2] >= xLinkingBookDefs.kFirstLinkPanelID or event[2] == xLinkingBookDefs.kBookMarkID:
-                            PtDebugPrint("ahnyPressurePlates:Book: hit linking panel %s" % (event[2]))
+                            PtDebugPrint(f"ahnyPressurePlates:Book: hit linking panel {event[2]}")
                             self.HideBook(1)
 
                             ageSDL = PtGetAgeSDL()
@@ -262,7 +262,7 @@ class ahnyPressurePlates(ptModifier):
                                         PtDebugPrint("missing sphere identifier string!")
                                     ahnySDL.setStateDataRecord(ahnyRecord)
                                     ahnySDL.save()
-                                    PtDebugPrint("advanced from sphere ",sphere.value)
+                                    PtDebugPrint(f"advanced from sphere {sphere.value}")
                                     return
                             '''
         
@@ -362,7 +362,7 @@ class ahnyPressurePlates(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][0]
         except:
-            PtDebugPrint("IGetAgeFilename(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use it as the value")
+            PtDebugPrint(f"IGetAgeFilename(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use it as the value")
             name = TargetAge.value
         return name
 
@@ -371,7 +371,7 @@ class ahnyPressurePlates(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][0]
         except:
-            PtDebugPrint("IGetAgeInstanceName(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use it as the value")
+            PtDebugPrint(f"IGetAgeInstanceName(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use it as the value")
             name = TargetAge.value
         return name
 
@@ -381,7 +381,7 @@ class ahnyPressurePlates(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][1]
         except:
-            PtDebugPrint("IGetAgeSpawnPoint(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use an empty string as the value")
+            PtDebugPrint(f"IGetAgeSpawnPoint(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use an empty string as the value")
             name = ""
         return name
 

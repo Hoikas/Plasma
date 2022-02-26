@@ -107,7 +107,7 @@ class kdshVault(ptResponder):
         
         version = 6
         self.version = version
-        PtDebugPrint("__init__kdshVault v. ", version,".2")
+        PtDebugPrint(f"__init__kdshVault v. {version}.2")
 
     def OnServerInitComplete(self):
         global ButtonsPushed
@@ -130,7 +130,7 @@ class kdshVault(ptResponder):
         ButtonsPushed = ageSDL["ButtonsPushed"][0]
 
         PtDebugPrint("kdshVault: When I got here:")
-        PtDebugPrint("\t ButtonsPushed = ", ButtonsPushed)
+        PtDebugPrint(f"\t {ButtonsPushed=}")
         
         ButtonsPushed = str(ButtonsPushed)
         
@@ -181,14 +181,14 @@ class kdshVault(ptResponder):
         VCPboolOperated = ageSDL["VCPboolOperated"][0]
         if VCPboolOperated:
             if solo:
-                PtDebugPrint("kdshVault.Load():\tVCPboolOperated=%d but no one else here...correcting" % VCPboolOperated)
+                PtDebugPrint(f"kdshVault.Load():\t{VCPboolOperated=} but no one else here...correcting")
                 VCPboolOperated = 0
                 ageSDL["VCPboolOperated"] = (0,)
                 ageSDL["VCPOperatorID"] = (-1,)
                 Activate.enable()
             else:
                 Activate.disable()
-                PtDebugPrint("kdshVault.Load():\tVCPboolOperated=%d, disabling Vault Control Panel clickable" % VCPboolOperated)
+                PtDebugPrint(f"kdshVault.Load():\t{VCPboolOperated=}, disabling Vault Control Panel clickable")
 
     def AvatarPage(self, avObj, pageIn, lastOut):
         "reset scope accessibility if scope user quits or crashes"
@@ -270,17 +270,16 @@ class kdshVault(ptResponder):
                 PtDebugPrint("Button has no effect. The Vault Door is already moving.")
                 return            
             
-            PtDebugPrint("\tkdshVault.OnNotify: Button #%d pushed" % (id))
+            PtDebugPrint(f"\tkdshVault.OnNotify: Button #{id} pushed")
             
 
             #append the pushed button to the list of those already clicked            
             ButtonsPushed = ageSDL["ButtonsPushed"][0]
-            ButtonsPushed = str(ButtonsPushed)
-            PtDebugPrint("kdshVault.OnNotify: Before, ButtonsPushed was ", ButtonsPushed)
+            PtDebugPrint(f"kdshVault.OnNotify: Before, {ButtonsPushed=}")
 
             
-            ButtonsPushed = int(ButtonsPushed + (str(id)))
-            PtDebugPrint("kdshVault.OnNotify: Now, ButtonsPushed = ", ButtonsPushed)
+            ButtonsPushed =  int(f"{ButtonsPushed}{id}")
+            PtDebugPrint(f"kdshVault.OnNotify: Now, {ButtonsPushed=}",)
             
             #update the ageSDL value for that button            
             ageSDL["ButtonsPushed"] = (ButtonsPushed,)
@@ -341,7 +340,7 @@ class kdshVault(ptResponder):
     def OnSDLNotify(self,VARname,SDLname,playerID,tag):
         ageSDL = PtGetAgeSDL()
 
-        PtDebugPrint("kdshVault.OnSDLNotify:\tVARname=",VARname," value=",ageSDL[VARname][0])
+        PtDebugPrint(f"kdshVault.OnSDLNotify:\t{VARname=} value={ageSDL[VARname][0]}")
             
         
         if VARname == "ButtonsPushed":
@@ -353,14 +352,14 @@ class kdshVault(ptResponder):
             
             ButtonsPushed = str(ButtonsPushed)
             lastbuttonpushed = ButtonsPushed[-1:]
-            PtDebugPrint("kdshVault.OnSDLNotify: new ButtonsPushed = ", ButtonsPushed)
-            #~ PtDebugPrint("kdshVault.OnSDLNotify: lastbuttonpushed = ", lastbuttonpushed)
+            PtDebugPrint(f"kdshVault.OnSDLNotify: new {ButtonsPushed=} ")
+            #~ PtDebugPrint(f"kdshVault.OnSDLNotify: {lastbuttonpushed=}")
             
             #run the animation on the button itself
-            globals()["respButton{}".format(lastbuttonpushed)].run(self.key)
+            globals()[f"respButton{lastbuttonpushed}"].run(self.key)
 
             #disable the clickable for that button
-            globals()["actButton{}".format(lastbuttonpushed)].disable()
+            globals()[f"actButton{lastbuttonpushed}"].disable()
 
     def OnTimer(self,id):
         global VaultDoorMoving
@@ -368,7 +367,7 @@ class kdshVault(ptResponder):
         ageSDL = PtGetAgeSDL()     
         if id==1:
             ButtonsPushed = ageSDL["ButtonsPushed"][0]
-            PtDebugPrint("kdshVault: Check solution. ButtonsPushed = ", ButtonsPushed)
+            PtDebugPrint(f"kdshVault: Check solution. {ButtonsPushed=}")
             if ButtonsPushed == 152346:
                 PtDebugPrint("kdshVault: Puzzle solved. Opening door.")
 

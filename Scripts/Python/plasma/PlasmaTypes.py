@@ -197,7 +197,7 @@ def PtAddEvent(notify,event):
     elif event[0] == kResponderStateEvent:
         notify.addResponderState(event[1])
     else:
-        PtDebugPrint("Unrecognized event type %d" % (event[0]))
+        PtDebugPrint(f"Unrecognized event type {event[0]}")
         
 # add a list of events into a ptNotify message
 def PtAddEvents(notify, events):
@@ -508,7 +508,7 @@ class ptAttribResponder(ptAttributeKeyList):
                         idx = self.state_list.index(state)
                         nt.addResponderState(idx)
                     except ValueError:
-                        raise ptResponderStateError("There is no state called '%s'"%(state))
+                        raise ptResponderStateError(f"There is no state called '{state}'")
                 else:
                     raise ptResponderStateError("There is no state list provided")
             # see if there are events to pass on
@@ -551,7 +551,7 @@ class ptAttribResponder(ptAttributeKeyList):
                         idx = self.state_list.index(state)
                         nt.addResponderState(idx)
                     except ValueError:
-                        raise ptResponderStateError("There is no state called '%s'"%(state))
+                        raise ptResponderStateError(f"There is no state called '{state}'")
                 else:
                     raise ptResponderStateError("There is no state list provided")
             # see if there are events to pass on

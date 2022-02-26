@@ -88,16 +88,16 @@ def GetYeeshaPage(args):
     if not args:
         print("xCheat.GetYeeshaPage(): ERROR.  Must provide a Yeesha Page number.")
         return
-    thispage = "YeeshaPage" + args
+    thispage = f"YeeshaPage{args}"
     if psnlSDL:
         for sdlvar,page in xLinkingBookDefs.xYeeshaPages:
             if sdlvar == thispage:
                 FoundValue = psnlSDL.findVar(sdlvar)
                 FoundValue.setInt(1)
                 vault.updatePsnlAgeSDL(psnlSDL)
-                print("xCheat.GetYeeshaPage(): Done. Have added: ",sdlvar)
+                print(f"xCheat.GetYeeshaPage(): Done. Have added: {sdlvar}")
                 return
-        print("xCheat.GetYeeshaPage(): ERROR.  Could not find Yeesha page: ",thispage)
+        print(f"xCheat.GetYeeshaPage(): ERROR.  Could not find Yeesha page: {thispage}")
     else:
         print("xCheat.GetYeeshaPage(): ERROR.  Could not find personal age SDL")
 
@@ -188,11 +188,11 @@ def GenerateCleftSolution(args):
         for v in range(len(agelist)):
             newnode = Plasma.ptVaultChronicleNode(0)
             newnode.chronicleSetName(agelist[v])
-            ageVal = str(solutionlist[v])            
-            newnode.chronicleSetValue("1," + ageVal + "," + str(v + 1))
-            #newnode.chronicleSetValue("1," + str(solutionlist[v]) + "," + str(v + 1))
+            ageVal = solutionlist[v]
+            newnode.chronicleSetValue(f"1,{ageVal},{v + 1}")
+            #newnode.chronicleSetValue(f"1,{solutionlist[v]},{v + 1}")
             entry.addNode(newnode)
-            print("%s solution is %s" % (agelist[v], ageVal))
+            print(f"{agelist[v]} solution is {ageVal}")
 
 
 def ResetEnding(args):
@@ -312,8 +312,8 @@ def GZGetMarkers(args):
                     newgotten = markerGottenNumber + markersToGet
                     if newgotten > markerToGetNumber:
                         newgotten = markerToGetNumber
-                    print("Updating markers gotten to %d from %d" % (newgotten,markerToGetNumber))
-                    upstring = "%d %s:%s %d:%d" % (markerGame,markerGottenColor,markerToGetColor,newgotten,markerToGetNumber)
+                    print(f"Updating markers gotten to {newgotten} from {markerToGetNumber}")
+                    upstring = f"{markerGame} {markerGottenColor}:{markerToGetColor} {newgotten}:{markerToGetNumber}"
                     entry.chronicleSetValue(upstring)
                     entry.save()
                     # just pick some marker to have gotten
@@ -329,16 +329,16 @@ def GZGetMarkers(args):
                                     markers = markers[:markerIdx] + PlasmaKITypes.kGZMarkerCaptured + markers[-(len(markers)-(markerIdx+1)):]
                                 else:
                                     markers = markers[:markerIdx] + PlasmaKITypes.kGZMarkerCaptured
-                                print("Update marker #%d - out string is '%s'" % (markerIdx+1,markers))
+                                print(f"Update marker #{markerIdx + 1} - out string is '{markers}'")
                                 entry.chronicleSetValue(markers)
                                 entry.save()
                     # update the 
                     Plasma.PtSendKIMessage(PlasmaKITypes.kGZUpdated,0)
                     return
                 except ValueError:
-                    print("xKI:GZ - error trying to read GZGames Chronicle '%s'" % (gameString))
+                    print(f"xKI:GZ - error trying to read GZGames Chronicle '{gameString}'")
             else:
-                print("xKI:GZ - error GZGames string formation error (len=%d)" % (len(gargs)))
+                print(f"xKI:GZ - error GZGames string formation error ({len(gargs)=})")
         else:
             # if there is none, then error
             print("Error - there is no GZMarker game going!")
@@ -734,7 +734,7 @@ def GetSDL(varName):
     try:
         ageSDL = Plasma.PtGetAgeSDL()
     except:
-        print(("xCheat.GetSDL(): Unable to retrieve SDL for '{}'.".format(ageName)))
+        print(f"xCheat.GetSDL(): Unable to retrieve SDL for '{ageName}'.")
         return
 
     varList = []
@@ -761,17 +761,17 @@ def GetSDL(varName):
                     val = ""
                 else:
                     val = ageSDL[var][0]
-                print(("xCheat.GetSDL(): {:>{width}}  =  {}".format(var, val, width=maxlen)))
+                print(f"xCheat.GetSDL(): {var:>{maxlen}}  =  {val}")
             except:
-                print(("xCheat.GetSDL(): Error retrieving value for '{}'.".format(var)))
+                print(f"xCheat.GetSDL(): Error retrieving value for '{var}'.")
     else:
         try:
             if len(ageSDL[varName]) == 0:
-                print(("xCheat.GetSDL():  SDL variable '{}' is not set.".format(varName)))
+                print(f"xCheat.GetSDL():  SDL variable '{varName}' is not set.")
             else:
-                print(("xCheat.GetSDL(): {}  =  {}".format(varName, ageSDL[varName][0])))
+                print(f"xCheat.GetSDL(): {varName}  =  {ageSDL[varName][0]}")
         except:
-            print(("xCheat.GetSDL(): SDL variable '{}' not found.".format(varName)))
+            print(f"xCheat.GetSDL(): SDL variable '{varName}' not found.")
             return
 
 
@@ -794,24 +794,24 @@ def SetSDL(varNameAndVal):
     try:
         newval = int(varNameAndValList[1])
     except ValueError:
-        print(("xCheat.SetSDL(): Can't use '{}'. Only numerical SDL values are supported.".format(varNameAndValList[1])))
+        print(f"xCheat.SetSDL(): Can't use '{varNameAndValList[1]}'. Only numerical SDL values are supported.")
         return
 
     ageName = Plasma.PtGetAgeName()
     try:
         ageSDL = Plasma.PtGetAgeSDL()
     except:
-        print(("xCheat.SetSDL(): Unable to retrieve SDL for '{}'.".format(ageName)))
+        print(f"xCheat.SetSDL(): Unable to retrieve SDL for '{ageName}'.")
         return
 
     try:
         oldval = ageSDL[varName][0]
     except KeyError:
-        print(("xCheat.SetSDL(): SDL variable '{}' not found.".format(varName)))
+        print(f"xCheat.SetSDL(): SDL variable '{varName}' not found.")
         return
 
     if newval == oldval:
-        print(("xCheat.SetSDL(): Not changing value, '{}' is already {}.".format(varName, newval)))
+        print(f"xCheat.SetSDL(): Not changing value, '{varName}' is already {newval}.")
         return
 
     if ageName == "Personal":
@@ -825,7 +825,7 @@ def SetSDL(varNameAndVal):
         ageSDL.sendToClients(varName)
         ageSDL[varName] = (newval,)
 
-    print(("xCheat.SetSDL(): Setting '{}' to {} (was {}).".format(varName, newval, oldval)))
+    print(f"xCheat.SetSDL(): Setting '{varName}' to {newval} (was {oldval}).")
 
 
 def InstaPellets(args):
@@ -846,7 +846,7 @@ def InstaPellets(args):
                 recipeSDL = (iarg + 300)
                 if recipeSDL < 1:
                     recipeSDL = 1
-                print("xCheat.InstantPellets: 5 pellets now created with Recipe of %d." % (iarg))
+                print(f"xCheat.InstantPellets: 5 pellets now created with Recipe of {iarg}.")
                 sdl["ercaPellet1"] = (recipeSDL,)
                 sdl["ercaPellet2"] = (recipeSDL,)
                 sdl["ercaPellet3"] = (recipeSDL,)
@@ -872,7 +872,7 @@ def CheckRecipe(args):
                 break
         if testVal:
             recipe = (recipeSDL - 300)
-            print("xCheat.CheckRecipe: Recipe of current pellet(s) = %d." % (recipe))
+            print(f"xCheat.CheckRecipe: Recipe of current pellet(s) = {recipe}.")
         else:
             print("xCheat.CheckRecipe: No pellets currently exist, therefore no recipe.")
 
@@ -880,4 +880,4 @@ def CheckRecipe(args):
 def GetPlayerID(self):
     import Plasma
     playerID = Plasma.PtGetLocalPlayer().getPlayerID()
-    print("playerID = ",playerID)
+    print(f"{playerID=}")

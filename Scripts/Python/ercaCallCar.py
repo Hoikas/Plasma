@@ -114,13 +114,13 @@ class ercaCallCar(ptResponder):
             except:
                 PtDebugPrint("ERROR: ercaCallCar.OnServerInitComplete():\tERROR reading age SDL")
                 pass
-            PtDebugPrint("DEBUG: ercaCallCar.OnServerInitComplete():\t%s = %d" % (SDLCarPos.value,ageSDL[SDLCarPos.value][0]) )
+            PtDebugPrint(f"DEBUG: ercaCallCar.OnServerInitComplete():\t{SDLCarPos.value} = {ageSDL[SDLCarPos.value][0]}")
             try:
                 boolCarLev = ageSDL[SDLCarLev.value][0]
             except:
                 PtDebugPrint("ERROR: ercaCallCar.OnServerInitComplete():\tERROR reading age SDL")
                 pass
-            PtDebugPrint("DEBUG: ercaCallCar.OnServerInitComplete():\t%s = %d" % (SDLCarLev.value,ageSDL[SDLCarLev.value][0]) )
+            PtDebugPrint(f"DEBUG: ercaCallCar.OnServerInitComplete():\t{SDLCarLev.value} = {ageSDL[SDLCarLev.value][0]}")
             
             if byteCarPos == 2 or byteCarPos == 3:
                 respHullGate.run(self.key,state="close")
@@ -141,10 +141,10 @@ class ercaCallCar(ptResponder):
 
         if (id == clkCallCarBtn.id and state):
             if byteCarPos == 1:
-                PtDebugPrint("DEBUG: ercaCallCar.OnNotify:\tRunning true responder on %s" % (self.sceneobject.getName()))
+                PtDebugPrint(f"DEBUG: ercaCallCar.OnNotify:\tRunning true responder on {self.sceneobject.getName()}")
                 respCallCarYes.run(self.key,avatar=PtFindAvatar(events))
             else:
-                PtDebugPrint("DEBUG: ercaCallCar.OnNotify:\tRunning false responder on %s" % (self.sceneobject.getName()))
+                PtDebugPrint(f"DEBUG: ercaCallCar.OnNotify:\tRunning false responder on {self.sceneobject.getName()}")
                 respCallCarNo.run(self.key,avatar=PtFindAvatar(events))
 
         if (id == respCallCarYes.id) and self.sceneobject.isLocallyOwned():
@@ -155,11 +155,12 @@ class ercaCallCar(ptResponder):
         global byteCarPos
         global boolCarLev
 
+        PtDebugPrint(f"DEBUG: ercaCallCar.OnSDLNotify():\t {VARname=}, {SDLname=}, {tag=}, value={ageSDL[VARname][0]}")
+
         if AgeStartedIn == PtGetAgeName():
             ageSDL = PtGetAgeSDL()
             
             if VARname == SDLCarPos.value:
-                PtDebugPrint("DEBUG: ercaCallCar.OnSDLNotify():\t VARname:%s, SDLname:%s, tag:%s, value:%d" % (VARname,SDLname,tag,ageSDL[SDLCarPos.value][0]))
                 byteCarPos = ageSDL[SDLCarPos.value][0]
                 if byteCarPos == 2:
                     respHullGate.run(self.key,state="close")
@@ -167,7 +168,6 @@ class ercaCallCar(ptResponder):
                     respHullGate.run(self.key,state="open")
 
             if VARname == SDLCarLev.value:
-                PtDebugPrint("DEBUG: ercaCallCar.OnSDLNotify():\t VARname:%s, SDLname:%s, tag:%s, value:%d" % (VARname,SDLname,tag,ageSDL[SDLCarLev.value][0]))
                 boolCarLev = ageSDL[SDLCarLev.value][0]
                 if boolCarLev == 0:
                     respCallBtnReset.run(self.key)

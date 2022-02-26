@@ -202,7 +202,7 @@ class xKIChat(object):
         if self.isAdmin:
             cFlags.admin = True
         ## The prefix for inter-Age chat.
-        pre = "<<" + GetAgeName() + ">>"
+        pre = f"<<{GetAgeName()}>>"
 
         # If the player is in AFK mode, make him exit it.
         if PtGetLocalAvatar().avatar.getCurrentMode() == PtBrainModes.kAFK:
@@ -346,7 +346,7 @@ class xKIChat(object):
                     selPlyrList.append(toPlyr)
                     cFlags.private = True
                     self.AddPlayerToRecents(toPlyr.getPlayerID())
-                    PtDebugPrint("xKIChat.SendMessage(): Private message to \"{}\".".format(toPlyr.getPlayerName()), level=kDebugDumpLevel)
+                    PtDebugPrint(f"xKIChat.SendMessage(): Private message to \"{toPlyr.getPlayerName()}\".", level=kDebugDumpLevel)
 
                 # Is it a player (possibly in another Age)?
                 elif isinstance(toPlyr, ptVaultNodeRef):
@@ -417,11 +417,7 @@ class xKIChat(object):
 
     ## Adds a line to the RT chat.
     def AddChatLine(self, player, message, cFlags, forceKI=True):
-
-        try:
-            PtDebugPrint("xKIChat.AddChatLine(): Message = \"{}\".".format(message), player, cFlags, level=kDebugDumpLevel)
-        except UnicodeEncodeError:
-            pass
+        PtDebugPrint(f"xKIChat.AddChatLine(): Message = \"{message}\".", player, cFlags, level=kDebugDumpLevel)
 
         # Fix for Character of Doom (CoD).
         (message, RogueCount) = re.subn("[\x00-\x08\x0a-\x1f]", "", message)
@@ -482,7 +478,7 @@ class xKIChat(object):
                                 if buddies is not None:
                                     buddyID = player.getPlayerID()
                                     if not buddies.playerlistHasPlayer(buddyID):
-                                        PtDebugPrint("xKIChat.AddChatLine(): Add unknown buddy {} to recents.".format(buddyID))
+                                        PtDebugPrint(f"xKIChat.AddChatLine(): Add unknown buddy {buddyID} to recents.")
                                         self.AddPlayerToRecents(buddyID)
                         except ValueError:
                             pass
@@ -571,15 +567,15 @@ class xKIChat(object):
                 mKIdialog.show()
         if player is not None:
             separator = "" if pretext.endswith(" ") else " "
-            chatHeaderFormatted = "{}{}{}:".format(pretext, separator, player.getPlayerNameW())
-            chatMessageFormatted = " {}".format(message)
+            chatHeaderFormatted = f"{pretext}{separator}{player.getPlayerNameW()}:"
+            chatMessageFormatted = f" {message}"
         else:
             # It must be a status or error message.
             chatHeaderFormatted = pretext
             if not pretext:
-                chatMessageFormatted = "{}".format(message)
+                chatMessageFormatted = f"{message}"
             else:
-                chatMessageFormatted = " {}".format(message)
+                chatMessageFormatted = f" {message}"
 
         if hasMention:
             chatMentions = [(i.start("mention"), i.end("mention"), i.group("mention")) for i in self._chatMentionRegex.finditer(chatMessageFormatted)]
@@ -594,7 +590,7 @@ class xKIChat(object):
                 chatArea.insertColor(headerColor)
 
                 # Added unicode support here.
-                chatArea.insertStringW("\n{}".format(chatHeaderFormatted))
+                chatArea.insertStringW(f"\n{chatHeaderFormatted}")
                 chatArea.insertColor(bodyColor)
 
                 lastInsert = 0
@@ -824,8 +820,8 @@ class ChatFlags:
             string += "neighbors "
         if self.ccrBcast:
             string += "ccrBcast "
-        string += "channel = {} ".format(self.channel)
-        string += "flags = {}".format(self.flags)
+        string += f"channel = {self.channel} "
+        string += f"flags = {self.flags}"
         return string
 
 
@@ -876,7 +872,7 @@ class CommandsProcessor:
             v = "is"
             if message[-1:] == "s":
                 v = "are"
-            self.chatMgr.AddChatLine(None, "The %s %s too heavy to lift. Maybe you should stick to feathers." % (message[len("/get "):], v), 0)
+            self.chatMgr.AddChatLine(None, f"The {message[5:],} {v} too heavy to lift. Maybe you should stick to feathers.", 0)
             return None
         elif PtIsInternalRelease() and msg.startswith("/system "):
             send = message[len("/system "):]
@@ -1163,7 +1159,7 @@ class CommandsProcessor:
             return
         destination = destination.strip()
         currentTime = time.strftime("%d %b %Y %H:%M:%S (GMT)", time.gmtime())
-        PtDebugPrint("-- Logs dumped to \"{}\" at {}. --".format(destination, currentTime))
+        PtDebugPrint(f"-- Logs dumped to \"{destination}\" at {currentTime}. --")
         # Use a timer to allow for a final message to be logged.
         self.chatMgr.logDumpDest = destination  # So the timer can get at it.
         PtAtTimeCallback(self.chatMgr.key, 0.25, kTimers.DumpLogs)
@@ -1197,7 +1193,7 @@ class CommandsProcessor:
         for script in pythonScripts:
             if script.getName() == kJalakPythonComponent:
                 PtDebugPrint("xKIChat.SaveColumns(): Found Jalak's python component.", level=kDebugDumpLevel)
-                SendNote(self.chatMgr.key, script, "SaveColumns;" + fName)
+                SendNote(self.chatMgr.key, script, f"SaveColumns;{fName}")
                 return
         PtDebugPrint("xKIChat.SaveColumns(): Did not find Jalak's python component.", level=kErrorLevel)
 
@@ -1214,7 +1210,7 @@ class CommandsProcessor:
         for script in pythonScripts:
             if script.getName() == kJalakPythonComponent:
                 PtDebugPrint("xKIChat.LoadColumns(): Found Jalak's python component.", level=kDebugDumpLevel)
-                SendNote(self.chatMgr.key, script, "LoadColumns;" + fName)
+                SendNote(self.chatMgr.key, script, f"LoadColumns;{fName}")
                 return
         PtDebugPrint("xKIChat.LoadColumns(): Did not find Jalak's python component.", level=kErrorLevel)
 
@@ -1405,7 +1401,7 @@ class CommandsProcessor:
                 pFeathers = self.chatMgr.gFeather
                 if pFeathers > 7:
                     pFeathers = 7
-                pOut = "You see {} plain feathers".format(pFeathers)
+                pOut = f"You see {pFeathers} plain feathers"
                 if self.chatMgr.gFeather > 7:
                     pOut += " and a \"Red\" feather"
                 if self.chatMgr.gFeather > 8:
@@ -1485,7 +1481,7 @@ class CommandsProcessor:
             else:
                 # Got a LIP... Need to set the chronicle
                 ageInfo = PtGetAgeInfo()
-                data = "%s;%s;%s" % (ageInfo.getAgeFilename(), ageInfo.getAgeInstanceGuid(), params)
+                data = f"{ageInfo.getAgeFilename()};{ageInfo.getAgeInstanceGuid()};{params}"
                 if not party:
                     party = ptVaultChronicleNode()
                     party.chronicleSetName(kChron.Party)
@@ -1503,9 +1499,9 @@ class CommandsProcessor:
             return
         file = file + ".clo"
         if PtGetLocalAvatar().avatar.saveClothingToFile(file):
-            self.chatMgr.AddChatLine(None, "Outfit exported to " + file, 0)
+            self.chatMgr.AddChatLine(None, f"Outfit exported to {file}", 0)
         else:
-            self.chatMgr.AddChatLine(None, "Could not export to " + file, kChat.SystemMessage)
+            self.chatMgr.AddChatLine(None, f"Could not export to {file}", kChat.SystemMessage)
 
     ## Import the local avatar's clothing from a file
     def LoadClothing(self, file):
@@ -1517,9 +1513,9 @@ class CommandsProcessor:
             return
         file = file + ".clo"
         if PtGetLocalAvatar().avatar.loadClothingFromFile(file):
-            self.chatMgr.AddChatLine(None, "Outfit imported from " + file, 0)
+            self.chatMgr.AddChatLine(None, f"Outfit imported from {file}", 0)
         else:
-            self.chatMgr.AddChatLine(None, file + " not found", kChat.SystemMessage)
+            self.chatMgr.AddChatLine(None, f"{file} not found", kChat.SystemMessage)
 
     ## Example function for a coop animation
     def CoopExample(self, name):
@@ -1533,10 +1529,10 @@ class CommandsProcessor:
                 targetKey = PtGetAvatarKeyFromClientID(player.getPlayerID())
                 break
         if targetKey is None:
-            self.chatMgr.AddChatLine(None, name + " not found", kChat.SystemMessage)
+            self.chatMgr.AddChatLine(None, f"{name} not found", kChat.SystemMessage)
             return
         if PtGetLocalAvatar().avatar.runCoopAnim(targetKey, "ShakeFist", "Cower"):
-            self.chatMgr.DisplayStatusMessage(PtGetClientName() + " threatens " + name, 1)
+            self.chatMgr.DisplayStatusMessage(f"{PtGetClientName()} threatens {name}", 1)
         else:
             self.chatMgr.AddChatLine(None, "You are too far away", kChat.SystemMessage)
 
@@ -1547,16 +1543,16 @@ class CommandsProcessor:
             self.chatMgr.AddChatLine(None, "There is no active marker game that can grant rewards.", kChat.SystemMessage)
             return
         if reward:
-            self.chatMgr.AddChatLine(None, "Old Reward: '{}'".format(markerMgr.reward), 0)
+            self.chatMgr.AddChatLine(None, f"Old Reward: '{markerMgr.reward}'", 0)
             try:
                 markerMgr.reward = reward
             except:
                 self.chatMgr.AddChatLine(None, "Failed to set reward.", kChat.SystemMessage)
                 raise
             else:
-                self.chatMgr.AddChatLine(None, "New Reward: '{}'".format(reward), 0)
+                self.chatMgr.AddChatLine(None, f"New Reward: '{reward}'", 0)
         elif markerMgr.reward:
-            self.chatMgr.AddChatLine(None, "Current Reward: '{}'".format(markerMgr.reward), 0)
+            self.chatMgr.AddChatLine(None, f"Current Reward: '{markerMgr.reward}'", 0)
         else:
             self.chatMgr.AddChatLine(None, "This game has no associated reward.", 0)
 
@@ -1564,19 +1560,19 @@ class CommandsProcessor:
     def RollDice(self, dice_str):
         if not dice_str:
             roll = random.randint(1, 6)
-            PtSendKIMessage(kKIChatStatusMsg, "{} rolled a single six-sided die with a result of {}.".format(PtGetLocalPlayer().getPlayerName(), roll))
+            PtSendKIMessage(kKIChatStatusMsg, f"{PtGetLocalPlayer().getPlayerName()} rolled a single six-sided die with a result of {roll}.")
             return
 
         # Handle special dice types
         if dice_str.casefold() == "fate":
             fate = [random.randint(-1, 1) for x in range(4)]
-            PtSendKIMessage(kKIChatStatusMsg, "{} rolled fate values of {} for a total of {}.".format(PtGetLocalPlayer().getPlayerName(), fate, sum(fate)))
+            PtSendKIMessage(kKIChatStatusMsg, f"{PtGetLocalPlayer().getPlayerName()} rolled fate values of {fate} for a total of {sum(fate)}.")
             return
 
         # Parse common dice notation
         dice_opt = re.match(r"^(\d+)d(\d+)$", dice_str)
         if not dice_opt:
-            self.chatMgr.AddChatLine(None, "I'm sorry, I don't know how to roll {}.".format(dice_str), kChat.SystemMessage)
+            self.chatMgr.AddChatLine(None, f"I'm sorry, I don't know how to roll {dice_str}.", kChat.SystemMessage)
             return
         num_dice = int(dice_opt.groups()[0])
         num_face = int(dice_opt.groups()[1])
@@ -1596,6 +1592,6 @@ class CommandsProcessor:
 
         roll = [random.randint(1, num_face) for x in range(num_dice)]
         if num_dice == 1:
-            PtSendKIMessage(kKIChatStatusMsg, "{} rolled a single {}-sided die with a result of {}.".format(PtGetLocalPlayer().getPlayerName(), num_face, roll[0]))
+            PtSendKIMessage(kKIChatStatusMsg, f"{PtGetLocalPlayer().getPlayerName()} rolled a single {num_face}-sided die with a result of {roll[0]}.")
         else:
-            PtSendKIMessage(kKIChatStatusMsg, "{} rolled {}d{} with a result of {} for a total of {}.".format(PtGetLocalPlayer().getPlayerName(), num_dice, num_face, roll, sum(roll)))        
+            PtSendKIMessage(kKIChatStatusMsg, f"{PtGetLocalPlayer().getPlayerName()} rolled {num_dice}d{num_face} with a result of {roll} for a total of {sum(roll)}.")

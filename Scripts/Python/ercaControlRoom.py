@@ -374,11 +374,11 @@ class ercaControlRoom(ptResponder):
                     RespOvenIcons.run(self.key,state="off",fastforward=0)
 
         elif (id == RespMixBtn1.id) or (id == RespMixBtn2.id) or (id == RespMixBtn3.id) or (id == RespMixBtn4.id):
-            PtDebugPrint("RespMixBtn notify... id = %s, and state = %s" % (id,state))
+            PtDebugPrint(f"RespMixBtn notify... {id=}, and {state=}")
             RespMixIcons.run(self.key,state="on")
         
         elif (id == RespOvenBtn1.id) or (id == RespOvenBtn2.id) or (id == RespOvenBtn3.id) or (id == RespOvenBtn4.id):
-            PtDebugPrint("RespOvenBtn notify... id = %s, and state = %s" % (id,state))
+            PtDebugPrint(f"RespOvenBtn notify... {id=}, and {state=}")
             RespOvenIcons.run(self.key,state="on")
 
         elif (id == ActBladesBtn.id and state and LocalAvatar == PtFindAvatar(events)):
@@ -583,4 +583,4 @@ class ercaControlRoom(ptResponder):
             ecPlayerID = int(chunks[2])
             self.UpdateTunnelRgn(ecRgn,ecState,ecPlayerID)
         except:
-            PtDebugPrint("ercaControlRoom.ExecCode(): ERROR! Invalid code '%s'." % (code))
+            PtDebugPrint(f"ercaControlRoom.ExecCode(): ERROR! Invalid code '{code}'.")

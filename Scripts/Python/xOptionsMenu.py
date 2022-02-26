@@ -1565,7 +1565,7 @@ class xOptionsMenu(ptModifier):
         aspect = float(w) / float(h)
         for ratio, lower, upper in _ratios:
             if upper >= aspect>= lower:
-                return " [{}]".format(ratio)
+                return f" [{ratio}]"
         return ""
     
     def GetVidResField(self):

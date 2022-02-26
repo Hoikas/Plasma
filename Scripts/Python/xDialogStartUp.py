@@ -278,7 +278,7 @@ class xDialogStartUp(ptResponder):
 
                 elif  tagID == k4bDeleteID: ## Delete Explorer ##
                     if gSelectedSlot:
-                        deleteString = "Would you like to delete the EXPLORER " + str(gPlayerList[gSelectedSlot-gMinusExplorer][0]) + "?"
+                        deleteString = f"Would you like to delete the EXPLORER {gPlayerList[gSelectedSlot-gMinusExplorer][0])}?"
                         ptGUIControlTextBox(GUIDiag4c.dialog.getControlFromTag(k4cStaticID)).setStringW(deleteString)
                         self.PlayerListNotify(GUIDiag4b, gExp_HotSpot, 0)
                         PtShowDialog("GUIDialog04c")
@@ -550,7 +550,7 @@ class xDialogStartUp(ptResponder):
             ptGUIControlTextBox(dlgObj.dialog.getControlFromTag(listTxtBox[idx])).setStringW(str(player[0]))
             try:
                 filename = basePath + str(player[1]) + ".jpg"
-                PtDebugPrint("xDialogStartUp: Trying to load \"" + filename + "\"")
+                PtDebugPrint(f"xDialogStartUp: Trying to load \"{filename}\"")
                 theImage = PtLoadJPEGFromDisk(filename, 0, 0)
                 TextMaps[idx].textmap.drawImage(0, 0, theImage, 0)
                 TextMaps[idx].textmap.flush()

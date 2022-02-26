@@ -625,8 +625,8 @@ class ahnyVogondolaRideV2(ptResponder):
         actEngHutChairClick.disable()
         
         if ageSDL["ahnyVogOccupant"][0]:
-            PtDebugPrint("%d is in the Vogondola" % (ageSDL["ahnyVogOccupant"][0]))
             self.occupant = ageSDL["ahnyVogOccupant"][0]
+            PtDebugPrint(f"{self.occupant} is in the Vogondola")
         else:
             PtDebugPrint("Vogondola is empty")
             PtAtTimeCallback(self.key, 0, 1)
@@ -681,10 +681,10 @@ class ahnyVogondolaRideV2(ptResponder):
 
     def OnNotify(self,state,id,events):
         PtDebugPrint("-------------------------------------------------")
-        PtDebugPrint("     notify: id= %d    state= %d" % (id,state))
+        PtDebugPrint(f"     notify: {id=}, {state=}")
         if PtFindAvatar(events):
-            PtDebugPrint("     notify: Trigger= %s    Self= %s" % (str(PtGetClientIDFromAvatarKey(PtFindAvatar(events).getKey())),str(PtGetClientIDFromAvatarKey(PtGetLocalAvatar().getKey()))))
-        PtDebugPrint("     notify: events= %s" % (str(events)))
+            PtDebugPrint(f"     notify: Trigger={PtGetClientIDFromAvatarKey(PtFindAvatar(events).getKey())}, Self={PtGetClientIDFromAvatarKey(PtGetLocalAvatar().getKey())}")
+        PtDebugPrint(f"     notify: {events=}")
         PtDebugPrint(" ")
         
         if id == actHubChairClick.id and state:

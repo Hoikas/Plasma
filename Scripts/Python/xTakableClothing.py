@@ -214,9 +214,9 @@ class xTakableClothing(ptModifier):
             name = item[0]
             type = item[1]
             if type == kHairClothingItem:
-                PtDebugPrint("DEBUG: xTakableClothing.IGetHairColor():  Found current hair item: "+name)
+                PtDebugPrint(f"DEBUG: xTakableClothing.IGetHairColor():  Found current hair item: {name}")
                 color = avatar.avatar.getTintClothingItem(name,1)
-                PtDebugPrint("DEBUG: xTakableClothing.IGetHairColor():  Hair color (r,g,b) = (%d,%d,%d)" % (color.getRed(), color.getGreen(), color.getBlue()))
+                PtDebugPrint(f"DEBUG: xTakableClothing.IGetHairColor():  Hair color (r,g,b) = ({color.getRed()},{color.getGreen()},{color.getBlue()})")
                 return color
         PtDebugPrint("ERROR: xTakableClothing.IGetHairColor():  Couldn't find the currently worn hair item, defaulting to white")
         return ptColor().white()
@@ -234,7 +234,7 @@ class xTakableClothing(ptModifier):
         red = float(red)/float(255)
         green = float(green)/float(255.0)
         blue = float(blue)/float(255.0)
-        PtDebugPrint("Tint "+str(oneOrTwo)+" is ("+str(red)+","+str(green)+","+str(blue)+")")
+        PtDebugPrint(f"Tint {oneOrTwo} is ({red},{green},{blue})")
         return ptColor(red,green,blue,1)
     
     def IGetItem(self,name):
@@ -270,19 +270,19 @@ class xTakableClothing(ptModifier):
     
     def IRemoveOtherGuildShirt (self):
         playerCNode = ptVault().getAvatarClosetFolder()
-        PtDebugPrint("xTakableClothing: getAvatarClosetFolder Type = " + str(playerCNode.getType()))
-        PtDebugPrint("xTakableClothing: getAvatarClosetFolder Child Node Count = " + str(playerCNode.getChildNodeCount()))
+        PtDebugPrint(f"xTakableClothing: getAvatarClosetFolder Type = {playerCNode.getType()}")
+        PtDebugPrint(f"xTakableClothing: getAvatarClosetFolder Child Node Count = {playerCNode.getChildNodeCount()}")
         if playerCNode.getChildNodeCount() > 0:
             playerCNodeList = playerCNode.getChildNodeRefList()
             for folderChild in playerCNodeList:
-                PtDebugPrint("xTakableClothing: looking at child node " + str(folderChild),level=kDebugDumpLevel)
+                PtDebugPrint(f"xTakableClothing: looking at child node {folderChild}",level=kDebugDumpLevel)
                 childNode = folderChild.getChild()
                 if childNode != type(None):
                     PtDebugPrint("xTakableClothing: Child Node Node ID")
                     SDLNode = childNode.upcastToSDLNode()
                     if SDLNode is not None:
                         rec = SDLNode.getStateDataRecord()
-                        PtDebugPrint("xTakableClothing: getStateDataRecord().getName(): " + str(rec.getName()))
+                        PtDebugPrint(f"xTakableClothing: getStateDataRecord().getName(): {rec.getName()}")
                         SDLVarList = rec.getVarList()
                         for var in SDLVarList:
                             varnode = rec.findVar(var)
@@ -304,9 +304,9 @@ class xTakableClothing(ptModifier):
         if setName == "":
             return
         if setName in removedSets:
-            PtDebugPrint("xTakableClothing: Set "+setName+" already removed, skipping")
+            PtDebugPrint(f"xTakableClothing: Set {setName} already removed, skipping")
             return
-        PtDebugPrint("xTakableClothing: Removing worn set "+setName)
+        PtDebugPrint(f"xTakableClothing: Removing worn set {setName}")
         removedSets.append(setName) # add this set to our list of removed sets
         avatar = PtGetLocalAvatar()
         avatar.avatar.netForce(True)
@@ -365,7 +365,7 @@ class xTakableClothing(ptModifier):
                 if hasattr(item, "description"):
                     PtSendKIMessage(kKILocalChatStatusMsg, PtGetLocalizedString("KI.Messages.NewClothing", [item.description]))
             else:
-                PtDebugPrint("DEBUG: xTakableClothing.OnNotify():  You already have "+base+" so I'm not going to give it to you again")
+                PtDebugPrint(f"DEBUG: xTakableClothing.OnNotify():  You already have {base} so I'm not going to give it to you again")
             acclist = avatar.avatar.getClosetClothingList(kAccessoryClothingItem)
             accnamelist = [i[0] for i in acclist if i[0][4:14] == "AccGlasses" or i[0][1:] == "Reward_Goggles"]
             worn = avatar.avatar.getAvatarClothingList()
@@ -417,7 +417,7 @@ class ClothingItem:
                 if clothing[2] != "":
                     self.description = PtGetLocalizedString(xACAItems.xClothesXRef[clothing[2]])
             except:
-                self.description = "*"+clothing[2]+"*"
+                self.description = f"*{clothing[2]}*"
             self.thumbnail = clothing[3]
             # determine more from the custom string
             if len(clothing[4]) > 0:
@@ -448,7 +448,7 @@ class ClothingItem:
                         elif rs == "feet":
                             self.groupwith = kRightFootClothingItem
                         else:
-                            PtDebugPrint("xTakableClothing: Unknown ClothingType %s" % (rs))
+                            PtDebugPrint(f"xTakableClothing: Unknown ClothingType {rs}")
                     elif ls == "accessorytype":
                         self.accessoryType = 0
                     elif ls == "accessory":
@@ -467,4 +467,4 @@ class ClothingItem:
                     else:
                         pass
         except (TypeError, LookupError):
-            PtDebugPrint("xTakableClothing: some kind of error on clothing " + str(clothing))
+            PtDebugPrint(f"xTakableClothing: some kind of error on clothing {clothing}")

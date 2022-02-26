@@ -95,20 +95,20 @@ class xSaveCloth(ptModifier):
         spTitle = spawnPoint.getTitle()
         spName = spawnPoint.getName()
 
-        PtDebugPrint("spawned into", spName, ", this save cloth handles", soSpawnpoint.value.getName())
+        PtDebugPrint(f"spawned into {spName}, this save cloth handles {soSpawnpoint.value.getName()}")
         if spTitle.endswith("SavePoint") and spName == soSpawnpoint.value.getName():
-            PtDebugPrint("restoring camera stack for save point", spTitle, spName)
+            PtDebugPrint(f"restoring camera stack for save point {spTitle} {spName}")
 
             # Restore camera stack
             camstack = spawnPoint.getCameraStack()
-            PtDebugPrint("camera stack:", camstack)
+            PtDebugPrint(f"{camstack=}")
             if camstack != "":
                 PtClearCameraStack()
                 camlist = camstack.split(CAM_DIVIDER)
 
                 age = PtGetAgeName()
                 for x in camlist:
-                    PtDebugPrint("adding camera: |" + str(x) + "|")
+                    PtDebugPrint(f"adding camera: |{x}|")
                     try:
                         PtRebuildCameraStack(x, age)
                     except:
@@ -118,7 +118,7 @@ class xSaveCloth(ptModifier):
         
         # SaveCloth SDL stuff, for use with POTS symbols
         if not (numSC.value > 0 and numSC.value <= kMaxSC):
-            PtDebugPrint("xSaveCloth.OnServerInitComplete(): ERROR! invalid save cloth # of ",numSC.value,", specified in MAX component.  Please revise...")
+            PtDebugPrint(f"xSaveCloth.OnServerInitComplete(): ERROR! invalid save cloth # of {numSC.value} specified in MAX component.  Please revise...")
             return
         ageName = PtGetAgeName()
         if ageName == "Ercana":
@@ -129,16 +129,16 @@ class xSaveCloth(ptModifier):
         else:
             PtDebugPrint("xSaveCloth.py not updated for this age's SDL.  Ignoring SaveCloth SDL stuff...")
             return
-        sdlSC = sdlPre + sdlBase + str(numSC.value)
+        sdlSC = f"{sdlPre}{sdlBase}{numSC.value}"
         try:
             ageSDL = PtGetAgeSDL()
             ageSDL.setFlags(sdlSC,1,1)
             ageSDL.sendToClients(sdlSC)
             ageSDL.setNotify(self.key,sdlSC,0.0)
             gotSC = ageSDL[sdlSC][0]
-            #PtDebugPrint("xSaveCloth.OnServerInitComplete():\t found sdl: ",sdlSC,", which = ",gotSC)
+            #PtDebugPrint(f"xSaveCloth.OnServerInitComplete():\t found sdl: {sdlSC} which = {gotSC}")
         except:
-            PtDebugPrint("ERROR.  Couldn't find sdl: ",sdlSC,", defaulting to 0")
+            PtDebugPrint(f"ERROR.  Couldn't find sdl: {sdlSC}, defaulting to 0")
 
 
     def OnSDLNotify(self,VARname,SDLname,playerID,tag):
@@ -147,7 +147,7 @@ class xSaveCloth(ptModifier):
         if VARname != sdlSC:
             return
         ageSDL = PtGetAgeSDL()
-        PtDebugPrint("xSaveCloth.OnSDLNotify():\t VARname:%s, SDLname:%s, tag:%s, value:%d" % (VARname,SDLname,tag,ageSDL[sdlSC][0]))
+        PtDebugPrint(f"xSaveCloth.OnSDLNotify():\t {VARname=}, {SDLname=}, {tag=}, value={ageSDL[sdlSC][0]}")
         gotSC = ageSDL[sdlSC][0]
 
 

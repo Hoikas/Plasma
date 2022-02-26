@@ -129,8 +129,8 @@ class ahnyMaintRoom(ptResponder):
             if actingAvatar == PtGetLocalAvatar():
                 ageSDL = PtGetAgeSDL()
                 ageSDL["ahnyCurrentSphere"] = (SphereNum.value,)
-                PtDebugPrint("advanced from sphere %d with maintainence button" % (ageSDL["ahnyCurrentSphere"][0]))
-                PtDebugPrint("sphere %d will now be the active sphere" % (SphereNum.value))
+                PtDebugPrint(f"advanced from sphere {ageSDL['ahnyCurrentSphere'][0]} with maintainence button")
+                PtDebugPrint(f"sphere {SphereNum.value} will now be the active sphere")
                 if SphereNum.value == 4:
                     ageSDL["ahnyImagerSphere"] = (SphereNum.value,)
                     boolHubDoor = ageSDL["ahnyHubDoor"][0]
@@ -207,5 +207,5 @@ class ahnyMaintRoom(ptResponder):
         activeSphere = ageSDL["ahnyCurrentSphere"][0]
         currentSphere = SphereNum.value
         diffsphere = (activeSphere - currentSphere) % 4
-        PtDebugPrint("ahnyMaintRoom.SphereDifference(): Setting sphere difference for Maint Room switch to %d" % (diffsphere))
+        PtDebugPrint(f"ahnyMaintRoom.SphereDifference(): Setting sphere difference for Maint Room switch to {diffsphere}")
         

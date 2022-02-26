@@ -66,7 +66,7 @@ class xTriggerNamedResponder(ptResponder):
         ptResponder.__init__(self)
         self.id = 5101
         self.version = 1
-        PtDebugPrint("__init__xTriggerNamedResponder v. %d" % self.version)
+        PtDebugPrint(f"__init__xTriggerNamedResponder v. {self.version}")
 
     def OnNotify(self,state,id,events):
         if not state:

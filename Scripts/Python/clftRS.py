@@ -70,7 +70,7 @@ class clftRS(ptModifier):
         version = 4
         minorVersion = 1
         self.version = version
-        PtDebugPrint("__init__clftRS v%d.%d" % (version,minorVersion) )
+        PtDebugPrint(f"__init__clftRS v{version}.{minorVersion}")
 
     def OnFirstUpdate(self):
         pass
@@ -82,7 +82,7 @@ class clftRS(ptModifier):
     def OnNotify(self,state,id,events):
         "Activated... start telescope"
         global LocalAvatar
-        PtDebugPrint("xTelescope:OnNotify  state=%f id=%d events=" % (state,id),events,level=kDebugDumpLevel)
+        PtDebugPrint(f"clftRS:OnNotify  {state=}, {id=}, {events=}", level=kDebugDumpLevel)
         if state and id == Activate.id and PtWasLocallyNotified(self.key):
             LocalAvatar = PtFindAvatar(events)
             self.IStartTelescope()
@@ -90,7 +90,7 @@ class clftRS(ptModifier):
 
     def OnGUINotify(self,id,control,event):
         "Notifications from the vignette"
-        PtDebugPrint("GUI Notify id=%d, event=%d control=" % (id,event),control,level=kDebugDumpLevel)
+        PtDebugPrint(f"GUI Notify {id=}, {event=}, {control=}", level=kDebugDumpLevel)
         if event == kDialogLoaded:
             # if the dialog was just loaded then show it
             control.show()

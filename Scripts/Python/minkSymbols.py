@@ -89,7 +89,7 @@ class minkSymbols(ptResponder):
         self.id = 5260
         version = 1
         self.version = version
-        PtDebugPrint("__init__minkSymbols v.", version,".0")
+        PtDebugPrint(f"__init__minkSymbols v. {version}.0")
 
     ###########################
     def OnFirstUpdate(self):
@@ -196,14 +196,14 @@ class minkSymbols(ptResponder):
 
     ###########################
     def OnNotify(self,state,id,events):
-        PtDebugPrint("minkSymbols.OnNotify(): state=%s id=%d events=" % (state, id), events)
+        PtDebugPrint(f"minkSymbols.OnNotify(): {state=} {id=} {events=}", level=kDebugDumpLevel)
 
         if id in RegionToResponder.keys():
-            PtDebugPrint("minkSymbols.OnNotify(): Region %d triggered" % (id))
-            globals()["regCave0{}".format(id)].disable()
+            PtDebugPrint(f"minkSymbols.OnNotify(): Region {id} triggered")
+            globals()[f"regCave0{id}"].disable()
 
             ageSDL = PtGetAgeSDL()
-            ageSDL["minkSymbolPart0{}".format(id)] = (1,)
-            ageSDL["minkSymbolTouch0{}".format(id)] = (1,)
+            ageSDL[f"minkSymbolPart0{id}"] = (1,)
+            ageSDL[f"minkSymbolTouch0{id}"] = (1,)
 
             RegionToResponder[id].run(self.key)

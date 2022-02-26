@@ -116,17 +116,17 @@ class UCMarkerGame(object):
             things = reward.split(':')
             if things[0] == "chron":
                 value = things[2] if len(things) > 2 else "1"
-                PtDebugPrint("UCMarkerGame._GiveReward():\tSetting chronicle '{}' = '{}'".format(things[1], value), level=kWarningLevel)
+                PtDebugPrint(f"UCMarkerGame._GiveReward():\tSetting chronicle '{things[1]}' = '{value}'", level=kWarningLevel)
                 # NOTE: searches for a matching entry before creating
                 ptVault().addChronicleEntry(things[1], 0, value)
             elif things[0] == "clothing":
                 av = PtGetLocalAvatar().avatar
                 gender = "F" if av.getAvatarClothingGroup() else "M"
-                clothing = "{}{}".format(gender, things[1])
+                clothing = f"{gender}{things[1]}"
                 if any((i[0] == clothing for i in av.getWardrobeClothingList())):
-                    PtDebugPrint("UCMarkerGame._GiveReward():\tAlready have clothing item '{}'".format(clothing), level=kWarningLevel)
+                    PtDebugPrint(f"UCMarkerGame._GiveReward():\tAlready have clothing item '{clothing}'", level=kWarningLevel)
                 else:
-                    PtDebugPrint("UCMarkerGame._GiveReward():\tGiving clothing item '{}'".format(clothing), level=kWarningLevel)
+                    PtDebugPrint(f"UCMarkerGame._GiveReward():\tGiving clothing item '{clothing}'", level=kWarningLevel)
                     try:
                         tint1 = _str2color(things[2])
                     except IndexError:

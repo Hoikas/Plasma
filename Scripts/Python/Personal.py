@@ -74,7 +74,7 @@ class Personal(ptResponder):
             if guid > highestGuid:
                 highestGuid = guid
 
-        PtDebugPrint("Personal.gotPublicAgeList(): Using city GUID "+str(highestGuid))
+        PtDebugPrint(f"Personal.gotPublicAgeList(): Using city GUID {highestGuid}")
         vault = ptVault()
         l = ptAgeInfoStruct()
         l.setAgeFilename('city')

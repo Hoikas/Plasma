@@ -66,7 +66,7 @@ class bhroBahroMink(ptResponder):
         ptResponder.__init__(self)
         self.id = 8815
         self.version = 1
-        PtDebugPrint("bhroBahroMink: init  version = %d" % self.version)
+        PtDebugPrint(f"bhroBahroMink: init  version = {self.version}")
 
     ###########################
     def __del__(self):
@@ -90,7 +90,7 @@ class bhroBahroMink(ptResponder):
 
     ###########################
     def OnNotify(self,state,id,events):
-        #PtDebugPrint("bhroBahroMink.OnNotify: state=%s id=%d events=" % (state, id), events)
+        #PtDebugPrint(f"bhroBahroMink.OnNotify: {state=}, {id=} {events=}")
 
         if id == clickable.id and not state:
             PtDebugPrint("bhroBahroMink.OnNotify: clicked Minkata Spiral")

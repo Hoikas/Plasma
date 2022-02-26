@@ -185,11 +185,11 @@ class xBlueSpiral(ptResponder, object):
         # so we're gonna have to do some magic
         prefix = SDLBSKey.value[:3] # three character prefix
         if not SDLBSSolution.value:
-            SDLBSSolution.value = prefix + kSolutionVarName
-            PtDebugPrint("xBlueSpiral.OnFirstUpdate():\t" + SDLBSSolution.value, level=kDebugDumpLevel)
+            SDLBSSolution.value = f"{prefix}{kSolutionVarName}"
+            PtDebugPrint(f"xBlueSpiral.OnFirstUpdate():\t{SDLBSSolution.value}", level=kDebugDumpLevel)
         if not SDLBSRunning.value:
-            SDLBSRunning.value = prefix + kRunningVarName
-            PtDebugPrint("xBlueSpiral.OnFirstUpdate():\t" + SDLBSRunning.value, level=kDebugDumpLevel)
+            SDLBSRunning.value = f"{prefix}{kRunningVarName}"
+            PtDebugPrint(f"xBlueSpiral.OnFirstUpdate():\t{SDLBSRunning.value}", level=kDebugDumpLevel)
 
     def OnServerInitComplete(self):
         # Try to grab the ageSDL. If this fails, we have huge issues
@@ -237,7 +237,7 @@ class xBlueSpiral(ptResponder, object):
         if cm is None:
             cm = self._GenerateClothSeq()
             self.clothmap = cm
-            PtDebugPrint("xBlueSpiral.OnServerInitComplete():\tKey: " + repr(cm))
+            PtDebugPrint(f"xBlueSpiral.OnServerInitComplete():\tKey: {cm}")
 
         # Map out some helper sequences
         _cClk = (clkBSCloth01, clkBSCloth02, clkBSCloth03, clkBSCloth04,
@@ -298,7 +298,7 @@ class xBlueSpiral(ptResponder, object):
 
         if VARname == SDLBSConsecutive.value:
             if self.running:
-                PtDebugPrint("xBlueSpiral.OnSDLNotify():\tAwesome! We have %i sucessful hits" % self.hits, level=kWarningLevel)
+                PtDebugPrint(f"xBlueSpiral.OnSDLNotify():\tAwesome! We have {self.hits} sucessful hits", level=kWarningLevel)
                 respBSTicMarks.run(self.key, state=str(self.hits))
                 if self.hits == kNumCloths: # hey, we won!
                     PtDebugPrint("xBlueSpiral.OnSDLNotify():\tWE WON! I HELPED! PRAISE ME. PRAISE MEEEEEEEEEEEEEEE", level=kWarningLevel)
@@ -312,7 +312,7 @@ class xBlueSpiral(ptResponder, object):
             return
 
     def OnNotify(self, state, id, events):
-        PtDebugPrint("xBlueSpiral.OnNotify():\tid = %i events = %s" % (id, repr(events)), level=kDebugDumpLevel)
+        PtDebugPrint(f"xBlueSpiral.OnNotify():\t{id=}, {events=}", level=kDebugDumpLevel)
 
         # Somebody clicked on the door or we got a dupe resp callback
         if id == clkBSDoor.id:
@@ -329,7 +329,7 @@ class xBlueSpiral(ptResponder, object):
 
             # should be happening after the cloth responder runs... but they
             # don't call us back because Cyan sucks
-            PtDebugPrint("xBlueSpiral.OnNotify():\tCloth number %i pressed" % (self.clothmap[clothId] + 1), level=kWarningLevel)
+            PtDebugPrint(f"xBlueSpiral.OnNotify():\tCloth number {self.clothmap[clothId] + 1} pressed", level=kWarningLevel)
             if self.hits >= kNumCloths:
                 # This shouldn't happen, but if it does... don't die.
                 return
@@ -338,7 +338,7 @@ class xBlueSpiral(ptResponder, object):
                 # If not, show the cloth value on the BS door
                 if self.running:
                     wantId = self.solution[self.hits]
-                    PtDebugPrint("xBlueSpiral.OnNotify():\tWant cloth number %i..." % (self.clothmap[wantId] + 1), level=kWarningLevel)
+                    PtDebugPrint(f"xBlueSpiral.OnNotify():\tWant cloth number {self.clothmap[wantId] + 1}...", level=kWarningLevel)
                     if wantId == clothId:
                         self.hits += 1
                     else: # you killed kenny
@@ -347,7 +347,7 @@ class xBlueSpiral(ptResponder, object):
                 else:
                     unmappedId = self.clothmap[clothId] # gotta unmap it
                     respBSDoor.run(self.key, state=str(unmappedId))
-                    PtDebugPrint("xBlueSpiral.OnNotify():\tObserving instance %i is generic %i" % (clothId + 1, unmappedId + 1), level=kWarningLevel)
+                    PtDebugPrint(f"xBlueSpiral.OnNotify():\tObserving instance {clothId + 1} is generic {unmappedId + 1}", level=kWarningLevel)
             return
 
         # Avatar finished pressing the BS door
@@ -380,7 +380,7 @@ class xBlueSpiral(ptResponder, object):
                 strClothId  = str(self.clothmap[self.solution[self._symbolEval]])
                 respBSFastDoor.run(self.key, state=strClothId, netPropagate=0) # local only
                 intClothId = int(strClothId) + 1
-                PtDebugPrint("xBlueSpiral.OnTimer():\tShowing solution #%i, cloth #%i" % (self._symbolEval, intClothId), level=kDebugDumpLevel)
+                PtDebugPrint(f"xBlueSpiral.OnTimer():\tShowing solution #{self._symbolEval}, cloth #{intClothId}", level=kDebugDumpLevel)
                 if self._symbolEval == (kNumCloths - 1):
                     self._symbolEval = 0
                     delay = 3
@@ -443,11 +443,11 @@ class xBlueSpiral(ptResponder, object):
 
             if param.lower() == "regen":
                 if self.running:
-                    PtDebugPrint("xBlueSpiral.OnBackdoorMsg():\tWait until the game finishes, troll." + repr(cm))
+                    PtDebugPrint(f"xBlueSpiral.OnBackdoorMsg():\tWait until the game finishes, troll. {cm}")
                 else:
                     cm = self._GenerateClothSeq()
                     self.clothmap = cm
-                    PtDebugPrint("xBlueSpiral.OnBackdoorMsg():\tKey: " + repr(cm))
+                    PtDebugPrint(f"xBlueSpiral.OnBackdoorMsg():\tKey: {cm}")
                 return
             return
 

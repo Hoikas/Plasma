@@ -104,7 +104,7 @@ class clftYeeshaPage08(ptModifier):
         ptModifier.__init__(self)
         self.id = 5312
         self.version = 1
-        PtDebugPrint("__init__clftYeeshaPage08 v.", self.version)
+        PtDebugPrint(f"__init__clftYeeshaPage08 v.{self.version}")
 
 
     def OnFirstUpdate(self):
@@ -167,7 +167,7 @@ class clftYeeshaPage08(ptModifier):
                 return
             else:
                 PtDebugPrint ("DEBUG: clftYeeshaPage08.py: Yeesha Page #8 is new to you.")       
-                PtDebugPrint ("DEBUG: clftYeeshaPage08.py: Trying to update the value of the SDL variable %s to 1" % ("YeeshaPage8"))
+                PtDebugPrint ("DEBUG: clftYeeshaPage08.py: Trying to update the value of the SDL variable YeeshaPage8 to 1")
                 vault = ptVault()  
                 psnlSDL = vault.getPsnlAgeSDL()
                 if psnlSDL:
@@ -190,14 +190,14 @@ class clftYeeshaPage08(ptModifier):
         psnlSDL = vault.getPsnlAgeSDL()
         if psnlSDL:
             YeeshaPageVar = psnlSDL.findVar("YeeshaPage8")    
-            PtDebugPrint ("DEBUG: clftYeeshaPage08.py: The previous value of the SDL variable %s is %s" % ("YeeshaPage8", YeeshaPageVar.getInt()))
+            PtDebugPrint(f"DEBUG: clftYeeshaPage08.py: The previous value of the SDL variable YeeshaPage8 is {YeeshaPageVar.getInt()}", level=kDebugDeumpLevel)
             if YeeshaPageVar.getInt() != 0: 
                 PtDebugPrint ("DEBUG: clftYeeshaPage08.py: You've already found Yeesha Page #8. Move along. Move along.")
                 return 1
             else:
                 return 0
         else:
-            PtDebugPrint("ERROR: clftYeeshaPage08: Error trying to access the Chronicle psnlSDL. psnlSDL = %s" % ( psnlSDL))
+            PtDebugPrint(f"ERROR: clftYeeshaPage08: Error trying to access the psnlSDL. {psnlSDL=}")
             return 0
 
 

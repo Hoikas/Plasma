@@ -112,7 +112,7 @@ class tldnShroomieBrain(ptResponder):
         self.id = 5237
         version = 3
         self.version = version
-        PtDebugPrint("__init__tldnShroomieBrain v.", version,".2")
+        PtDebugPrint(f"__init__tldnShroomieBrain v.{version}.2")
         random.seed()
 
     def OnServerInitComplete(self):
@@ -133,11 +133,11 @@ class tldnShroomieBrain(ptResponder):
         ShroomieTimeLastSeen = ageSDL["ShroomieTimeLastSeen"][0]
         
         PtDebugPrint("tldnShroomieBrain: When I got here:")
-        PtDebugPrint("\tShroomie has been seen", ShroomieTotalTimesSeen," times.")
+        PtDebugPrint(f"\tShroomie has been seen {ShroomieTotalTimesSeen} times.")
         
         if ShroomieTotalTimesSeen:            
             CurrentTime = PtGetDniTime()            
-            PtDebugPrint("\tShroomie was last seen ", (CurrentTime - ShroomieTimeLastSeen)," seconds ago.")
+            PtDebugPrint(f"\tShroomie was last seen {CurrentTime - ShroomieTimeLastSeen} seconds ago.")
             
     def OnNotify(self,state,id,events):
         ageSDL = PtGetAgeSDL()
@@ -177,7 +177,7 @@ class tldnShroomieBrain(ptResponder):
         
         ShroomieTimeLastSeen = ageSDL["ShroomieTimeLastSeen"][0]
 
-        PtDebugPrint("tldnShroomieBrain: Shroomie was last seen", CurrentTime - ShroomieTimeLastSeen," seconds ago.")
+        PtDebugPrint(f"tldnShroomieBrain: Shroomie was last seen {CurrentTime - ShroomieTimeLastSeen} seconds ago.")
 
         if (CurrentTime - ShroomieTimeLastSeen) > 240:
             PtDebugPrint("\tShroomie CAN be seen.")
@@ -229,14 +229,14 @@ class tldnShroomieBrain(ptResponder):
             whichbehavior = random.randint(2,4)
             NearOrFar = "Far"
             
-        PtDebugPrint("tldnShroomieBrain: whichbehavior = ",whichbehavior," NearOrFar = ",NearOrFar)
+        PtDebugPrint(f"tldnShroomieBrain: {whichbehavior=} {NearOrFar=}")
 
 
         whichspawnpoint = random.randint(1,5)
 
-        target = globals()["Spawn{NearOrFar}0{SpawnPoint}".format(NearOrFar=NearOrFar, SpawnPoint=whichspawnpoint)]
+        target = globals()[f"Spawn{NearOrFar}0{whichspawnpoint}"]
         ShroomieMaster.sceneobject.physics.warpObj(target.sceneobject.getKey())
-        globals()["respTrick0{}".format(whichbehavior)].run(self.key)
+        globals()[f"respTrick0{whichbehavior}"].run(self.key)
 
         CurrentTime = PtGetDniTime()
         ageSDL["ShroomieTimeLastSeen"] = (CurrentTime,)
@@ -244,4 +244,4 @@ class tldnShroomieBrain(ptResponder):
         ShroomieTotalTimesSeen = ageSDL["ShroomieTotalTimesSeen"][0]
         ShroomieTotalTimesSeen = ShroomieTotalTimesSeen + 1
         ageSDL["ShroomieTotalTimesSeen"] = (ShroomieTotalTimesSeen,)
-        PtDebugPrint("tldnShroomieBrain: Shroomie has been seen", ShroomieTotalTimesSeen,"times.")
+        PtDebugPrint(f"tldnShroomieBrain: Shroomie has been seen {ShroomieTotalTimesSeen} times.")

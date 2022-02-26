@@ -87,7 +87,7 @@ class dsntKILightMachine(ptModifier):
         ptModifier.__init__(self)
         self.id = 5670
         self.version = 3
-        PtDebugPrint("DEBUG: dsntKILightMachine.__init__():\tInitalizing dsntKILightMachine v.%s" % self.version)
+        PtDebugPrint(f"DEBUG: dsntKILightMachine.__init__():\tInitalizing dsntKILightMachine v.{self.version}")
 
 
     def OnServerInitComplete(self):
@@ -119,7 +119,7 @@ class dsntKILightMachine(ptModifier):
 
 
     def OnNotify(self,state,id,events):
-        #PtDebugPrint("dsntKILightMachine.OnNotify(): Notify event state=%f,id=%d,events=" % (state,id),events)
+        #PtDebugPrint(f"dsntKILightMachine.OnNotify(): Notify event {state=},{id=}, {events=}")
         global IsAvatarLocal
         global LocalAvatar
 
@@ -185,19 +185,19 @@ class dsntKILightMachine(ptModifier):
             oldVal = int(entryValue)
             if remaining == oldVal:
                 return
-            PtDebugPrint("set KI light chron to: ",remaining)
-            entry.chronicleSetValue("%d" % (remaining))
+            PtDebugPrint(f"set KI light chron to: {remaining}")
+            entry.chronicleSetValue(str(remaining)))
             entry.save()
         else:
-            vault.addChronicleEntry("KILightStop",1,"%d" % (remaining))
+            vault.addChronicleEntry("KILightStop",1,str(remaining)))
             PtDebugPrint("Chronicle entry KILight not present, adding entry and setting time to shutoff")
 
 
     def OnTimer(self,id):
-        #PtDebugPrint("dsntKILightMachine.OnTimer(): id = ",id)
+        #PtDebugPrint(f"dsntKILightMachine.OnTimer(): {id=} ")
         if id == kLightStopID:
             curTime = PtGetDniTime()
-            PtDebugPrint("dsntKILightMachine.OnTimer():  lightStop = ",lightStop,", curTime = ",curTime)
+            PtDebugPrint(f"dsntKILightMachine.OnTimer():  {lightStop=}, {curTime=}")
             if curTime >= (lightStop - 1):
                 self.DoKILight(0,0)
             else:
@@ -220,15 +220,15 @@ class dsntKILightMachine(ptModifier):
         if len(respList) > 0:
             PtDebugPrint("dsntKILightMachine.DoKILight(): ...responder list:")
             for resp in respList:
-                PtDebugPrint("       %s" % (resp.getName()))
+                PtDebugPrint(f"       {resp.getName()}")
                 if resp.getName() == thisResp:
-                    PtDebugPrint("found KI light resp: %s" % (thisResp))
+                    PtDebugPrint(f"found KI light resp: {thisResp}")
                     atResp = ptAttribResponder(42)
                     atResp.__setvalue__(resp)
                     atResp.run(self.key,avatar=LocalAvatar,fastforward=ff)
                     if state:
                         PtAtTimeCallback(self.key,remaining,kLightStopID)
-                        PtDebugPrint("dsntKILightMachine.DoKILight(): turning light on for ",remaining," seconds")
+                        PtDebugPrint(f"dsntKILightMachine.DoKILight(): turning light on for {remaining} seconds")
                         lightOn = 1
                     else:
                         PtDebugPrint("dsntKILightMachine.DoKILight(): light is shut off, updating chron if it needs it")

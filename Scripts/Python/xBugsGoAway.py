@@ -86,7 +86,7 @@ class xBugsGoAway(ptResponder):
             return
         
         self.bugCount = self.IGetBugCount()
-        PtDebugPrint("xBugsGoAway.OnServerInitComplete() - Linking in with "+str(self.bugCount)+" bugs")
+        PtDebugPrint(f"xBugsGoAway.OnServerInitComplete() - Linking in with {self.bugCount} bugs")
 
         if (self.bugCount != 0):
             PtSetParticleDissentPoint(0,0,10000,avatar.getKey())

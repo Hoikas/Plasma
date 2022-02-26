@@ -151,11 +151,11 @@ class GardenBugs(ptResponder):
                 # kill some particles
                 particlesToKill = -particlesToTransfer
                 percentToKill = float(particlesToKill) / float(self.bugCount)
-                PtDebugPrint("GardenBugs.OnTimer() - Particles to kill: " + str(particlesToKill) + " (" + str(percentToKill * 100) + "%)")
+                PtDebugPrint(f"GardenBugs.OnTimer() - Particles to kill: {particlesToKill} ({percentToKill * 100}%)")
                 PtKillParticles(0,percentToKill,avatar.getKey())
             elif (particlesToTransfer != 0):
                 # add some particles
-                PtDebugPrint("GardenBugs.OnTimer() - Particles to add: " + str(particlesToTransfer))
+                PtDebugPrint(f"GardenBugs.OnTimer() - Particles to add: {particlesToTransfer}")
                 PtTransferParticlesToObject(bugEmitter.value.getKey(),avatar.getKey(),particlesToTransfer)
             PtSetParticleDissentPoint(0,0,10000,avatar.getKey())
             return
@@ -288,7 +288,7 @@ class GardenBugs(ptResponder):
             
             # update with the number currently on the avatar and save it to the chronicle
             self.bugCount = PtGetNumParticles(local.getKey())
-            PtDebugPrint("gardenBugs.BeginAgeUnLoad()-->\tparticles at age unload ",self.bugCount)
+            PtDebugPrint(f"gardenBugs.BeginAgeUnLoad()-->\tparticles at age unload {self.bugCount}")
             self.ISaveBugCount(self.bugCount)
             
             # help ensure all bugs are dead

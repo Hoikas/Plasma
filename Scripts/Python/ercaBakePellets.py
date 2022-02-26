@@ -214,7 +214,7 @@ class ercaBakePellets(ptResponder):
             boolPelletMachine = ageSDL["ercaPelletMachine"][0]
         if VARname == SDLFinishTime.value:
             byteFinishTime = ageSDL[SDLFinishTime.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for ercaBakeFinishTime is now %d" % (byteFinishTime))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for ercaBakeFinishTime is now {byteFinishTime}")
             if byteFinishTime == 1:
                 PtDebugPrint("ONLY CALL GetRecipe ONCE")
                 fastforward = 0
@@ -235,19 +235,19 @@ class ercaBakePellets(ptResponder):
                     Oven4On = 0
         if VARname == SDLPellet1.value:
             Pellet1 = ageSDL[SDLPellet1.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for Pellet1 is now %d" % (Pellet1))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for Pellet1 is now {Pellet1}")
         if VARname == SDLPellet2.value:
             Pellet2 = ageSDL[SDLPellet2.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for Pellet2 is now %d" % (Pellet2))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for Pellet2 is now {Pellet2}")
         if VARname == SDLPellet3.value:
             Pellet3 = ageSDL[SDLPellet3.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for Pellet3 is now %d" % (Pellet3))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for Pellet3 is now {Pellet3}")
         if VARname == SDLPellet4.value:
             Pellet4 = ageSDL[SDLPellet4.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for Pellet4 is now %d" % (Pellet4))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for Pellet4 is now {Pellet4}")
         if VARname == SDLPellet5.value:
             Pellet5 = ageSDL[SDLPellet5.value][0]
-            PtDebugPrint("ercaBakePellets:OnSDLNotify:  SDL for Pellet5 is now %d" % (Pellet5))
+            PtDebugPrint(f"ercaBakePellets:OnSDLNotify:  SDL for Pellet5 is now {Pellet5}")
 
 
     def OnNotify(self,state,id,events):
@@ -284,16 +284,16 @@ class ercaBakePellets(ptResponder):
         temp3 = ageSDL[TempSDLs[2]][0]
         temp4 = ageSDL[TempSDLs[3]][0]
         
-        PtDebugPrint("ercaBakePellets:IGetRecipe:  time1 = %d, time2 = %d, time3 = %d, time4 = %d" % (time1,time2,time3,time4))
-        PtDebugPrint("ercaBakePellets:IGetRecipe:  amt1 = %d, amt2 = %d, amt3 = %d, amt4 = %d" % (amt1,amt2,amt3,amt4))
-        PtDebugPrint("ercaBakePellets:IGetRecipe:  temp1 = %d, temp2 = %d, temp3 = %d, temp4 = %d" % (temp1,temp2,temp3,temp4))
+        PtDebugPrint(f"ercaBakePellets:IGetRecipe:  {time1=}, {time2=}, {time3=}, {time4=}")
+        PtDebugPrint(f"ercaBakePellets:IGetRecipe:  {amt1=}, {amt2=}, {amt3=}, {amt4=}")
+        PtDebugPrint(f"ercaBakePellets:IGetRecipe:  {temp1=}, {temp2=}, {temp3=}, {temp4=}")
         
         timeList = [time1,time2,time3,time4]
         timeList.sort()
         timeList.reverse()
         
-        PtDebugPrint("Longest time is %d" % (timeList[0]))
-        PtDebugPrint("Shortest time is %d" % (timeList[3]))
+        PtDebugPrint(f"Longest time is {timeList[0]}")
+        PtDebugPrint(f"Shortest time is {timeList[3]}")
         
         if fastforward == 0:
             StartTime = PtGetDniTime()
@@ -339,7 +339,7 @@ class ercaBakePellets(ptResponder):
         if CurTime < byteFinishTime:
             #~ for start in ovenStartList:
                 #~ if start == CurTime:
-                    #~ PtDebugPrint("%s start baking." % (start))
+                    #~ PtDebugPrint(f"{start} start baking.")
             if fastforward == 0:
                 if boolPelletMachine and ((CurTime+7) >= byteFinishTime) and self.sceneobject.isLocallyOwned():
                     PtDebugPrint("7 seconds or less until baking is done, and the machine is open, so CLOSING...")
@@ -591,12 +591,12 @@ class ercaBakePellets(ptResponder):
             temp3 = ageSDL[TempSDLs[2]][0]
             temp4 = ageSDL[TempSDLs[3]][0]
             PtDebugPrint("RECIPE TEST:\n")
-            PtDebugPrint("oven1 = %d, %d, %d" % (time1,amt1,temp1))
-            PtDebugPrint("oven2 = %d, %d, %d" % (time2,amt2,temp2))
-            PtDebugPrint("oven3 = %d, %d, %d" % (time3,amt3,temp3))
-            PtDebugPrint("oven4 = %d, %d, %d\n" % (time4,amt4,temp4))
-            #PtDebugPrint("time1 = %d, time2 = %d, time3 = %d, time4 = %d" % (time1,time2,time3,time4))
-            #PtDebugPrint("amt1 = %d, amt2 = %d, amt3 = %d, amt4 = %d" % (amt1,amt2,amt3,amt4))
-            #PtDebugPrint("temp1 = %d, temp2 = %d, temp3 = %d, temp4 = %d" % (temp1,temp2,temp3,temp4))
+            PtDebugPrint(f"oven1 = {time1}, {amt1}, {temp1}")
+            PtDebugPrint(f"oven2 = {time2}, {amt2}, {temp2}")
+            PtDebugPrint(f"oven3 = {time3}, {amt3}, {temp3}")
+            PtDebugPrint(f"oven4 = {time4}, {amt4}, {temp4}\n")
+            #PtDebugPrint(f"{time1=}, {time2=}, {time3=}, {time4=}")
+            #PtDebugPrint(f"{amt1=}, {amt2=}, {amt3=}, {amt4=}")
+            #PtDebugPrint(f"{temp1=}, {temp2=}, {temp3=}, {temp4=}")
             self.IDoFormula(1)
 

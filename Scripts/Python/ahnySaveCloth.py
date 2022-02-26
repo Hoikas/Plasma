@@ -115,26 +115,26 @@ class ahnySaveCloth(ptModifier):
                     PtDebugPrint("linking to hub or hut")
                     whereAmI = 4
                 else:
-                    offset = str(ageSDL["ahnyCurrentOffset"][0])
-                    PtDebugPrint("Ahnonay.OnPageLoad(): Sphere0%s loaded with offset:%s" % (sphere, offset))
-                    whereAmI = (int(sphere) - int(offset)) % 4
+                    offset = ageSDL["ahnyCurrentOffset"][0]
+                    PtDebugPrint(f"Ahnonay.OnPageLoad(): Sphere0{sphere} loaded with {offset=}")
+                    whereAmI = (sphere - offset) % 4
                     if whereAmI == 0:
                         whereAmI = 4
             else:
                 whereAmI = sphere
-            PtDebugPrint("ahnySaveCloth.OnServerInitComplete(): I am age owner in %d" % (whereAmI))
+            PtDebugPrint(f"ahnySaveCloth.OnServerInitComplete(): I am age owner in {whereAmI}")
 
         # SaveCloth SDL stuff, for use with POTS symbols
-        sdlSC = "ahnyGotSaveCloth" + clothID.value
+        sdlSC = f"ahnyGotSaveCloth{clothID.value}"
         try:
             ageSDL = PtGetAgeSDL()
             ageSDL.setFlags(sdlSC,1,1)
             ageSDL.sendToClients(sdlSC)
             ageSDL.setNotify(self.key,sdlSC,0.0)
             gotSC = ageSDL[sdlSC][0]
-            PtDebugPrint("ahnySaveCloth.OnServerInitComplete():\t found sdl: ",sdlSC,", which = ",gotSC)
+            PtDebugPrint(f"ahnySaveCloth.OnServerInitComplete():\t found sdl: {sdlSC} which = {gotSC}")
         except:
-            PtDebugPrint("ERROR.  Couldn't find sdl: ",sdlSC,", defaulting to 0")
+            PtDebugPrint(f"ERROR.  Couldn't find sdl: {sdlSC}, defaulting to 0")
 
         ageSDL.setFlags("ahnyCurrentSphere",1,1)
         ageSDL.sendToClients("ahnyCurrentSphere")
@@ -151,15 +151,16 @@ class ahnySaveCloth(ptModifier):
         if VARname != sdlSC:
             return
         ageSDL = PtGetAgeSDL()
-        PtDebugPrint("xSaveCloth.OnSDLNotify():\t VARname:%s, SDLname:%s, tag:%s, value:%d" % (VARname,SDLname,tag,ageSDL[sdlSC][0]))
-        gotSC = ageSDL[sdlSC][0]
+        value = ageSDL[sdlSC][0]
+        PtDebugPrint(f"xSaveCloth.OnSDLNotify():\t {VARname=}, {SDLname=}, {tag=}, {value=}")
+        gotSC = value
 
     def OnNotify(self,state,id,events):
         global avatar
         global whereAmI
         global link
 
-        PtDebugPrint("DEBUG: ahnySaveCloth::onNotify, id ",id)
+        PtDebugPrint(f"DEBUG: ahnySaveCloth::onNotify, {id=}")
 
         if not state:
             return
@@ -181,7 +182,7 @@ class ahnySaveCloth(ptModifier):
                 ageSDL = PtGetAgeSDL()
                 sphere = ageSDL["ahnyCurrentSphere"][0]
                 offset = (sphere - whereAmI) % 4
-                PtDebugPrint("ahnySaveCloth.OnNotify: Offset = %d" % (offset))
+                PtDebugPrint(f"ahnySaveCloth.OnNotify: {offset=}")
                 ageSDL["ahnyCurrentOffset"] = (offset,)
 
                 agevault = ptAgeVault()
@@ -207,7 +208,7 @@ class ahnySaveCloth(ptModifier):
                                 chron = ageDataChild.upcastToChronicleNode()
                                 if chron and chron.getName() == "AhnonaySpawnPoints":
                                     spawn = chron.getValue().split(";")
-                                    newSpawn = "%s;SCSavePoint,SaveClothPoint%s" % (spawn[0],clothID.value)
+                                    newSpawn = f"{spawn[0]};SCSavePoint,SaveClothPoint{clothID.value}"
                                     PtDebugPrint(newSpawn)
                                     chron.setValue(newSpawn) 
                                     if not gotSC:

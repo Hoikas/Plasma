@@ -272,9 +272,9 @@ class Cleft(ptResponder):
     def OnBehaviorNotify(self,type,id,state):
         global fissureDrop
    
-        #PtDebugPrint("Cleft.OnBehaviorNotify(): %d" % (type))
+        #PtDebugPrint(f"Cleft.OnBehaviorNotify(): {type}")
         if type == PtBehaviorTypes.kBehaviorTypeLinkIn and not state:
-            PtDebugPrint("FISSUREDROP.OnBehaviorNotify: fissureDrop = %d" % (fissureDrop))
+            PtDebugPrint(f"Cleft.OnBehaviorNotify(): {fissureDrop=}")
             if fissureDrop:
                 PtDebugPrint("Cleft.OnBehaviorNotify(): will run respFissureDropMain now.")
                 respFissureDropMain.run(self.key,avatar=PtGetLocalAvatar())

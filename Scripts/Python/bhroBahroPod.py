@@ -74,7 +74,7 @@ class bhroBahroPod(ptResponder):
         ptResponder.__init__(self)
         self.id = 8814
         self.version = 1
-        PtDebugPrint("bhroBahroPod: init  version = %d" % self.version)
+        PtDebugPrint(f"bhroBahroPod: init  version = {self.version}")
 
     ###########################
     def __del__(self):
@@ -91,7 +91,7 @@ class bhroBahroPod(ptResponder):
     def OnServerInitComplete(self):
         # if the age is not the one that I'm from then run the responder to make it back off
         ageFrom = PtGetPrevAgeName()
-        PtDebugPrint("bhroBahroPod.OnServerInitComplete: Came from %s, running opposite responder state" % (ageFrom))
+        PtDebugPrint(f"bhroBahroPod.OnServerInitComplete: Came from {ageFrom}, running opposite responder state")
         if ageFrom == "Negilahn":
             respWedges.run(self.key, state="Dereno", fastforward=1)
             respWedges.run(self.key, state="Payiferen", fastforward=1)
@@ -133,7 +133,7 @@ class bhroBahroPod(ptResponder):
 
     ###########################
     def OnNotify(self,state,id,events):
-        #PtDebugPrint("bhroBahroPod.OnNotify: state=%s id=%d events=" % (state, id), events)
+        #PtDebugPrint(f"bhroBahroPod.OnNotify: {state=}, {id=} {events=}")
 
         if id == clkNegilahn.id and not state:
             PtDebugPrint("bhroBahroPod.OnNotify: clicked Negilahn Spiral")

@@ -66,7 +66,7 @@ class bhroBahroPOTS(ptResponder):
         ptResponder.__init__(self)
         self.id = 8816
         self.version = 1
-        PtDebugPrint("bhroBahroPOTS: init  version = %d" % self.version)
+        PtDebugPrint(f"bhroBahroPOTS: init  version = {self.version}")
 
 
     def OnFirstUpdate(self):
@@ -79,7 +79,7 @@ class bhroBahroPOTS(ptResponder):
     def OnServerInitComplete(self):
         # if the age is not the one that I'm from then run the responder to make it back off
         ageFrom = PtGetPrevAgeName()
-        PtDebugPrint("bhroBahroPOTS.OnServerInitComplete: Came from %s, running opposite responder state" % (ageFrom))
+        PtDebugPrint(f"bhroBahroPOTS.OnServerInitComplete: Came from {ageFrom}, running opposite responder state")
         if ageFrom == "Ercana":
             respWedges.run(self.key, state="Ahnonay", fastforward=1)
         elif ageFrom == "Ahnonay":
@@ -98,7 +98,7 @@ class bhroBahroPOTS(ptResponder):
 
 
     def OnNotify(self,state,id,events):
-        #PtDebugPrint("bhroBahroPOTS.OnNotify: state=%s id=%d events=" % (state, id), events)
+        #PtDebugPrint("bhroBahroPOTS.OnNotify: {state=}, {id=}, {events=}")
 
         if id == clkErcana.id and state:
             PtDebugPrint("bhroBahroPOTS.OnNotify: clicked Ercana symbol")

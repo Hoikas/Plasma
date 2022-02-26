@@ -108,7 +108,7 @@ class clftNpcZandi(ptModifier):
         self.id = 5217
         
         self.version = 7
-        PtDebugPrint("__init__clftNpcZandi v.", self.version)
+        PtDebugPrint(f"__init__clftNpcZandi v.{self.version}")
         self.NpcName = None
         self.ZandiFace = None
         random.seed()
@@ -315,7 +315,7 @@ class clftNpcZandi(ptModifier):
         
         useSpeech = "2"
 
-        PtDebugPrint("last speech:", self.LastSpeech)
+        PtDebugPrint(f"last speech: {self.LastSpeech}")
 
         self.IsTalking = 1
         stage = random.randint(1,5)
@@ -351,7 +351,7 @@ class clftNpcZandi(ptModifier):
                     else:
                         useSpeech = "1"
                 
-            PtDebugPrint("playing brake not released, speech = ", useSpeech)
+            PtDebugPrint(f"playing brake not released, {useSpeech=}")
             respBrakeNotReleased.run(self.key, useSpeech)
             if useSpeech == "1":
                 self.ZandiFace = "ZandiRes01aFace"
@@ -371,7 +371,7 @@ class clftNpcZandi(ptModifier):
                         useSpeech = "2"
                     else:
                         useSpeech = "1"
-            PtDebugPrint("playing no windmill, speech = ", useSpeech)
+            PtDebugPrint(f"playing no windmill, {useSpeech=}")
             respWindmillNotTurning.run(self.key, useSpeech)
             if useSpeech == "1":
                 self.ZandiFace = "ZandiRes02aFace"
@@ -391,7 +391,7 @@ class clftNpcZandi(ptModifier):
                         useSpeech = "2"
                     else:
                         useSpeech = "1"
-            PtDebugPrint("playing no imager message, speech = ", useSpeech)
+            PtDebugPrint(f"playing no imager message, {useSpeech=}")
             respVisionNotSeen.run(self.key, useSpeech)
             if useSpeech == "1":
                 self.ZandiFace = "ZandiRes03aFace"
@@ -413,7 +413,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no trailer jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no trailer jc, {useSpeech=}")
                 respNoTrailerJC.run(self.key, useSpeech)
                 
                 if useSpeech == "1":
@@ -434,7 +434,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no imager jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no imager jc, {useSpeech=}")
                 respNoImagerJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC02aFace"
@@ -454,7 +454,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no bedroom jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no bedroom jc, {useSpeech=}")
                 respNoBedroomJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC03aFace"
@@ -474,7 +474,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no whark jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no whark jc, {useSpeech=}")
                 respNoWahrkJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC04aFace"
@@ -494,7 +494,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no sign jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no sign jc, {useSpeech=}")
                 respNoSignJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC05aFace"
@@ -514,7 +514,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no bucket jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no bucket jc, {useSpeech=}")
                 respNoBucketJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC06aFace"
@@ -534,7 +534,7 @@ class clftNpcZandi(ptModifier):
                             useSpeech = "2"
                         else:
                             useSpeech = "1"
-                PtDebugPrint("playing no door jc, speech = ", useSpeech)
+                PtDebugPrint(f"playing no door jc, {useSpeech=}")
                 respNoDoorJC.run(self.key, useSpeech)
                 if useSpeech == "1":
                     self.ZandiFace = "ZandiJC07aFace"
@@ -563,10 +563,10 @@ class clftNpcZandi(ptModifier):
                 usesaying = random.randint(2,6)
                 useSpeech = sayings[usesaying]
 
-                self.ZandiFace = "ZandiRand0" + str( usesaying - 1) + "Face"
+                self.ZandiFace = f"ZandiRand0{usesaying - 1}Face"
 
                 if useSpeech != "":
-                    PtDebugPrint("playing misc, speech = ", useSpeech)
+                    PtDebugPrint(f"playing misc, {useSpeech=}")
                     respZandiSayings.run(self.key, state = useSpeech)
 
         PtAtTimeCallback(self.key, 2, stage)

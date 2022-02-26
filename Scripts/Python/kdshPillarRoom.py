@@ -140,14 +140,14 @@ class kdshPillarRoom(ptResponder):
         
         version = 19
         self.version = version 
-        PtDebugPrint("__init__kdshPillarRoom v.", version,".1")
+        PtDebugPrint(f"__init__kdshPillarRoom v.{version}.1")
 
     def OnServerInitComplete(self):
         global PillarRoomSolvedCheck
 
         ageSDL = PtGetAgeSDL()
         if ageSDL == None:
-            PtDebugPrint("kdshPillarRoom.OnFirstUpdate():\tERROR---missing SDL (%s)") 
+            PtDebugPrint("kdshPillarRoom.OnFirstUpdate():\tERROR---missing SDL")
             return
             
         ageSDL.sendToClients("pheight01")
@@ -184,15 +184,15 @@ class kdshPillarRoom(ptResponder):
         pillar = 1
         for pillar in [1,2,3,4]:
             
-            currentheight = ageSDL["pheight0" + str(pillar)][0]  
-            PtDebugPrint("\t pheight0%s = %s " % (pillar, currentheight))
+            currentheight = ageSDL[f"pheight0{pillar}"][0]  
+            PtDebugPrint(f"\t pheight0{pillar} = {currentheight} ")
             
             if currentheight > 0:
                 
-                PillarAnim.byObject["pillar0" + str(pillar)].skipToTime(currentheight * 10)
-                #~ PillarCamBlocker.byObject["pillar0" + str(pillar) + "Collision"].skipToTime(currentheight * 10)
+                PillarAnim.byObject[f"pillar0{pillar}"].skipToTime(currentheight * 10)
+                #~ PillarCamBlocker.byObject[f"pillar0{pillar}Collision"].skipToTime(currentheight * 10)
                 
-                #~ PtDebugPrint("\t\tUpdating ladderboxes because of pillar #", pillar, " initial state")
+                #~ PtDebugPrint(f"\t\tUpdating ladderboxes because of pillar # {pillar} initial state")
                 self.EnableAppropriateLadders(pillar)
 
         PtDebugPrint("\t budget = ", ageSDL["budget"][0])
@@ -202,7 +202,7 @@ class kdshPillarRoom(ptResponder):
             PillarRoomSolvedCheck = 1
             ageSDL["PillarRoomSolved"] = (1,)
 
-        PtDebugPrint("\t PillarRoomSolved = ", ageSDL["PillarRoomSolved"][0])
+        PtDebugPrint(f"\t PillarRoomSolved = {ageSDL["PillarRoomSolved"][0]}")
         if ageSDL["PillarRoomSolved"][0] == 1:
             SolutionResp.run(self.key, fastforward=1)
 
@@ -215,10 +215,10 @@ class kdshPillarRoom(ptResponder):
         global PullsInProgress
         
         ageSDL = PtGetAgeSDL()
-        #~ PtDebugPrint("kdshPilllarRoom:OnNotify  state=%f id=%d events=" % (state,id),events)
+        #~ PtDebugPrint(f"kdshPilllarRoom:OnNotify  {state=} {id=} {events=}")
 
         if id in [1,2,3,4,5]: # One of the four levers or the reset ring were clicked by a player
-            globals()["respLever0{}".format(id)].run(self.key, events=events)
+            globals()[f"respLever0{id}"].run(self.key, events=events)
             return
 
         elif id in [6,7,8,9] and OnlyOneOwner.sceneobject.isLocallyOwned(): # One of the four levers actually pulled by an avatar
@@ -227,21 +227,21 @@ class kdshPillarRoom(ptResponder):
                 return
             
             if (self.PillarIsSafeToMove(id)): #check to see if a climber is in the way of this pillar being rased
-                
+                pheight = id - 5
                 if ageSDL["budget"][0] == 0: # true if 8 "raises" have already happened
                     PtDebugPrint("Counterweight expired.\n")
     
-                elif ageSDL["pheight0" + str(id-5)][0] == 4: # True if that particular pillar has already been raised 4 times
-                    PtDebugPrint("Pillar0%d is already at maximum height." % (id-5))
+                elif ageSDL[f"pheight0{pheight}"][0] == 4: # True if that particular pillar has already been raised 4 times
+                    PtDebugPrint(f"Pillar0{pheight} is already at maximum height.")
     
                 else:                 
-                    newheight = ageSDL["pheight0" + str(id-5)][0] + 1
-                    ageSDL["pheight0" + str(id-5)] = (newheight, )
+                    newheight = ageSDL[f"pheight0{id - 5}"][0] + 1
+                    ageSDL[f"pheight0{pheight}"] = (newheight, )
     
     
                     newbudget = ageSDL["budget"][0] - 1
                     ageSDL["budget"] = (newbudget, )
-                    PtDebugPrint("%d pulls left" % (newbudget))
+                    PtDebugPrint(f"{newbudget} pulls left")
             else:
                 RedLight.run(self.key)
             return
@@ -254,7 +254,7 @@ class kdshPillarRoom(ptResponder):
                 return
             
             if PullsInProgress > 0:
-                PtDebugPrint("Can't reset now. PullsInProgress = ", PullsInProgress)
+                PtDebugPrint(f"Can't reset now. PullsInProgress = {PullsInProgress}")
                 return
             
             safetoreset = True
@@ -263,7 +263,7 @@ class kdshPillarRoom(ptResponder):
                 if (self.PillarIsSafeToMove(pillarcheck)):
                     pass
                 else:
-                    PtDebugPrint("kdshPillar.OnNotify: A reset button was pushed, but Pillar", pillarcheck-4, "can't reset now.")
+                    PtDebugPrint(f"kdshPillar.OnNotify: A reset button was pushed, but Pillar {pillarcheck-4} can't reset now.")
                     safetoreset = False
                     
             if safetoreset:
@@ -276,11 +276,11 @@ class kdshPillarRoom(ptResponder):
 
         elif id >= 18 and id <=28 and PtWasLocallyNotified(self.key):
             ladderbox = id - 17
-            PtDebugPrint("Ladderbox %s entered." % ladderbox)
+            PtDebugPrint(f"Ladderbox {ladderbox} entered.")
             
             LocalAvatar = PtFindAvatar(events)
 
-            globals()["MultiStage{}".format(ladderbox)].run(LocalAvatar)
+            globals()[f"MultiStage{ladderbox}"].run(LocalAvatar)
             
             return
         
@@ -335,27 +335,27 @@ class kdshPillarRoom(ptResponder):
         
         elif VARname == "PillarsResetting":
             Resetting = ageSDL["PillarsResetting"][0]
-            PtDebugPrint("kdshPillarRoom.OnSDLNotify: Resetting =",Resetting)
+            PtDebugPrint(f"kdshPillarRoom.OnSDLNotify: Resetting = {Resetting}")
             
             if Resetting:
                 
                 #this loop disables all ladder boxes, so the ladders can't be climbed.                
                 for count in range(1,12): 
-                    globals()["Ladderbox{}".format(count)].disable()
+                    globals()[f"Ladderbox{count}"].disable()
                     
                 #determine the height of the highest pillar so we can reset them at the same speed as the pillars reset
                 highest = 0
                 sumofpulls = 0
                 for pillar in [1,2,3,4]:
-                    thisheight = ageSDL["pheight0" + str(pillar)][0]
+                    thisheight = ageSDL[f"pheight0{pillar}"][0]
                     sumofpulls=sumofpulls + thisheight
                     if thisheight > highest:
                         highest = thisheight
-                PtDebugPrint("The highest pillar when you reset was ", highest," notches high.")
+                PtDebugPrint(f"The highest pillar when you reset was {highest} notches high.")
                 
                 if highest != 0:
                     PtAtTimeCallback(self.key,5*highest,6) #disable everything until all the pillars are down
-                    globals()["respSfxResetFromHeight{}".format(highest)].run(self.key)
+                    globals()[f"respSfxResetFromHeight{highest}"].run(self.key)
 
                 # if the counterweights have been lowered at all, this loop resets them
                 if ageSDL["budget"][0] != 8: 
@@ -370,19 +370,19 @@ class kdshPillarRoom(ptResponder):
                     
                     
                 for count in [1,2,3,4]: # this loop resets the pillars
-                    if ageSDL["pheight0" + str(count)][0] != 0: # true for any pillar currently raised
-                        PillarAnim.byObject["pillar0" + str(count)].backwards(1)
-                        PillarAnim.byObject["pillar0" + str(count)].speed(2) # "Hurry up, I've got a puzzle to solve..."
-                        rangestart = ageSDL["pheight0" + str(count)][0] * 10
-                        PillarAnim.byObject["pillar0" + str(count)].playRange(0, rangestart)
+                    if ageSDL[f"pheight0{count}"][0] != 0: # true for any pillar currently raised
+                        PillarAnim.byObject[f"pillar0{count}"].backwards(1)
+                        PillarAnim.byObject[f"pillar0{count}"].speed(2) # "Hurry up, I've got a puzzle to solve..."
+                        rangestart = ageSDL[f"pheight0{count}"][0] * 10
+                        PillarAnim.byObject[f"pillar0{count}"].playRange(0, rangestart)
                         
-                        #~ PillarCamBlocker.byObject["pillar0" + str(count) + "Collision"].backwards(1)
-                        #~ PillarCamBlocker.byObject["pillar0" + str(count) + "Collision"].speed(2) # "Hurry up, I've got a puzzle to solve..."
-                        #~ PillarCamBlocker.byObject["pillar0" + str(count) + "Collision"].playRange(0, rangestart)
+                        #~ PillarCamBlocker.byObject[f"pillar0{count}Collision"].backwards(1)
+                        #~ PillarCamBlocker.byObject[f"pillar0{count}Collision"].speed(2) # "Hurry up, I've got a puzzle to solve..."
+                        #~ PillarCamBlocker.byObject[f"pillar0{count}Collision"].playRange(0, rangestart)
                         
                         
-                    ageSDL["pheight0" + str(count)] = (0,)                
-                    PtDebugPrint("Pillar0%d height is now: %d" % (count, ageSDL["pheight0" +str(count)][0]))                
+                    ageSDL[f"pheight0{count}"] = (0,)
+                    PtDebugPrint(f"Pillar0{count} height is now: {ageSDL['pheight0{count}'][0]}")
      
                     
             return
@@ -390,7 +390,7 @@ class kdshPillarRoom(ptResponder):
         elif not Resetting: # Any other SDL VARname that would come through would have to do with raising a pillar.
             id = int(VARname[-1:])
                 
-            newpheight = ageSDL["pheight0" + str(id)][0]
+            newpheight = ageSDL[f"pheight0{id}"][0]
             if newpheight == 0: # if height is now 0, don't move it with RaiseAPillar, because ResetPuzzle has already taken care of it
                 return
                 
@@ -423,21 +423,21 @@ class kdshPillarRoom(ptResponder):
 
     def RaiseAPillar(self,id):
         ageSDL = PtGetAgeSDL()        
-        PillarAnim.byObject["pillar0" + str(id)].backwards(0) # ensure animation plays forward
-        PillarAnim.byObject["pillar0" + str(id)].speed(1) # ensure animation plays at normal speed
-        rangestart = (ageSDL["pheight0" + str(id)][0] - 1) * 10
-        rangeend = ageSDL["pheight0" + str(id)][0]  * 10
-        PillarAnim.byObject["pillar0" + str(id)].playRange(rangestart, rangeend)
+        PillarAnim.byObject[f"pillar0{id}"].backwards(0) # ensure animation plays forward
+        PillarAnim.byObject[f"pillar0{id}"].speed(1) # ensure animation plays at normal speed
+        rangestart = (ageSDL[f"pheight0{id}"][0] - 1) * 10
+        rangeend = ageSDL[f"pheight0{id}"][0]  * 10
+        PillarAnim.byObject[f"pillar0{id}"].playRange(rangestart, rangeend)
         
-        #~ PillarCamBlocker.byObject["pillar0" + str(id) + "Collision"].backwards(0) # ensure animation plays forward
-        #~ PillarCamBlocker.byObject["pillar0" + str(id) + "Collision"].speed(1) # ensure animation plays at normal speed
-        #~ PillarCamBlocker.byObject["pillar0" + str(id) + "Collision"].playRange(rangestart, rangeend)
+        #~ PillarCamBlocker.byObject[f"pillar0{id}Collision"].backwards(0) # ensure animation plays forward
+        #~ PillarCamBlocker.byObject[f"pillar0{id}Collision"].speed(1) # ensure animation plays at normal speed
+        #~ PillarCamBlocker.byObject[f"pillar0{id}Collision"].playRange(rangestart, rangeend)
         
         #play the sound effect for that pillar
-        globals()["respSfxRaisePillar0{}".format(id)].run(self.key)
+        globals()[f"respSfxRaisePillar0{id}"].run(self.key)
         
         PtDebugPrint("\n##")
-        PtDebugPrint("Pillar0%d height is now: %d" % (id, ageSDL["pheight0" + str(id)][0]))
+        PtDebugPrint(f"Pillar0{id} height is now: {ageSDL[f'peight{id}'][0]}")
 
     def LowerCounterweight(self):
         global PullsInProgress
@@ -447,7 +447,7 @@ class kdshPillarRoom(ptResponder):
         PullsInProgress = PullsInProgress + 1
 
         CounterAnim.value.speed(PullsInProgress) # lower counterweights faster, because two pillars are in motion.
-        #~ PtDebugPrint("\tCounterweight lowering at speed of ", PullsInProgress,"x")
+        #~ PtDebugPrint(f"\tCounterweight lowering at speed of {PullsInProgress}x")
         
         rangeend = (8 - ageSDL["budget"][0]) * 10
         #~ PtDebugPrint("\t Lowering counterweight to: (rangeend)", rangeend)
@@ -463,7 +463,7 @@ class kdshPillarRoom(ptResponder):
             #run the solution cam, but only for the person who pulled the final lever
             avatar = PtGetLocalAvatar()   
             myID = PtGetClientIDFromAvatarKey(avatar.getKey())
-            PtDebugPrint("kdshPillarRoom.CheckSolution: pullerID=", pullerID,"myID=",myID)
+            PtDebugPrint(f"kdshPillarRoom.CheckSolution: {pullerID=} {myID=}")
             if myID == pullerID:
                 PtDebugPrint("\tI pulled the final lever. Playing solution cam.")
                 
@@ -521,29 +521,29 @@ class kdshPillarRoom(ptResponder):
         elif pillar == 4:
             ladderstodisable = [7,8,11]
         
-        #~ PtDebugPrint("DisableAppropriateLadders: pillar = ", pillar,)
-        #~ PtDebugPrint(" ladderstodisable = ", ladderstodisable)
+        #~ PtDebugPrint(f"DisableAppropriateLadders: {pillar=}")
+        #~ PtDebugPrint(f" {ladderstodisable=} ")
 
         for each in ladderstodisable:
-            globals()["Ladderbox{}".format(each)].disable()
-            #~ PtDebugPrint("Immediately disabling ladderbox", each)
+            globals()[f"Ladderbox{each}"].disable()
+            #~ PtDebugPrint(f"Immediately disabling ladderbox {each}")
 
     def EnableAppropriateLadders(self,id): # when pillar is done raising, enable appropriate ladder boxes with new lengths
         ageSDL = PtGetAgeSDL()
 
         def _ConfigLadder(ladderId, enable, deltaH=None):
-            ladderbox = globals()["Ladderbox{}".format(ladderId)]
+            ladderbox = globals()[f"Ladderbox{ladderId}"]
             if enable:
                 ladderbox.enable()
             else:
                 ladderbox.disable()
             if enable and deltaH is not None:
-                multistage = globals()["MultiStage{}".format(ladderId)]
+                multistage = globals()[f"MultiStage{ladderId}"]
                 multistage.setLoopCount(1, 6 * deltaH - 4)
 
         # Manage the 2 ladder boxes related to the ladder ON this pillar (connecting this pillar with the PREVIOUS one)
         if id != 1: # true unless the first pillar was raised; Pillar #1 has no proceeding pillar
-            difference01 = ageSDL["pheight0" + str(id)][0] - ageSDL["pheight0" + str(id-1)][0] # calculates difference between this and proceeding pillar
+            difference01 = ageSDL[f"pheight0{id}"][0] - ageSDL[f"pheight0{id-1}"][0] # calculates difference between this and proceeding pillar
             tolerance01 = (5 - id) # Pillar01 ladder is 4 notches high, Pillar02 ladder is 3 notches high, pillar03 ladder is 2 notches high, pillar04 ladder is 1 notch high
             #PtDebugPrint("Ladder tolerance for proceeding pillar:", tolerance01)
             
@@ -560,25 +560,25 @@ class kdshPillarRoom(ptResponder):
 
         else: # special condition for pillar01
             # do something to ladder box 1            
-            #~ PtDebugPrint("Pillar01 is %d notches higher than ground level" % (ageSDL["pheight01"][0]))
-            #~ PtDebugPrint("Ascending Ladder box #1 is now enabled with %d rungs." % (ageSDL["pheight01"][0] * 10))
+            #~ PtDebugPrint(f"Pillar01 is {(ageSDL['pheight01'][0])} notches higher than ground level")
+            #~ PtDebugPrint(f"Ascending Ladder box #1 is now enabled with {ageSDL['pheight01'][0] * 10} rungs.")
             rungs = 6 * (ageSDL["pheight01"][0]) - 4
-            #~ PtDebugPrint("Ladderbox1 rungs = ", rungs)
+            #~ PtDebugPrint(f"Ladderbox1 {rungs=}")
             MultiStage1.setLoopCount(1,rungs)
             Ladderbox1.enable()
             
             
-            #~ PtDebugPrint("Descending Ladder box #2 is now enabled with %d rungs." % (ageSDL["pheight01"][0] * 10))
+            #~ PtDebugPrint(f"Descending Ladder box #2 is now enabled with {ageSDL['pheight01'][0] * 10} rungs.")
             # do something to ladder box 2
             rungs = 6 * (ageSDL["pheight01"][0]) - 4
-            #~ PtDebugPrint("Ladderbox2 rungs = ", rungs)
+            #~ PtDebugPrint(f"Ladderbox2 {rungs=} ")
             MultiStage2.setLoopCount(1,rungs)            
             Ladderbox2.enable()            
             
 
         # Manage the 2 ladder boxes related to the ladder on the NEXT pillar (connecting this pillar with the NEXT one)
         if id != 4: # true unless the last pillar was raised; Pillar #4 as no following pillar
-            difference02 = ageSDL["pheight0" + str(id+1)][0] - ageSDL["pheight0" + str(id)][0] # calculates difference between this and following pillar
+            difference02 = ageSDL[f"pheight0{id+1}"][0] - ageSDL[f"pheight0{id}"][0] # calculates difference between this and following pillar
             tolerance02 = (5 - (id+1)) # Pillar01 ladder is 4 notches high, Pillar02 ladder is 3 notches high, pillar03 ladder is 2 notches high, pillar04 is 1 notch high. Note that we're concerned about the NEXT pillar's ladder, hence the id+1.
  
             if difference02 >= 1:

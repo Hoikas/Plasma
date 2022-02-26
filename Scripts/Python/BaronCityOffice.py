@@ -67,16 +67,16 @@ class BaronCityOffice(ptResponder):
             #~ entry = vault.findChronicleEntry(kChronicleVarName)
             #~ if entry is None:
                 #~ # not found... add current level chronicle
-                #~ vault.addChronicleEntry(kChronicleVarName,kChronicleVarType,"%d" %(1))
-                #~ PtDebugPrint("%s:\tentered new chronicle counter %s" % (kModuleName,kChronicleVarName))
+                #~ vault.addChronicleEntry(kChronicleVarName,kChronicleVarType,"1")
+                #~ PtDebugPrint(f"{kModuleName}:\tentered new chronicle counter {kChronicleVarName}")
             #~ else:
                 #~ count = int(entry.chronicleGetValue())
                 #~ count = count + 1
-                #~ entry.chronicleSetValue("%d" % (count))
+                #~ entry.chronicleSetValue(f"{count}"")
                 #~ entry.save()
-                #~ PtDebugPrint("%s:\tyour current count for %s is %s" % (kModuleName,kChronicleVarName,entry.chronicleGetValue()))
+                #~ PtDebugPrint(f"{kModuleName}:\tyour current count for {kChronicleVarName} is {entry.chronicleGetValue}")
         #~ else:
-            #~ PtDebugPrint("%s:\tERROR trying to access vault -- can't update %s variable in chronicle." % (kModuleName,kChronicleVarName))
+            #~ PtDebugPrint(f"{kModuleName}:\tERROR trying to access vault -- can't update {kChronicleVarName} variable in chronicle.")
         pass
         
     def Load(self):

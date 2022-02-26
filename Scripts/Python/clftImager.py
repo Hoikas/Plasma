@@ -187,28 +187,28 @@ class clftImager(ptResponder):
             intPanelN = 3
             PtDebugPrint("ERROR:  clftImager.OnServerInitComplete():\tERROR: age sdl read failed, defaulting intPanelN = 3")                                
         panelN = statesN[intPanelN]
-        imagerRespN.run(self.key,state="%s" % (panelN))
+        imagerRespN.run(self.key, state=panelN)
         try:
             intPanelS = self.ageSDL[stringSDLVarPanelS.value][0]            
         except:
             intPanelS = 5
             PtDebugPrint("ERROR:  clftImager.OnServerInitComplete():\tERROR: age sdl read failed, defaulting intPanelS = 5")                                
         panelS = statesS[intPanelS]
-        imagerRespS.run(self.key,state="%s" % (panelS))
+        imagerRespS.run(self.key, state=panelS)
         try:
             intPanelE = self.ageSDL[stringSDLVarPanelE.value][0]            
         except:
             intPanelE = 3
             PtDebugPrint("ERROR:  clftImager.OnServerInitComplete():\tERROR: age sdl read failed, defaulting intPanelE = 3")                                
         panelE = statesE[intPanelE]
-        imagerRespE.run(self.key,state="%s" % (panelE))
+        imagerRespE.run(self.key,state=panelE)
         try:
             intPanelW = self.ageSDL[stringSDLVarPanelW.value][0]            
         except:
             intPanelW = 0
             PtDebugPrint("ERROR:  clftImager.OnServerInitComplete():\tERROR: age sdl read failed, defaulting intPanelW = 0")                                
         panelW = statesW[intPanelW]
-        imagerRespW.run(self.key,state="%s" % (panelW))
+        imagerRespW.run(self.key,state=panelW)
 
         boolSceneYeesha = self.ageSDL[SDLVarSceneYeesha][0]
         boolTomahnaActive = self.ageSDL[SDLVarTomahnaActive][0]
@@ -245,7 +245,7 @@ class clftImager(ptResponder):
     def OnBehaviorNotify(self,type,id,state):
         global PlayScene
         
-        PtDebugPrint("clftImager.OnBehaviorNotify(): %d" % (type))
+        PtDebugPrint(f"clftImager.OnBehaviorNotify(): {type=}")
         if type == PtBehaviorTypes.kBehaviorTypeLinkIn and not state:
             if PlayScene:
                 self.SceneYeesha()
@@ -281,19 +281,19 @@ class clftImager(ptResponder):
         if VARname == stringSDLVarPanelN.value:
             intPanelN = self.ageSDL[stringSDLVarPanelN.value][0]
             panelN = statesN[intPanelN]
-            imagerRespN.run(self.key,state="%s" % (panelN))
+            imagerRespN.run(self.key, state=panelN)
         if VARname == stringSDLVarPanelS.value:
             intPanelS = self.ageSDL[stringSDLVarPanelS.value][0]
             panelS = statesS[intPanelS]
-            imagerRespS.run(self.key,state="%s" % (panelS))
+            imagerRespS.run(self.key,state=panelS)
         if VARname == stringSDLVarPanelE.value:
             intPanelE = self.ageSDL[stringSDLVarPanelE.value][0]
             panelE = statesE[intPanelE]
-            imagerRespE.run(self.key,state="%s" % (panelE))
+            imagerRespE.run(self.key,state=panelE)
         if VARname == stringSDLVarPanelW.value:
             intPanelW = self.ageSDL[stringSDLVarPanelW.value][0]
             panelW = statesW[intPanelW]
-            imagerRespW.run(self.key,state="%s" % (panelW))
+            imagerRespW.run(self.key,state=panelW)
 
         intPanelN = self.ageSDL[stringSDLVarPanelN.value][0]
         intPanelS = self.ageSDL[stringSDLVarPanelS.value][0]
@@ -373,7 +373,7 @@ class clftImager(ptResponder):
             YeeshaMultiStage.run(YeeshaName)
             YeeshaName.physics.suppress(True)
             YeeshaName.draw.disable()
-            PtDebugPrint("clftImager.OnNotify(): YeeshaName = %s" % (YeeshaName))
+            PtDebugPrint(f"clftImager.OnNotify(): {YeeshaName=}")
 
         # switch to imager close-up camera
 
@@ -483,7 +483,7 @@ class clftImager(ptResponder):
                                 #PtAtTimeCallback(self.key, 204.2, kFinished)
                             elif PlayFinal == 0 and PlayFull == 0 and PlayTPOT == 0:
                                 stopvision = random.randint(minstoptime, maxstoptime)
-                                PtDebugPrint("\tImager will autoshut off in %d seconds" % (stopvision))
+                                PtDebugPrint(f"\tImager will autoshut off in {stopvision} seconds")
                                 PtAtTimeCallback(self.key, stopvision, kVision)
                             elif PlayFull == 1:
                                 PtDebugPrint("nothing")
@@ -501,7 +501,7 @@ class clftImager(ptResponder):
             else:
                 clothingName = "02_MTorso09_01"
             if not any((i[0] == clothingName for i in avatar.avatar.getWardrobeClothingList())):
-                PtDebugPrint("adding Yeesha reward clothing %s to wardrobe" % (clothingName))
+                PtDebugPrint(f"adding Yeesha reward clothing {clothingName} to wardrobe")
                 avatar.avatar.addWardrobeClothingItem(clothingName,ptColor().white(),ptColor().black())
             else:
                 PtDebugPrint("player already has Yeesha reward clothing, doing nothing")
@@ -556,7 +556,7 @@ class clftImager(ptResponder):
         global YeeshaName
         global PlayScene
 
-        PtDebugPrint("clftImager.SceneYeesha(): PlayScene = %d" % (PlayScene))
+        PtDebugPrint(f"clftImager.SceneYeesha(): {PlayScene=}")
 
         if PlayScene == 1:
             PtDebugPrint("clftImager: Playing scene now...")
@@ -659,8 +659,8 @@ class clftImager(ptResponder):
         for x in range(4):
             currentStateList[x] = (currentStateList[x]+6)%7
 
-        PtDebugPrint("clftImager.EndgameSolved(): solution list: " + str(solutionList))
-        PtDebugPrint("clftImager.EndgameSolved(): currentState list: " + str(currentStateList))
+        PtDebugPrint(f"clftImager.EndgameSolved(): {solutionList=}")
+        PtDebugPrint(f"clftImager.EndgameSolved(): {currentStateList=}")
 
         if self.AreListsEquiv(solutionList, currentStateList):
             return True
@@ -786,7 +786,7 @@ class clftImager(ptResponder):
         
         YeeshaName.draw.enable()
         
-        PtDebugPrint("clftImager.StartVision: PlayFinal = %s" % (PlayFinal))
+        PtDebugPrint(f"clftImager.StartVision: {PlayFinal=}")
         
         # play the vision
         if PlayFinal == 1:
@@ -877,7 +877,7 @@ class clftImager(ptResponder):
         else:
             PtDebugPrint("clftImager.StopVision: Don't know which vision to kill!")
 
-        PtDebugPrint("PuzzleView = %s" % (PuzzleView))
+        PtDebugPrint(f"{PuzzleView=}")
         
         avatar = PtGetLocalAvatar()
         if PuzzleView:
@@ -894,28 +894,28 @@ class clftImager(ptResponder):
         entryCityLinks = vault.findChronicleEntry("CityBookLinks")
         if entryCityLinks is not None:
             valCityLinks = entryCityLinks.chronicleGetValue()
-            PtDebugPrint("valCityLinks = ",valCityLinks)
+            PtDebugPrint(f"{valCityLinks=}")
             CityLinks = valCityLinks.split(",")
-            PtDebugPrint("CityLinks = ",CityLinks)
+            PtDebugPrint(f"{CityLinks=}")
             if agePanel not in CityLinks:
-                NewLinks = valCityLinks + "," + agePanel
+                NewLinks = f"{valCityLinks},{agePanel}"
                 entryCityLinks.chronicleSetValue(NewLinks)
                 entryCityLinks.save()
-                PtDebugPrint("xLinkingBookGUIPopup.IDoCityLinksChron():  setting citylinks chron entry to include: ",agePanel)
+                PtDebugPrint(f"clftImager.IDoCityLinksChron():  setting citylinks chron entry to include: {agePanel}")
                 valCityLinks = entryCityLinks.chronicleGetValue()
                 CityLinks = valCityLinks.split(",")
-                PtDebugPrint("xLinkingBookGUIPopup.IDoCityLinksChron():  citylinks now = ",CityLinks)
+                PtDebugPrint(f"clftImager.IDoCityLinksChron():  {CityLinks=}")
             else:
-                PtDebugPrint("xLinkingBookGUIPopup.IDoCityLinksChron():  do nothing, citylinks chron already contains: ",agePanel)
+                PtDebugPrint(f"clftImager.IDoCityLinksChron():  do nothing, citylinks chron already contains: {agePanel}")
         else:
             vault.addChronicleEntry("CityBookLinks",0,agePanel)
-            PtDebugPrint("xLinkingBookGUIPopup.IDoCityLinksChron():  creating citylinks chron entry and adding: ",agePanel)
+            PtDebugPrint(f"clftImager.IDoCityLinksChron():  creating citylinks chron entry and adding: {agePanel}")
         
         psnlSDL = xPsnlVaultSDL()
         GotBook = psnlSDL["psnlGotCityBook"][0]
         if not GotBook:
             psnlSDL["psnlGotCityBook"] = (1,)
-            PtDebugPrint("xLinkingBookGUIPopup.IDoCityLinksChron():  setting SDL for city book to 1")
+            PtDebugPrint("clftImager.IDoCityLinksChron():  setting SDL for city book to 1")
 
 
     def OnBackdoorMsg(self, target, param):

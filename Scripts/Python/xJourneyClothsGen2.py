@@ -53,6 +53,7 @@ from Plasma import *
 from PlasmaTypes import *
 from PlasmaVaultConstants import *
 from PlasmaNetConstants import *
+from Scripts.Python.plasma.Plasma import PtGetNumCameras
 import xRandom
 import enum
 from xPsnlVaultSDL import *
@@ -116,7 +117,7 @@ class xJourneyClothsGen2(ptModifier):
         ptModifier.__init__(self)
         self.id = 5308
         self.version = 8
-        PtDebugPrint("DEBUG: xJourneyClothsGen2.__init__: v.", self.version)
+        PtDebugPrint(f"DEBUG: xJourneyClothsGen2.__init__: v. {self.version}")
 
     def OnFirstUpdate(self):
         xRandom.seed()
@@ -137,20 +138,20 @@ class xJourneyClothsGen2(ptModifier):
         spTitle = spawnPoint.getTitle()
         spName = spawnPoint.getName()
 
-        PtDebugPrint("spawned into", spName, ", this JC handles", soSpawnpoint.value.getName())
+        PtDebugPrint(f"spawned into {spName} this JC handles {soSpawnpoint.value.getName()}")
         if spTitle.endswith("SavePoint") and spName == soSpawnpoint.value.getName():
-            PtDebugPrint("restoring camera stack for save point", spTitle, spName)
+            PtDebugPrint(f"restoring camera stack for save point {spTitle} {spName}")
 
             # Restore camera stack
             camstack = spawnPoint.getCameraStack()
-            PtDebugPrint("camera stack:", camstack)
+            PtDebugPrint(f"{camstack=}")
             if camstack != "":
                 PtClearCameraStack()
                 camlist = camstack.split(CAM_DIVIDER)
 
                 age = PtGetAgeName()
                 for x in camlist:
-                    PtDebugPrint("adding camera: |" + str(x) + "|")
+                    PtDebugPrint(f"adding camera: |{x}|")
                     try:
                         PtRebuildCameraStack(x, age)
                     except:
@@ -167,7 +168,7 @@ class xJourneyClothsGen2(ptModifier):
 
         if id == Activator.id:
             if ClothInUse:
-                PtDebugPrint ("Journey Cloth %s has not yet reset." % (ClothLetter.value))
+                PtDebugPrint(f"Journey Cloth {ClothLetter.value} has not yet reset.")
                 return
             ClothInUse = 1
             Activator.disable()
@@ -191,13 +192,9 @@ class xJourneyClothsGen2(ptModifier):
                 PtDebugPrint("DEBUG: xJourneyClothsGen2.OnNotify: am owner of current age, getting save point")
                 #if 1:
                 try:
-                # Save the camera stack
-                    camstack = ""
-                    numcams = PtGetNumCameras()
-                    for x in range(numcams):
-                        camstack += (PtGetCameraNumber(x+1) + CAM_DIVIDER)
-                    camstack = camstack[:-1]
-                    PtDebugPrint("camera stack:", camstack)
+                    # Save the camera stack
+                    camstack = CAM_DIVIDER.join((PtGetCameraNumber(x+1) for x in range(PtGetNumCameras())))
+                    PtDebugPrint(f"{camstack=}")
                     
                     #commenting these out, as they've been moved to the beginning of the OneShotResp conditional
                     #vault = ptVault()
@@ -261,7 +258,7 @@ class xJourneyClothsGen2(ptModifier):
         return None
 
     def IPlayHandAnim(self, length):
-        PtDebugPrint ("You've found %s JourneyCloths" % (length))
+        PtDebugPrint(f"You've found {length} JourneyCloths")
 
         if length < 0 or length > 7:
             PtDebugPrint("xJourneyCloths.HandGlow: ERROR: Unexpected length value received. No hand glow.")
@@ -299,7 +296,7 @@ class xJourneyClothsGen2(ptModifier):
             
     def RandomBahroSounds(self):
         whichsound = xRandom.random.randint(1, 4)
-        PtDebugPrint("whichsound = ", whichsound)
+        PtDebugPrint(f"{whichsound=}")
         
         if whichsound == 1:
             PlayBahro01.run(self.key)
@@ -318,7 +315,7 @@ class xJourneyClothsGen2(ptModifier):
         if wingflap > 1:
             #whichflap = xRandom.random.randint(1, 4)
             whichflap = whichsound
-            PtDebugPrint("whichflap = ", whichflap)
+            PtDebugPrint("{whichflap=}")
             
             if whichflap == 1:
                 BahroWing01.run(self.key)
@@ -338,7 +335,7 @@ class xJourneyClothsGen2(ptModifier):
     def OnTimer(self,id):
         global ClothInUse
         if id == TimerID.AddJCProgress:
-            PtDebugPrint("DEBUG: xJourneyClothsGen2.OnTimer:\tJourneyCloth %s has reset." % (ClothLetter.value))
+            PtDebugPrint(f"DEBUG: xJourneyClothsGen2.OnTimer:\tJourneyCloth {ClothLetter.value} has reset.")
             ClothInUse = 0
             Activator.enable()
             
@@ -348,14 +345,14 @@ class xJourneyClothsGen2(ptModifier):
             PtAtTimeCallback(self.key,11,TimerID.AddJCProgress) 
 
             if not PtWasLocallyNotified(self.key):
-                PtDebugPrint("Somebody touched JourneyCloth", ClothLetter.value)
+                PtDebugPrint(f"Somebody touched JourneyCloth {ClothLetter.value}")
                 return
 
 ##            vault = ptVault()
 ##            if vault.amOwnerOfCurrentAge():
 ##                PtEnableMovementKeys()
             
-            PtDebugPrint("You clicked on cloth ", ClothLetter.value)
+            PtDebugPrint(f"You clicked on cloth {ClothLetter.value}")
             vault = ptVault()
                 
             entry = vault.findChronicleEntry("JourneyClothProgress")
@@ -375,17 +372,17 @@ class xJourneyClothsGen2(ptModifier):
                     self.RandomBahroSounds()
                 else:
                     FoundJCs = currentAgeChron.chronicleGetValue()
-                    PtDebugPrint("previously found JCs: ", FoundJCs)
+                    PtDebugPrint(f"previously found JCs: {FoundJCs}")
                     if ClothLetter.value in FoundJCs:
                         PtDebugPrint("You've already found this cloth.")
                         
                     else:
                         PtDebugPrint("This is a new cloth to you")
                         
-                        FoundJCs = FoundJCs + ClothLetter.value
-                        PtDebugPrint("trying to update JourneyClothProgress to ", FoundJCs)
+                        FoundJCs += ClothLetter.value
+                        PtDebugPrint(f"trying to update JourneyClothProgress to {FoundJCs}")
 
-                        currentAgeChron.chronicleSetValue("%s" % (FoundJCs)) 
+                        currentAgeChron.chronicleSetValue(FoundJCs)
                         currentAgeChron.save() 
                         
                         self.RandomBahroSounds()

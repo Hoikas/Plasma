@@ -88,17 +88,17 @@ class grsn1stFloorClimb(ptResponder):
          PtDebugPrint("********************************")
          for event in events:
 
-             PtDebugPrint("event[0] " + repr(event[0]))
-             PtDebugPrint("event[1] " + repr(event[1]))
-             PtDebugPrint("event[2] " + repr(event[2]))
+             PtDebugPrint(f"{event[0]=} ")
+             PtDebugPrint(f"{event[1]=} ")
+             PtDebugPrint(f"{event[2]=} ")
              
              climber = PtFindAvatar(events)
              climberID = PtGetClientIDFromAvatarKey(climber.getKey())
-             PtDebugPrint("climber ID = " + repr(climberID))
+             PtDebugPrint(f"{climberID=}")
              currentClimber = self.SDL["intSDLClimber"][0]
              currentDescender = self.SDL["intSDLDescender"][0]
-             PtDebugPrint("current climber = " + repr(currentClimber))
-             PtDebugPrint("current descender = " + repr(currentClimber))
+             PtDebugPrint(f"{currentClimber=}")
+             PtDebugPrint(f"{currentDescender=}")
              
              # execute climb behaviors
                                                     
@@ -127,7 +127,7 @@ class grsn1stFloorClimb(ptResponder):
              
              if id == climbTrigger.id and event[0] == 1 and event[1] == 1: #someone is entering
                  if self.SDL["intSDLClimber"][0] == -1 and self.SDL["intSDLDescender"][0] == -1: #nobody currently climbing up/down
-                     PtDebugPrint("initiated climbing avatar # "+ repr(climberID))
+                     PtDebugPrint(f"initiated climbing avatar # {climberID}")
                      self.SDL["intSDLClimber"]=(climberID,)
                      climbBehavior.run(climber)
                  return
@@ -138,7 +138,7 @@ class grsn1stFloorClimb(ptResponder):
                      self.SDL["intSDLDescender"]=(climberID,)
 
                      test = self.SDL["intSDLDescender"][0]
-                     PtDebugPrint("just set descender to " + repr(test))
+                     PtDebugPrint(f"just set descender to {test}")
 
                      descendBehavior.run(climber)
                  return

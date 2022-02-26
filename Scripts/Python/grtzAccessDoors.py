@@ -268,18 +268,18 @@ class grtzAccessDoors(ptResponder):
     def UpdateRespStack (self):
         #Updates the Responder List
         old = self.grtzDoorStack.pop(0)
-        PtDebugPrint("grtzAccessDoors: Getting rid of Resp: %s" % (old))
+        PtDebugPrint(f"grtzAccessDoors: Getting rid of Resp: {old}")
         if len(self.grtzDoorStack):            
             PtDebugPrint("grtzAccessDoors: There's at lest one more Resp to play.")
             code = self.grtzDoorStack[0]            
-            PtDebugPrint("Playing command: %s" % (code))
+            PtDebugPrint(f"Playing command: {code}")
             self.ExecCode(code)
 
     def UpdateDoorState (self, StateNum):
         if StateNum != self.grtzDoorState:
             self.grtzDoorState = StateNum
             self.SDL['DoorOpen'] = (StateNum,)
-            self.SendNote('DoorState='+str(StateNum))
+            self.SendNote(f'DoorState={StateNum}')
 
             if self.grtzDoorState == doorSDLstates['opening']:
                 self.SendNote("doorResponderOpen")
@@ -301,5 +301,5 @@ class grtzAccessDoors(ptResponder):
         elif code == "doorResponderNoAccess":
             doorResponder.run(self.key,state='NoAccess',netPropagate=0)
         else:
-            PtDebugPrint("grtzAccessDoors.ExecCode(): ERROR! Invalid code '%s'." % (code))
+            PtDebugPrint(f"grtzAccessDoors.ExecCode(): ERROR! Invalid code '{code}'.")
             self.grtzDoorStack.pop(0)

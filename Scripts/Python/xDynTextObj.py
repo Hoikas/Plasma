@@ -72,7 +72,7 @@ class xDynTextObj(ptModifier):
         try:
             textObj = xDynTextDefs.xTextObjects[index]
         except KeyError:
-            PtDebugPrint("Missing "+index+" table entry")
+            PtDebugPrint(f"Missing {index} table entry")
             return
         if len(textObj) == 7:
             fontName,fontSize,fontColor,marginSize,spacing,locPath,justify = textObj;
@@ -88,8 +88,8 @@ class xDynTextObj(ptModifier):
         textX = marginSize[1]
         textY = marginSize[0]
         
-        PtDebugPrint("Displaying text in the following rectangle: (%d,%d,%d,%d)" % (marginSize[1],marginSize[0],theMap.getWidth()-marginSize[3],theMap.getHeight()-marginSize[2]))
-        PtDebugPrint("Rendering \""+locPath+"\" on the target dynamic text object")
+        PtDebugPrint(f"Displaying text in the following rectangle: ({marginSize[1]},{marginSize[0]},{theMap.getWidth()-marginSize[3]},{theMap.getHeight()-marginSize[2]})")
+        PtDebugPrint(f"Rendering {locPath} on the target dynamic text object")
         
         theMap.netPropagate(False) # we don't want our text appearing on other machines, since we are going to be localized
         

@@ -157,7 +157,7 @@ class psnlBahroPoles(ptModifier):
         ptModifier.__init__(self)
         self.id = 5313
         self.version = 16
-        PtDebugPrint("__init__psnlBahroPoles v. %d" % (self.version))
+        PtDebugPrint(f"__init__psnlBahroPoles v. {self.version}")
         #self.Stage5TimerSet = 0
         self.State5Running = 0
         self.FissureInited = 0
@@ -235,7 +235,7 @@ class psnlBahroPoles(ptModifier):
 
         try:
             boolCleftSolved = ageSDL["psnlCleftSolved"][0]
-            PtDebugPrint("psnlBahroPoles.OnServerInitComplete(): boolCleftSolved = ",boolCleftSolved)
+            PtDebugPrint(f"psnlBahroPoles.OnServerInitComplete(): {boolCleftSolved=}")
         except:
             PtDebugPrint("ERROR: psnlBahroPoles.OnServerInitComplete():\tNo SDL for boolCleftSolved, using 0")
 
@@ -270,7 +270,7 @@ class psnlBahroPoles(ptModifier):
         for age in ["Teledahn", "Garrison", "Garden", "Kadish"]:
             self.Poles[age]['Smoker'].value.particle.setParticlesPerSecond(0)
             
-            sdlVar = age + "PoleState"
+            sdlVar = f"{age}PoleState"
             ageSDL.setFlags(sdlVar,1,1)
             ageSDL.sendToClients(sdlVar)
             ageSDL.setNotify(self.key, sdlVar, 0.0)
@@ -331,7 +331,7 @@ class psnlBahroPoles(ptModifier):
 
             # start smoke if in appropriate state
             if sdlVal in [3,4,5,6,9]:
-                PtDebugPrint("DEBUG:psnlBahroPoles.OnServerInitComplete:\tStarting smoke, pole = %s" % ageName)
+                PtDebugPrint(f"DEBUG:psnlBahroPoles.OnServerInitComplete:\tStarting smoke, pole = {ageName}")
                 #self.Poles[ageName]['Smoker'].value.particle.setParticlesPerSecond(6)
                 PtAtTimeCallback(self.key, 0.1, self.PoleIDMap[ageName] * -1)
 
@@ -395,11 +395,11 @@ class psnlBahroPoles(ptModifier):
             desc = ""
 
             if playerName[-1] == "s" or playerName[-1] == "S":
-                userDefName = "%s'" % playerName
-                desc = "%s' %s" % (playerName, info.getAgeInstanceName())
+                userDefName = f"{playerName}'"
+                desc = f"{playerName}' {info.getAgeInstanceName()}"
             else:
-                userDefName = "%s's" % playerName
-                desc = "%s's %s" % (playerName, info.getAgeInstanceName())
+                userDefName = f"{playerName}'s"
+                desc = f"{playerName}'s {info.getAgeInstanceName()}"
 
             info.setAgeInstanceGuid(ageGuid)
             info.setAgeUserDefinedName(userDefName)
@@ -506,7 +506,7 @@ class psnlBahroPoles(ptModifier):
 
 
     def OnNotify(self,state,id,events):
-        PtDebugPrint("DEBUG: psnlBahroPoles.OnNotify():\tid = %d" % id)
+        PtDebugPrint(f"DEBUG: psnlBahroPoles.OnNotify():\t{id=}")
 
         if not state:
             return
@@ -525,7 +525,7 @@ class psnlBahroPoles(ptModifier):
                     progress = self.GetJCProgress("Cleft")
                     if progress > 0 and progress < 8:
                         respCleftHandGlow.run(self.key, state=str(progress) )
-                        PtDebugPrint("psnlBahroPoles.OnNotify(): touch responder done, have %s JCs and will play correct hand glow" % (str(progress)))
+                        PtDebugPrint(f"psnlBahroPoles.OnNotify(): touch responder done, have {progress} JCs and will play correct hand glow")
                         PtAtTimeCallback(self.key,10.7,kTimerCleftTotemClk)
                     elif progress == 0:
                         PtDebugPrint("psnlBahroPoles.OnNotify(): touch responder done, but have no JCs so no glow")
@@ -641,7 +641,7 @@ class psnlBahroPoles(ptModifier):
         elif id == actBookshelf.id:
             for event in events:
                 if event[0] == kVariableEvent:
-                    PtDebugPrint("DEBUG: psnlBahroPoles.OnNotify: received variable event from bookshelf - " + event[1])
+                    PtDebugPrint(f"DEBUG: psnlBahroPoles.OnNotify: received variable event from bookshelf - {event[1]}")
                     if HidingPoles:
                         ff = 1
                     else:
@@ -706,7 +706,7 @@ class psnlBahroPoles(ptModifier):
 
 
     def RunState(self, age, state, fforward):
-        PtDebugPrint("DEBUG: psnlBahroPoles.RunState():\tRunning state %d on age %s; ff = %d" % (state, age, fforward))
+        PtDebugPrint(f"DEBUG: psnlBahroPoles.RunState():\tRunning {state=} on {age=}; {fforward=}")
 
         if HidingPoles:
             self.Poles[age]["PoleResponder"].run(self.key, state="0", fastforward=fforward)
@@ -817,7 +817,7 @@ class psnlBahroPoles(ptModifier):
         vault = ptVault()
         IamOwner = vault.amOwnerOfCurrentAge()
         
-        PtDebugPrint("Oneshot finished on age %s" % age)
+        PtDebugPrint(f"Oneshot finished on {age=}")
 
         if not IamOwner:
             return
@@ -844,7 +844,7 @@ class psnlBahroPoles(ptModifier):
 
 
     def ShowFissure(self, init = 0):
-        PtDebugPrint("DEBUG: psnlBahroPoles.ShowFissure():\tinit = %d" % init)
+        PtDebugPrint(f"DEBUG: psnlBahroPoles.ShowFissure():\t{init=})
 
         if self.IsJCProgressComplete():
             PtDebugPrint("DEBUG: psnlBahroPoles.ShowFissure():\tJC progress has already been completed, no fissure")
@@ -865,7 +865,7 @@ class psnlBahroPoles(ptModifier):
             elif val == 8:
                 state8 = state8 + 1
 
-        PtDebugPrint("DEBUG: psnlBahroPoles.ShowFissure():\tstate7 = %d, state8 = %d" % (state7, state8))
+        PtDebugPrint(f"DEBUG: psnlBahroPoles.ShowFissure():\t{state7=}, {state8=}")
 
         if init:
             if state8 == 1:
@@ -963,7 +963,7 @@ class psnlBahroPoles(ptModifier):
             currentState = self.Poles[age]["State"]
 
         if currentState < 2:
-            PtDebugPrint("book hasn't been found yet for age %s" % age)
+            PtDebugPrint(f"book hasn't been found yet for {age=}")
             return 0
         
         ageVault = ptAgeVault()
@@ -978,9 +978,9 @@ class psnlBahroPoles(ptModifier):
                 spawnPoints = link.getSpawnPoints()
                 for spawnPoint in spawnPoints:
                     if spawnPoint.getName().lower() == "linkinpointdefault":
-                        PtDebugPrint("book is there for age %s" % age)
+                        PtDebugPrint(f"book is there for {age=}")
                         return 0
-        PtDebugPrint("oops, book somehow is gone but state is 2 or larger for age %s" % age)
+        PtDebugPrint(f"oops, book somehow is gone but state is 2 or larger for {age=}")
         return 1
 
 
@@ -1098,7 +1098,7 @@ class psnlBahroPoles(ptModifier):
                 for spawnPoint in spawnPoints:
                     if spawnPoint.getName() == "LinkInPointDefault":
                         if self.Poles[ageName]["State"] < 2:
-                            PtDebugPrint("psnlBahroPoles.UpdateToState2(): updating ",ageName," to state 2")
+                            PtDebugPrint(f"psnlBahroPoles.UpdateToState2(): updating {ageName} to state 2")
                             self.SetCurrentState(ageName, 2)
                             self.UpdatePoleStates()
                         break
@@ -1141,10 +1141,10 @@ class psnlBahroPoles(ptModifier):
         for v in range(len(agelist)):
             newnode = ptVaultChronicleNode(0)
             newnode.chronicleSetName(agelist[v])
-            newnode.chronicleSetValue("0," + str(bahroSolList[v]) + ",0")
+            newnode.chronicleSetValue(f"0,{bahroSolList[v]},0")
             entry = vault.findChronicleEntry("BahroCave")
             entry.addNode(newnode)
-        PtDebugPrint("new bahro cave solution = ",self.GetBahroCaveSolution())
+        PtDebugPrint(f"new bahro cave solution = {self.GetBahroCaveSolution()}")
 
 
     def AreListsEquiv(self, list1, list2):
@@ -1213,7 +1213,7 @@ class psnlBahroPoles(ptModifier):
                             pelletSolution = []
                             for sol in chronString:
                                 pelletSolution.append(int(sol))
-                            PtDebugPrint("found pellet cave solution: ", chron.getValue())
+                            PtDebugPrint(f"found pellet cave solution: {chron.getValue()}")
                             break
                     break
 
@@ -1223,12 +1223,7 @@ class psnlBahroPoles(ptModifier):
                 return
 
         ## create pellet cave solution
-        solutionList = self.CreatePelletCaveSolution()
-        solution = ""
-        for sol in solutionList:
-            solution = solution + "," + str(sol)
-        solution = solution[1:]
-       
+        solution = ",".join(self.CreatePelletCaveSolution())
         if not ageDataFolder:
             ageDataFolder = ptVaultFolderNode(0)
             ageDataFolder.folderSetName("AgeData")
@@ -1256,7 +1251,7 @@ class psnlBahroPoles(ptModifier):
                 if not newint in pelletSolList:
                     pelletSolList.append(newint)
 
-        PtDebugPrint("pellet cave solution = ",pelletSolList)
+        PtDebugPrint(f"pellet cave solution = {pelletSolList}")
         return pelletSolList
 
 

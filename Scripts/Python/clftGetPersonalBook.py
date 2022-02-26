@@ -88,7 +88,7 @@ class clftGetPersonalBook(ptResponder):
         ptResponder.__init__(self)
         self.id = 5219
         self.version = 10
-        PtDebugPrint("__init__clftGetPersonalBook v%d.%d" % (self.version,2),level=kWarningLevel)
+        PtDebugPrint(f"__init__clftGetPersonalBook v{self.version}.2", level=kWarningLevel)
 
     def OnFirstUpdate(self):
         pass
@@ -124,7 +124,7 @@ class clftGetPersonalBook(ptResponder):
             for event in events:
                 # is it from the YeeshaBook? (we only have one book to worry about)
                 if event[0] == PtEventType.kBook:
-                    PtDebugPrint("clftGetPersonalBook: BookNotify  event=%d, id=%d" % (event[1],event[2]),level=kDebugDumpLevel)
+                    PtDebugPrint(f"clftGetPersonalBook: BookNotify  event={event[1]}, id={event[2]}" , level=kDebugDumpLevel)
                     if event[1] == PtBookEventTypes.kNotifyImageLink:
                         if event[2] == xLinkingBookDefs.kYeeshaBookLinkID:
                             PtDebugPrint("clftGetPersonalBook:Book: hit linking panel",level=kDebugDumpLevel)
@@ -252,7 +252,7 @@ class clftGetPersonalBook(ptResponder):
             PtConsole("App.Quit")
 
     def OnMovieEvent(self,movieName,reason):
-        PtDebugPrint("xLiveTrailer: got movie done event on %s, reason=%d" % (movieName,reason),level=kDebugDumpLevel)
+        PtDebugPrint(f"xLiveTrailer: got movie done event on {movieName}, {reason=}", level=kDebugDumpLevel)
         if gDemoMovie:
             #PtFadeOut(kTrailerFadeOutSeconds, kTrailerDoneID)
             PtConsole("App.Quit")

@@ -96,7 +96,7 @@ class minkDayNight(ptResponder):
     ###########################
     def OnSDLNotify(self,VARname,SDLname,playerID,tag):
         ageSDL = PtGetAgeSDL()
-        PtDebugPrint("minkDayNight.OnSDLNotify(): VARname:%s, SDLname:%s, tag:%s, value:%s, playerID:%d" % (VARname,SDLname,tag,ageSDL[VARname][0],playerID))
+        PtDebugPrint(f"minkDayNight.OnSDLNotify(): {VARname=}, {SDLname=}, {tag=}, value={ageSDL[VARname][0]}, {playerID=}")
 
         if VARname == "minkIsDayTime" and not HackIt:
             PtDebugPrint("minkDayNight.OnSDLNotify(): SDL Updated, Fading Screen")
@@ -129,7 +129,7 @@ class minkDayNight(ptResponder):
     ###########################
     def OnPageLoad(self,what,who):
         global HackIt
-        PtDebugPrint("minkDayNight.OnPageLoad(): what={} who={}".format(what, who), level=kDebugDumpLevel)
+        PtDebugPrint(f"minkDayNight.OnPageLoad(): what={what} who={who}", level=kDebugDumpLevel)
 
         if what == kLoaded:
             if who in {"Minkata_District_minkExteriorDay", "Minkata_minkExteriorDay"}:

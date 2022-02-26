@@ -154,7 +154,7 @@ class xYeeshaPages(ptModifier):
             btnID = control.getTagID()
 
         if event == 2 and btnID in YeeshaPageIDList:
-            PtDebugPrint("xYeeshaPages.OnGUINotify():\tPicked up page number: ", PageNumber.value)
+            PtDebugPrint(f"xYeeshaPages.OnGUINotify():\tPicked up page number: {PageNumber.value:02}")
 #            PtUnloadDialog(DialogName)
             PtHideDialog(DialogName)
             
@@ -162,18 +162,18 @@ class xYeeshaPages(ptModifier):
                 
             psnlSDL = vault.getPsnlAgeSDL()
             if psnlSDL:
-                YeeshaPageVar = psnlSDL.findVar("YeeshaPage" + str(PageNumber.value))
+                YeeshaPageVar = psnlSDL.findVar(f"YeeshaPage{PageNumber.value}")
                 
-                PtDebugPrint ("xYeeshaPages.py: The previous value of the SDL variable %s is %s" % ("YeeshaPage" + str(PageNumber.value), YeeshaPageVar.getInt()))
+                PtDebugPrint(f"xYeeshaPages.py: The previous value of the SDL variable YeeshaPage{PageNumber.value} is {YeeshaPageVar.getInt()}")
 
                 if YeeshaPageVar.getInt() != 0: 
-                    PtDebugPrint ("xYeeshaPages.py: You've already found Yeesha Page #%s. Move along. Move along." % (PageNumber.value))
+                    PtDebugPrint (f"xYeeshaPages.py: You've already found Yeesha Page #{PageNumber.value}. Move along. Move along.")
                     return
                     
                 else:
-                    PtDebugPrint ("xYeeshaPages.py: Yeesha Page #%s is new to you." % (PageNumber.value))
+                    PtDebugPrint(f"xYeeshaPages.py: Yeesha Page #{PageNumber.value} is new to you.")
                     
-                    PtDebugPrint ("xYeeshaPages.py: Trying to update the value of the SDL variable %s to 1" % ("YeeshaPage" + str(PageNumber.value)))
+                    PtDebugPrint(f"xYeeshaPages.py: Trying to update the value of the SDL variable YeeshaPage{PageNumber.value} to 1")
                     YeeshaPageVar.setInt(4)
                     vault.updatePsnlAgeSDL (psnlSDL)
 
@@ -191,7 +191,7 @@ class xYeeshaPages(ptModifier):
                         #PtAtTimeCallback(self.key,kWaitFadeoutSecs,kStartFadeoutID)
 
             else:
-                PtDebugPrint("xYeeshaPages: Error trying to access the Chronicle psnlSDL. psnlSDL = %s" % ( psnlSDL))
+                PtDebugPrint(f"xYeeshaPages: Error trying to access the Chronicle psnlSDL. {psnlSDL=}")
 
         elif event == 2 and btnID == kYeeshaPageCancel:
             PtHideDialog(DialogName)
@@ -284,7 +284,7 @@ class xYeeshaPages(ptModifier):
 
 
         else:
-            PtDebugPrint("xYeeshaPages.IDrawLinkPanel():\tERROR: couldn't find page named ",PageNumber.value)
+            PtDebugPrint(f"xYeeshaPages.IDrawLinkPanel():\tERROR: couldn't find page named {PageNumber.value}")
         return
 
 #

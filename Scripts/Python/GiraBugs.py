@@ -167,11 +167,11 @@ class GiraBugs(ptResponder):
                 # kill some particles
                 particlesToKill = -particlesToTransfer
                 percentToKill = float(particlesToKill) / float(self.bugCount)
-                PtDebugPrint("GiraBugs.OnTimer() - Particles to kill: " + str(particlesToKill) + " (" + str(percentToKill * 100) + "%)")
+                PtDebugPrint(f"GiraBugs.OnTimer() - Particles to kill: {particlesToKill} ("{percentToKill * 100}%)")
                 PtKillParticles(0,percentToKill,avatar.getKey())
             elif (particlesToTransfer != 0):
                 # add some particles
-                PtDebugPrint("GiraBugs.OnTimer() - Particles to add: " + str(particlesToTransfer))
+                PtDebugPrint(f"GiraBugs.OnTimer() - Particles to add: {particlesToTransfer}")
                 PtTransferParticlesToObject(particleSystem.value.getKey(),avatar.getKey(),particlesToTransfer)
             PtSetParticleDissentPoint(0,0,10000,avatar.getKey())
             return
@@ -201,7 +201,7 @@ class GiraBugs(ptResponder):
             id == fumerol07.id or id == fumerol08.id or id == fumerol09.id or \
             id == fumerol10.id or id == fumerol11.id or id == fumerol12.id or \
             id == fumerol13.id or id == fumerol14.id or id == fumerol15.id):
-            PtDebugPrint("GiraBugs.OnNotify():\tsplashdown! ",id)
+            PtDebugPrint(f"GiraBugs.OnNotify():\tsplashdown! {id}")
             if (self.bugCount):
                 self.bugCount = 0
                 PtDebugPrint("GiraBugs.OnNotify():\tkill all bugs")

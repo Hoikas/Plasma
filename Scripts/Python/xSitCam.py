@@ -53,15 +53,15 @@ class xSitCam(ptResponder):
 
         self.id = 20501
         self.version = 1
-        PtDebugPrint("xSitCam.__init__ v.%i" % self.version, level=kWarningLevel)
+        PtDebugPrint(f"xSitCam.__init__ v.{self.version}", level=kWarningLevel)
 
     def OnNotify(self, state, id, events):
         if id == sitAct.id and PtWasLocallyNotified(self.key):
             PtDebugPrint("xSitCam.OnNotify(): The SitBeh was notified!", level=kDebugDumpLevel)
             camKey = sitCam.sceneobject.getKey()
             if state:
-                PtDebugPrint("xSitCam.OnNotify(): Avatar sitting, pushing camera '%s'" % camKey.getName(), level=kWarningLevel)
+                PtDebugPrint(f"xSitCam.OnNotify(): Avatar sitting, pushing camera '{camKey.getName()}'", level=kWarningLevel)
                 ptCamera().save(camKey)
             else:
-                PtDebugPrint("xSitCam.OnNotify(): Avatar standing, popping camera '%s'" % camKey.getName(), level=kWarningLevel)
+                PtDebugPrint(f"xSitCam.OnNotify(): Avatar standing, popping camera '{camKey.getName()}'", level=kWarningLevel)
                 ptCamera().restore(camKey)

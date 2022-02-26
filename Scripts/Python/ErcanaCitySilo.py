@@ -126,11 +126,11 @@ class ErcanaCitySilo(ptResponder):
             ageSDL[SDLGotPellet.value] = (gotPellet,)
         
         self._pellet = (gotPellet - 300)
-        PtDebugPrint("ErcanaCitySilo:OnServerInitComplete:  PELLET RECIPE = %d" % (self._pellet))
+        PtDebugPrint(f"ErcanaCitySilo:OnServerInitComplete:  PELLET RECIPE = {self._pellet}")
 
 
     def OnBehaviorNotify(self,type,id,state):
-        PtDebugPrint("ErcanaCitySilo.OnBehaviorNotify(): %d" % (type))
+        PtDebugPrint(f"ErcanaCitySilo.OnBehaviorNotify(): {type=}")
 
         if type == PtBehaviorTypes.kBehaviorTypeLinkIn and state:
             if self._gotTurd:
@@ -150,7 +150,7 @@ class ErcanaCitySilo(ptResponder):
 
     def IDoMeter(self):
         levelMeter = self.IEvalPellet()
-        PtDebugPrint("ErcanaCitySilo.IDoMeter():  pellet is level: ",levelMeter)
+        PtDebugPrint(f"ErcanaCitySilo.IDoMeter():  pellet is level: {levelMeter}")
         if levelMeter == 1.0:
             RespScanMeter.run(self.key,state="Level1")
             PtAtTimeCallback(self.key,6.3,2)
@@ -196,9 +196,9 @@ class ErcanaCitySilo(ptResponder):
             score = msg.getScore()
             name  = score.getName()
             if name == kGlobalScore:
-                PtDebugPrint("ErcanaCitySilo.OnGameScoreMsg():\tAdded %i lake points" % self._lakePoints, level=kWarningLevel)
+                PtDebugPrint(f"ErcanaCitySilo.OnGameScoreMsg():\tAdded {self._lakePoints} lake points", level=kWarningLevel)
             else:
-                PtDebugPrint("ErcanaCitySilo.OnGameScoreMsg():\tAdded %i '%s' points" % (self._kiPoints, name), level=kWarningLevel)
+                PtDebugPrint(f"ErcanaCitySilo.OnGameScoreMsg():\tAdded {self._kiPoints} '{name}' points", level=kWarningLevel)
                 if name == kPlayerDropScore:
                     PtSendKIMessageInt(kUpdatePelletScore, score.getPoints())
 
@@ -221,7 +221,7 @@ class ErcanaCitySilo(ptResponder):
                     points = self._kiPoints
                 ptGameScore.createScore(msg.getOwnerID(), msg.getName(), type, points, self.key)
         else:
-            PtDebugPrint("ErcanaCitySilo.OnGameScoreMsg():\tGot unexpected cb '%s'" % msg.__name__)
+            PtDebugPrint(f"ErcanaCitySilo.OnGameScoreMsg():\tGot unexpected cb '{msg.__name__}'")
 
 
     def IDoScores(self):
@@ -242,8 +242,8 @@ class ErcanaCitySilo(ptResponder):
             self._lakePoints = self._pellet
         self._kiPoints = int(round(self._kiPoints * ((xRandom.randint(1,25) / 100.0) + 4.75)))
         self._lakePoints = int(round(self._lakePoints))
-        PtDebugPrint("ErcanaCitySilo.IDoScores():  this pellet drop is worth %d KI points!" % (self._kiPoints))
-        PtDebugPrint("ErcanaCitySilo.IDoScores():  and %d lake points!" % (self._lakePoints))
+        PtDebugPrint(f"ErcanaCitySilo.IDoScores():  this pellet drop is worth {self._kiPoints} KI points!")
+        PtDebugPrint(f"ErcanaCitySilo.IDoScores():  and {self._lakePoints} lake points!")
 
         #  Try to find the needed scores...
         #  The magic will happen in OnGameScoreMsg()

@@ -190,8 +190,8 @@ class ahnyKadishDoor(ptResponder):
         while len(currentList) > len(solutionList):
             del currentList[0]
         
-        PtDebugPrint("solution list: " + str(solutionList))
-        PtDebugPrint("current list: " + str(currentList))
+        PtDebugPrint(f"{solutionList=}")
+        PtDebugPrint(f"{currentList}")
         
         if self.AreListsEquiv(solutionList, currentList):
             PtDebugPrint("Open!")

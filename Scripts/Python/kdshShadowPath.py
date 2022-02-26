@@ -114,8 +114,7 @@ class kdshShadowPath(ptResponder):
 
         version = 10
         self.version = version
-        PtDebugPrint("__init__kdshShadowPath v.", version,".2")
-        
+        PtDebugPrint(f"__init__kdshShadowPath v.{version}.2")
 
     def OnServerInitComplete(self):
         global localAvatar
@@ -153,12 +152,12 @@ class kdshShadowPath(ptResponder):
         
         for light in [1,2,3,4,5]:
             
-            lightstate = ageSDL["ShadowPathLight0" + str(light)][0]  
-            PtDebugPrint("\t ShadowPathLight0%s = %s " % (light, lightstate))
+            lightstate = ageSDL[f"ShadowPathLight0{light}"][0]
+            PtDebugPrint(f"\t ShadowPathLight0{light} = {lightstate}")
             
             if lightstate == 1:
-                globals()["respSwitch0{}".format(light)].run(self.key, fastforward=True)
-                PtDebugPrint("\t\tTurning on light #", light, level=kWarningLevel)
+                globals()[f"respSwitch0{light}"].run(self.key, fastforward=True)
+                PtDebugPrint(f"\t\tTurning on light #{light}", level=kWarningLevel)
         
         solved = ageSDL["ShadowPathSolved"][0]
         if solved:
@@ -167,10 +166,8 @@ class kdshShadowPath(ptResponder):
                 
 
     def Load(self):
-        count = 1
-        while count < 5:
-            PtDebugPrint("kdshShadowPath.Load(): ageSDL[ShadowPathLight0",count,"]=%d" % (ageSDL["ShadowPathLight0" + str(count)][0]))
-            count = count + 1
+        for count in range(1, 5, 1):
+            PtDebugPrint(f"kdshShadowPath.Load(): {ageSDL[f'ShadowPathLight0{count}']=}")
 
     def OnNotify(self,state,id,events):
         global TwoOnFloor
@@ -181,7 +178,7 @@ class kdshShadowPath(ptResponder):
         global gameStarted
         ageSDL = PtGetAgeSDL()
 
-        PtDebugPrint("kdshShadowPath:OnNotify  state=%f id=%d events=" % (state,id),events)
+        PtDebugPrint(f"kdshShadowPath:OnNotify  state={state} id={id} events={events}", level=kDebugDumpLevel)
 
 
         if id == FloorZone.id:
@@ -210,8 +207,8 @@ class kdshShadowPath(ptResponder):
                 lightClickedByAvatar = None
                 return
 
-            PtDebugPrint("Light ", id, " clicked.")
-            globals()["respBtnPush0{}".format(id)].run(self.key, events=events)
+            PtDebugPrint(f"Light {id} clicked.")
+            globals()[f"respBtnPush0{id}"].run(self.key, events=events)
 
         elif id in [26,27,28,29,30]: 
             if lightClickedByAvatar != localAvatar:  #Make sure we don't have any rogue avatars reporting...
@@ -220,10 +217,11 @@ class kdshShadowPath(ptResponder):
 
             lightClickedByAvatar = None  #Reset avatar reporting
 
-            PtDebugPrint("Light ", id-25, " actually touched by avatar.")
-            oldstate = ageSDL["ShadowPathLight0" + str(id-25)][0] 
-            newstate = abs(oldstate-1) # toggle value of switch state
-            ageSDL["ShadowPathLight0" + str(id-25)] = (newstate, ) # write new state value to SDL            
+            lightId = id - 25
+            PtDebugPrint(f"Light {lightId} actually touched by avatar.")
+            oldstate = ageSDL[f"ShadowPathLight0{lightId}"][0]
+            newstate = not oldstate # toggle value of switch state
+            ageSDL[f"ShadowPathLight0{lightId}"] = (newstate, ) # write new state value to SDL
             return
 
         elif id in [regZone01.id,regZone02.id,regZone03.id,regZone04.id,regZone05.id,regZone06.id,regZone07.id,regZone08.id,regZone09.id]:
@@ -256,10 +254,10 @@ class kdshShadowPath(ptResponder):
             
             #turn off the lights
             for light in [1,2,3,4,5]:
-                var = "ShadowPathLight0{}".format(light)
+                var = f"ShadowPathLight0{light}"
                 if ageSDL[var][0]:
                     ageSDL[var] = (0,)
-                    PtDebugPrint("\tTurning off light #", light, level=kWarningLevel)
+                    PtDebugPrint(f"\tTurning off light #{light}", level=kWarningLevel)
 
             #...and close the floor
             ageSDL["ShadowPathSolved"] = (0,)
@@ -279,16 +277,16 @@ class kdshShadowPath(ptResponder):
         elif VARname[:15] == "ShadowPathLight":
             light = int(VARname[-2:]) #get the last two digits, which is the light number
                 
-            #~ PtDebugPrint("OnSDLNotify: Light ", light," SDL updated.")
+            #~ PtDebugPrint(f"OnSDLNotify: Light {light} SDL updated.")
                 
-            newstate = ageSDL["ShadowPathLight0" + str(light)][0] 
+            newstate = ageSDL[f"ShadowPathLight0{light}"][0]
 
-            resp = globals()["respSwitch0{}".format(light)]
+            resp = globals()[f"respSwitch0{light}"]
             if newstate == 0: # true if that switch is now off
-                PtDebugPrint("kdshShadowPath.OnSDLNotify: Light", light," was on. Turning it off.", level=kWarningLevel)
+                PtDebugPrint(f"kdshShadowPath.OnSDLNotify: Light {light} was on. Turning it off.", level=kWarningLevel)
                 resp.run(self.key, state="off")
             elif newstate == 1: # true if that switch is now on
-                PtDebugPrint("kdshShadowPath.OnSDLNotify: Light", light," was off. Turning it on.", level=kWarningLevel)
+                PtDebugPrint(f"kdshShadowPath.OnSDLNotify: Light {light} was off. Turning it on.", level=kWarningLevel)
                 resp.run(self.key, state="on")
             else: 
                 PtDebugPrint("kdshShadowPath.OnSDLNotify: Error. Not sure what the light thought it was.")

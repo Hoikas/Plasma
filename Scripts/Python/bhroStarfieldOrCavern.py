@@ -60,7 +60,7 @@ class bhroStarfieldOrCavern(ptMultiModifier):
         ptModifier.__init__(self)
         self.id = 5318
         self.version = 1
-        PtDebugPrint("__init__bhroStarfieldOrCavern v. %d" % (self.version))
+        PtDebugPrint(f"__init__bhroStarfieldOrCavern v. {self.version}")
 
     def OnServerInitComplete(self):
         sdl = xPsnlVaultSDL()

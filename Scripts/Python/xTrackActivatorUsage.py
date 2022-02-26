@@ -63,7 +63,7 @@ class xTrackActivatorUsage(ptModifier):
         self.currentValue = 0
         self.startingValue = 0
 
-        PtDebugPrint("DEBUG: xTrackActivatorUsage.__init__: version = %d" % self.version)
+        PtDebugPrint(f"DEBUG: xTrackActivatorUsage.__init__: version = {self.version}")
 
     def __del__(self):
         if self.currentValue > self.startingValue:

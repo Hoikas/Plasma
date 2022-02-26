@@ -71,7 +71,7 @@ def LogTrack(currentState,nextState):
                 entry.chronicleSetValue(nextState)
                 entry.save()
                 updated = 1
-                PtDebugPrint("updated to %s" % (nextState))
+                PtDebugPrint(f"updated to {nextState}")
             else:
                 PtDebugPrint("no track")
         if not updated:

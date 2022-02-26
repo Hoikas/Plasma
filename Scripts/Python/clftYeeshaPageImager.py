@@ -103,7 +103,7 @@ class clftYeeshaPageImager(ptModifier):
             ageSDL = PtGetAgeSDL()
             ageSDL.setNotify(self.key,"clftYeeshaPage08Vis",0.0)
             self.ImagerUsable = ageSDL["clftYeeshaPage08Vis"][0]
-            PtDebugPrint("ServerInitComplete: ImagerUsable: %d" % self.ImagerUsable)
+            PtDebugPrint(f"ServerInitComplete: {self.ImagerUsable=}")
 
             ageSDL.setNotify(self.key, "clftAgeSDLWindmillRunning", 0.0)
 
@@ -130,7 +130,7 @@ class clftYeeshaPageImager(ptModifier):
 
 
     def OnSDLNotify(self,VARname,SDLname,PlayerID,tag):
-        PtDebugPrint("clftYeeshaPageImager.OnSDLNotify():  var = ",VARname)
+        PtDebugPrint(f"clftYeeshaPageImager.OnSDLNotify():  {VARname=}")
         global inTomahna
         
         if AgeStartedIn == PtGetAgeName():
@@ -159,13 +159,12 @@ class clftYeeshaPageImager(ptModifier):
         if not state:
             return
 
-        PtDebugPrint("clftYeeshaPageImager.OnNotify()")
-        PtDebugPrint("ImagerUsable: %d" % self.ImagerUsable)
-        
+        PtDebugPrint(f"clftYeeshaPageImager.OnNotify(): {self.ImagerUsable=}")
+
         for event in events:
             #~ PtDebugPrint("YP events: ", event)
             if event[0]==2 and event[1]==1 and id == ActImager.id: # play avatar oneshot, regardless of whether button is going on or off
-                PtDebugPrint("clftYeeshaPageImager.OnNotify():Imager Button pressed. Playfull = ", PlayFull)
+                PtDebugPrint(f"clftYeeshaPageImager.OnNotify():Imager Button pressed. {PlayFull=} ")
                 if PtWasLocallyNotified(self.key):
                     #AvatarOneshot.run(self.key,events=events)
                     AvatarOneshot.run(self.key,avatar=PtGetLocalAvatar())

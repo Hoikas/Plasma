@@ -91,7 +91,7 @@ class clftIntroMusic(ptResponder):
             return
 
 
-        #PtDebugPrint("clftIntroMusic: We've got notification from ID #:%s" %id)
+        #PtDebugPrint(f"clftIntroMusic: We've got notification from {id=}")
 
         #-----Activators-----
         startMusicActIDs = (actStartMusic01.id, actStartMusic02.id, actStartMusic03.id)

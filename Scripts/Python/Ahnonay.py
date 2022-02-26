@@ -100,16 +100,16 @@ class Ahnonay(ptResponder):
                         chron = ageDataChild.upcastToChronicleNode()
                         if chron and chron.getName() == "AhnonayLink":
                             linkid = chron
-                            PtDebugPrint("Ahnonay.OnServerInitComplete(): Link Chron already exists: %s" % (linkid.getValue()))
+                            PtDebugPrint(f"Ahnonay.OnServerInitComplete(): Link Chron already exists: {linkid.getValue()}")
                         elif chron and chron.getName() == "AhnonayLocked":
                             locked = chron
-                            PtDebugPrint("Ahnonay.OnServerInitComplete(): Locked Chron already exists: %s" % (locked.getValue()))
+                            PtDebugPrint(f"Ahnonay.OnServerInitComplete(): Locked Chron already exists: {locked.getValue()}")
                         elif chron and chron.getName() == "AhnonayVolatile":
                             volatile = chron
-                            PtDebugPrint("Ahnonay.OnServerInitComplete(): Volatile Chron already exists: %s" % (volatile.getValue()))
+                            PtDebugPrint(f"Ahnonay.OnServerInitComplete(): Volatile Chron already exists: {volatile.getValue()}")
                         elif chron and chron.getName() == "AhnonaySpawnPoints":
                             spawn = chron
-                            PtDebugPrint("Ahnonay.OnServerInitComplete(): Spawn Chron already exists: %s" % (spawn.getValue()))
+                            PtDebugPrint(f"Ahnonay.OnServerInitComplete(): Spawn Chron already exists: {spawn.getValue()}")
                         elif chron and chron.getName() == "AhnonayOwner":
                             owner = chron
                     break
@@ -175,9 +175,9 @@ class Ahnonay(ptResponder):
                 PtDebugPrint("linking to hub or hut")
                 newSphere = 4
             else:
-                offset = str(ageSDL["ahnyCurrentOffset"][0])
-                PtDebugPrint("Ahnonay.OnPageLoad(): Sphere0%s loaded with offset:%s" % (sphere, offset))
-                newSphere = (int(sphere) - int(offset)) % 4
+                offset = ageSDL["ahnyCurrentOffset"][0]
+                PtDebugPrint(f"Ahnonay.OnPageLoad(): Sphere0{sphere} loaded with {offset=}")
+                newSphere = (sphere - offset) % 4
                 if newSphere == 0:
                     newSphere = 4
         else:
@@ -203,14 +203,14 @@ class Ahnonay(ptResponder):
     ###########################
     def OnPageLoad(self,what,who):
         global spherePages
-        PtDebugPrint("Ahnonay.OnPageLoad(): what={} who={}".format(what, who), level=kDebugDumpLevel)
+        PtDebugPrint(f"Ahnonay.OnPageLoad(): what={what} who={who}", level=kDebugDumpLevel)
 
         if what == kLoaded:
             if who in spherePages: 
                 ageSDL = PtGetAgeSDL()
-                sphere = str(ageSDL["ahnyCurrentSphere"][0])
-                offset = str(ageSDL["ahnyCurrentOffset"][0])
-                PtDebugPrint("Ahnonay.OnPageLoad(): Sphere0{} loaded with offset:{}".format(sphere, offset), level=kWarningLevel)
+                sphere = ageSDL["ahnyCurrentSphere"][0]
+                offset = ageSDL["ahnyCurrentOffset"][0]
+                PtDebugPrint(f"Ahnonay.OnPageLoad(): Sphere0{sphere} loaded with offset:{offset}", level=kWarningLevel)
 
                 linkmgr = ptNetLinkingMgr()
                 link = linkmgr.getCurrAgeLink()
@@ -224,13 +224,13 @@ class Ahnonay(ptResponder):
                         PtDebugPrint("linking to hub or hut")
                         newSphere = 4
                     else:
-                        newSphere = (int(sphere) - int(offset)) % 4
+                        newSphere = (sphere - offset) % 4
                         if newSphere == 0:
                             newSphere = 4
-                    spawnPoint = spName + str(newSphere)
+                    spawnPoint = f"{spName}{newSphere}"
                     PtGetLocalAvatar().physics.warpObj(PtFindSceneobject(spawnPoint, "Ahnonay").getKey())
                 else:
-                    defaultLink = "LinkInPointSphere0%s" % (sphere)
+                    defaultLink = f"LinkInPointSphere0{sphere}"
                     PtGetLocalAvatar().physics.warpObj(PtFindSceneobject(defaultLink, "Ahnonay").getKey())
 
     ###########################

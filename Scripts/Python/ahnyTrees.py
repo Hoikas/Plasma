@@ -70,7 +70,7 @@ class ahnyTrees(ptModifier):
         self.id = 5948
         version = 1
         self.version = version
-        PtDebugPrint("__init__ahnyTrees v%d " % (version))
+        PtDebugPrint(f"__init__ahnyTrees v{version}")
 
     ###########################
     def OnFirstUpdate(self):
@@ -107,7 +107,7 @@ class ahnyTrees(ptModifier):
     def OnNotify(self,state,id,events):
         global respTreeAnimsList
         global objTreeList
-        PtDebugPrint("ahnyTrees.OnNotify: state=%s id=%d events=" % (state, id), events)
+        PtDebugPrint(f"ahnyTrees.OnNotify: {state=}, {id=}, {events=}")
 
         if id == rgnTrees.id:
             for event in events:

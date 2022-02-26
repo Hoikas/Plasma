@@ -136,7 +136,7 @@ class REFilter(LanguageFilter):
     def __init__(self,regexp,rating):
         self.compiledRE = re.compile(regexp, re.IGNORECASE | re.MULTILINE )
         if not isinstance(rating,Rating):
-            PtDebugPrint("ptWordFilter: rating for %s not of type Rating" % (regexp))
+            PtDebugPrint(f"ptWordFilter: rating for {regexp} not of type Rating")
         self.rating = rating
     def test(self,sentence):
         "return the rating of sentence in question"

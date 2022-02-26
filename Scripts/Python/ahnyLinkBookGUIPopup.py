@@ -112,7 +112,7 @@ class ahnyLinkBookGUIPopup(ptModifier):
         version = 27
         minor = 4
         self.version = version
-        PtDebugPrint("__init__ahnyLinkBookGUIPopup v%d.%d" % (version,minor))
+        PtDebugPrint(f"__init__ahnyLinkBookGUIPopup v{version}.{minor}")
 
     def OnServerInitComplete(self):
         # only in the personal age should actBookshelf be anything, so this should only happen in the personal age
@@ -166,10 +166,10 @@ class ahnyLinkBookGUIPopup(ptModifier):
             for event in events:
                 # is it from the OpenBook? (we only have one book to worry about)
                 if event[0] == PtEventType.kBook:
-                    PtDebugPrint("ahnyLinkBookGUIPopup: BookNotify  event=%d, id=%d" % (event[1],event[2]))
+                    PtDebugPrint(f"ahnyLinkBookGUIPopup: BookNotify  {event=}, {id=}")
                     if event[1] == PtBookEventTypes.kNotifyImageLink:
                         if event[2] >= xLinkingBookDefs.kFirstLinkPanelID or event[2] == xLinkingBookDefs.kBookMarkID:
-                            PtDebugPrint("ahnyLinkBookGUIPopup:Book: hit linking panel %s" % (event[2]))
+                            PtDebugPrint(f"ahnyLinkBookGUIPopup:Book: hit linking panel {event[2]}")
                             self.HideBook(1)
                             respLinkSphere01.run(self.key,avatar=PtGetLocalAvatar(),netPropagate=0)
                             
@@ -203,12 +203,12 @@ class ahnyLinkBookGUIPopup(ptModifier):
                                             asdl.save()
                                         elif name == "AhnySphere01" or name == "AhnySphere02" or name == "AhnySphere03" or name == "AhnySphere04":
                                             link.setVolatile(1)
-##                                            entry = vault.findChronicleEntry("Reset" + name)
+##                                            entry = vault.findChronicleEntry(f"Reset{name}")
 ##                                            if entry:
 ##                                                entry.chronicleSetValue("1")
 ##                                                entry.save()
 ##                                            else:
-##                                                vault.addChronicleEntry("Reset" + name, 0, "1")
+##                                                vault.addChronicleEntry(f"Reset{name}", 0, "1")
                                             link.save()
 
                                 sdl["AhnySphereDelete"] = (0,)
@@ -233,8 +233,9 @@ class ahnyLinkBookGUIPopup(ptModifier):
                         PtSendKIMessage(kEnableKIandBB,0)
                         # should we be on a different page?
                         if CurrentPage > 1:
-                            PtDebugPrint("ahnyLinkBookGUIPopup: going to page %d (ptBook page %d)" % (CurrentPage,(CurrentPage-1)*2),level=kDebugDumpLevel)
-                            gLinkingBook.goToPage((CurrentPage-1)*2)
+                            BookPage = (CurrentPage - 1) * 2
+                            PtDebugPrint("ahnyLinkBookGUIPopup: going to page {CurrentPage} (ptBook page {BookPage})",level=kDebugDumpLevel)
+                            gLinkingBook.goToPage(BookPage)
                     
                     elif event[1] == PtBookEventTypes.kNotifyHide:
                         PtDebugPrint("ahnyLinkBookGUIPopup:Book: NotifyHide",level=kDebugDumpLevel)
@@ -306,7 +307,7 @@ class ahnyLinkBookGUIPopup(ptModifier):
                 if not IsDRCStamped.value:
                     stampdef = xLinkingBookDefs.NoDRCStamp
                 if sharable:
-                        PtDebugPrint("ahnyLinkBookGUIPopup: %s's book definition can't be shared" % (agePanel),level=kErrorLevel)
+                        PtDebugPrint(f"ahnyLinkBookGUIPopup: {agePanel}'s book definition can't be shared",level=kErrorLevel)
                 else:
                     bookdef = bookdef % ('', stampdef)
                 SpawnPointName_Dict[0] = "LinkInPointDefault"
@@ -321,9 +322,9 @@ class ahnyLinkBookGUIPopup(ptModifier):
                 gLinkingBook.setGUI(gui)
                 gLinkingBook.show(showOpen)
             except LookupError:
-                PtDebugPrint("ahnyLinkBookGUIPopup: could not find age %s's linking panel" % (agePanel),level=kErrorLevel)
+                PtDebugPrint(f"ahnyLinkBookGUIPopup: could not find age {agePanel}'s linking panel",level=kErrorLevel)
         else:
-            PtDebugPrint("ahnyLinkBookGUIPopup: no age link panel" % (agePanel),level=kErrorLevel)
+            PtDebugPrint("ahnyLinkBookGUIPopup: no age link panel",level=kErrorLevel)
         '''
 
     def IsThereACover(self,bookHtml):
@@ -359,7 +360,7 @@ class ahnyLinkBookGUIPopup(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][0]
         except:
-            PtDebugPrint("IGetAgeFilename(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use it as the value")
+            PtDebugPrint(f"IGetAgeFilename(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use it as the value")
             name = TargetAge.value
         return name
 
@@ -367,7 +368,7 @@ class ahnyLinkBookGUIPopup(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][0]
         except:
-            PtDebugPrint("IGetAgeInstanceName(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use it as the value")
+            PtDebugPrint(f"IGetAgeInstanceName(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use it as the value")
             name = TargetAge.value
         return name
 
@@ -375,7 +376,7 @@ class ahnyLinkBookGUIPopup(ptModifier):
         try:
             name = xLinkingBookDefs.xLinkDestinations[TargetAge.value][1]
         except:
-            PtDebugPrint("IGetAgeSpawnPoint(): " + TargetAge.value + " is missing from the xLinkDestinations table, attempting to use an empty string as the value")
+            PtDebugPrint(f"IGetAgeSpawnPoint(): {TargetAge.value} is missing from the xLinkDestinations table, attempting to use an empty string as the value")
             name = ""
         return name
 
