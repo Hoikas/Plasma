@@ -87,7 +87,6 @@ class ahnyIslandHut(ptResponder):
 
     def __init__(self):
         ptResponder.__init__(self)
-        self.id = 5580
         self.version = 1
 
 
