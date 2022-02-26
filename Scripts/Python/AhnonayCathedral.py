@@ -53,7 +53,7 @@ class AhnonayCathedral(ptResponder):
 
     def __init__(self):
         ptResponder.__init__(self)
-        self.id = 5398
+        self.id = -1
         self.version = 1
 
     def OnFirstUpdate(self):
