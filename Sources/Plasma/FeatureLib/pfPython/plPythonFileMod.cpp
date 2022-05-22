@@ -100,6 +100,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plGImage/plMipmap.h"
 #include "plMessage/plAccountUpdateMsg.h"
 #include "plAgeLoader/plAgeLoader.h"
+#include "pfGameMgr/pfGameMgr.h"
 #include "plMessage/plAIMsg.h"
 #include "plAvatar/plArmatureMod.h"
 #include "plAvatar/plAvBrainCritter.h"
@@ -141,6 +142,9 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "pyGUIPopUpMenu.h"
 #include "pyGUIControlClickMap.h"
 
+// Game manager
+#include "Games/pyGameMgrMsg.h"
+#include "Games/pyGameCliMsg.h"
 #include "pyGameScoreMsg.h"
 
 #include "plPythonSDLModifier.h"
@@ -190,6 +194,8 @@ const char* plPythonFileMod::fFunctionNames[] =
     "OnAvatarSpawn",        // kFunc_OnAvatarSpawn
     "OnAccountUpdate",      // kFunc_OnAccountUpdate
     "gotPublicAgeList",     // kfunc_gotPublicAgeList
+    "OnGameMgrMsg",         // kfunc_OnGameMgrMsg
+    "OnGameCliMsg",         // kfunc_OnGameCliMsg
     "OnAIMsg",              // kfunc_OnAIMsg
     "OnGameScoreMsg",       // kfunc_OnGameScoreMsg
     "OnSubtitleMsg",        // kfunc_OnSubtitleMsg
@@ -682,6 +688,9 @@ void plPythonFileMod::AddTarget(plSceneObject* sobj)
 
             if (fPyFunctionInstances[kfunc_gotPublicAgeList])
                 plgDispatch::Dispatch()->RegisterForExactType(plNetCommPublicAgeListMsg::Index(), GetKey());
+
+            if (fPyFunctionInstances[kfunc_OnGameMgrMsg])
+                pfGameMgr::GetInstance()->AddReceiver(GetKey());
 
             if (fPyFunctionInstances[kfunc_OnAIMsg])
                 plgDispatch::Dispatch()->RegisterForExactType(plAIBrainCreatedMsg::Index(), GetKey());
@@ -1578,6 +1587,70 @@ bool plPythonFileMod::MsgReceive(plMessage* msg)
         ICallScriptMethod(kfunc_OnAccountUpdate, pUpdateMsg->GetUpdateType(), pUpdateMsg->GetResult(),
                           pUpdateMsg->GetPlayerInt());
         return true;
+    }
+
+    if (fPyFunctionInstances[kfunc_OnGameMgrMsg])
+    {
+        pfGameMgrMsg* gameMgrMsg = pfGameMgrMsg::ConvertNoRef(msg);
+        if (gameMgrMsg)
+        {
+            plProfile_BeginTiming(PythonUpdate);
+            PyObject* pythonMsg = pyGameMgrMsg::New(gameMgrMsg);
+            PyObject* retVal = PyObject_CallMethod(
+                fPyFunctionInstances[kfunc_OnGameMgrMsg],
+                (char*)fFunctionNames[kfunc_OnGameMgrMsg],
+                "O",
+                pythonMsg
+            );
+            Py_DECREF(pythonMsg);
+            if (retVal == nullptr)
+            {
+#ifndef PLASMA_EXTERNAL_RELEASE
+                // for some reason this function didn't, remember that and not call it again
+                fPyFunctionInstances[kfunc_OnGameMgrMsg] = nil;
+#endif  //PLASMA_EXTERNAL_RELEASE
+                // if there was an error make sure that the stderr gets flushed so it can be seen
+                ReportError();
+            }
+            Py_XDECREF(retVal);
+            plProfile_EndTiming(PythonUpdate);
+            // display any output
+            DisplayPythonOutput();
+
+            return true;
+        }
+    }
+
+    if (fPyFunctionInstances[kfunc_OnGameCliMsg])
+    {
+        pfGameCliMsg* gameMgrMsg = pfGameCliMsg::ConvertNoRef(msg);
+        if (gameMgrMsg)
+        {
+            plProfile_BeginTiming(PythonUpdate);
+            PyObject* pythonMsg = pyGameCliMsg::New(gameMgrMsg);
+            PyObject* retVal = PyObject_CallMethod(
+                fPyFunctionInstances[kfunc_OnGameCliMsg],
+                (char*)fFunctionNames[kfunc_OnGameCliMsg],
+                "O",
+                pythonMsg
+            );
+            Py_DECREF(pythonMsg);
+            if (retVal == nullptr)
+            {
+#ifndef PLASMA_EXTERNAL_RELEASE
+                // for some reason this function didn't, remember that and not call it again
+                fPyFunctionInstances[kfunc_OnGameCliMsg] = nil;
+#endif  //PLASMA_EXTERNAL_RELEASE
+                // if there was an error make sure that the stderr gets flushed so it can be seen
+                ReportError();
+            }
+            Py_XDECREF(retVal);
+            plProfile_EndTiming(PythonUpdate);
+            // display any output
+            DisplayPythonOutput();
+
+            return true;
+        }
     }
 
     auto pPubAgeMsg = IScriptWantsMsg<plNetCommPublicAgeListMsg>(kfunc_gotPublicAgeList, msg);

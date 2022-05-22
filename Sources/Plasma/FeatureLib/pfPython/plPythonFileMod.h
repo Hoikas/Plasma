@@ -105,6 +105,8 @@ private:
         kfunc_OnAvatarSpawn,
         kfunc_OnAccountUpdate,
         kfunc_gotPublicAgeList,
+        kfunc_OnGameMgrMsg,
+        kfunc_OnGameCliMsg,
         kfunc_OnAIMsg,
         kfunc_OnGameScoreMsg,
         kfunc_OnSubtitleMsg,

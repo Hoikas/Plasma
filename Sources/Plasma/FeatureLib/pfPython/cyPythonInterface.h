@@ -116,6 +116,13 @@ public:
     // Initialize the PlasmaVaultConstants module;
     static void AddPlasmaVaultConstantsClasses(PyObject* m);
 
+    // Initialize the PlasmaGame module
+    static void AddPlasmaGameMethods(std::vector<PyMethodDef> &methods);
+    static void AddPlasmaGameClasses();
+
+    // Initialize the PlasmaGameConstants module
+    static void AddPlasmaGameConstantsClasses();
+
     // Initialize the Python to Plasma 
     static void initDebugInterface();
 
