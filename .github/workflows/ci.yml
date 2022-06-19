@@ -103,7 +103,8 @@ jobs:
   max:
     # Can only run if we have a token for our super seekrit Max SDK repo. Sad.
     needs: ["max-secrets"]
-    if: github.event_name == 'push' && needs.max-secrets.outputs.HAS_MACHINE_USER_TOKEN == 'true'
+    # Only run windows client CI
+    if: ${{ false }}
 
     runs-on: windows-2019
     name: maxplugin-${{ matrix.cfg.str }}-${{ matrix.cfg.sdk-version }}
@@ -170,6 +171,8 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     name: ${{ matrix.platform.str }}-${{ matrix.cfg.str }}
+    # Only run windows client CI
+    if: ${{ false }}
     strategy:
       matrix:
         platform:
@@ -245,6 +248,8 @@ jobs:
   macos:
     runs-on: macos-latest
     name: ${{ matrix.platform.str }}-${{ matrix.cfg.str }}
+    # Only run windows client CI
+    if: ${{ false }}
     strategy:
       matrix:
         platform:
