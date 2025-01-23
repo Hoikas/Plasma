@@ -60,6 +60,9 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plPipeline.h"
 #include "plTweak.h"
 
+// STL
+#include <limits>
+
 // other
 #include "pnKeyedObject/plKey.h"
 #include "pnKeyedObject/plKeyImp.h"
@@ -117,6 +120,7 @@ static const ST::string kPersonalLinkAnimName = ST_LITERAL("PersonalLink");
 
 int plArmatureModBase::fMinLOD = 0;     // standard is 3 levels of LOD
 double plArmatureModBase::fLODDistance = 50.0;
+int plArmatureModBase::fLODBudget = std::numeric_limits<int>::max();
 
 
 plArmatureModBase::plArmatureModBase() :
@@ -192,7 +196,6 @@ bool plArmatureModBase::IEval(double time, float elapsed, uint32_t dirty)
                 }
             }
         }
-        AdjustLOD();        
     }
     else
         IFinalize();
@@ -414,30 +417,6 @@ bool plArmatureModBase::IsFinal()
     return !fWaitFlags;
 }
 
-void plArmatureModBase::AdjustLOD()
-{
-    if (!IsDrawEnabled())
-        return;
-
-    hsPoint3 camPos = plVirtualCam1::Instance()->GetCameraPos();
-        
-    plSceneObject * SO = GetTarget(0);
-    if (SO)
-    {
-        hsMatrix44  l2w = SO->GetLocalToWorld();
-        hsPoint3 ourPos = l2w.GetTranslate();
-        hsPoint3 delta = ourPos - camPos;
-        float distanceSquared = delta.MagnitudeSquared();
-        if (distanceSquared < fLODDistance * fLODDistance)
-            SetLOD(std::max(0, fMinLOD));
-        else if (distanceSquared < fLODDistance * fLODDistance * 4.0) 
-            SetLOD(std::max(1, fMinLOD));
-        else 
-            SetLOD(2);
-    }
-}
-
-// Should always be called from AdjustLOD
 bool plArmatureModBase::SetLOD(int iNewLOD)
 {
     if (iNewLOD >= fMeshKeys.size())
@@ -480,12 +459,6 @@ bool plArmatureModBase::SetLOD(int iNewLOD)
         }
     }
     return oldLOD;
-}
-
-void plArmatureModBase::RefreshTree()
-{
-    fCurLOD = -1;
-    AdjustLOD();
 }
 
 int plArmatureModBase::AppendMeshKey(plKey meshKey)

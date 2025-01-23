@@ -127,9 +127,7 @@ public:
     bool IsFinal() override;
 
     // LOD stuff
-    void    AdjustLOD();                // see if we need to switch to a different resolution
     bool    SetLOD(int newLOD);     // switch to a different resolution
-    void    RefreshTree();              // Resend an LOD update to all our nodes (for when geometry changes)
     int     AppendMeshKey(plKey meshKey);
     int     AppendBoneVec(plKeyVector *boneVec);
     uint8_t   GetNumLOD() const;
@@ -158,6 +156,10 @@ public:
 
     static int fMinLOD;                     // throttle for lowest-indexed LOD
     static double fLODDistance;             // Distance for first LOD switch 2nd is 2x this distance (for now)
+    static int    fLODBudget;               // cap for for each LOD
+
+    static constexpr int kMinLOD = 0;
+    static constexpr int kMaxLOD = 2;
     
 protected:
     virtual void IFinalize();

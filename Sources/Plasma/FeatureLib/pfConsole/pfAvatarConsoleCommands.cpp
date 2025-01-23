@@ -740,6 +740,13 @@ PF_CONSOLE_CMD( Avatar_LOD,  GetLODDistance, "", "Get Distance for switching Ava
     PrintString(ST::format("Lod Distance = {f}", plArmatureLODMod::fLODDistance));
 }
 
+PF_CONSOLE_CMD(Avatar_LOD, SetBudget, "int value", "Sets the budget for each LOD")
+{
+    int value = int(params[0]);
+    PrintString(ST::format("LOD budget updated {} -> {}", plArmatureLODMod::fLODBudget, value));
+    plArmatureLODMod::fLODBudget = value;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // CLIMBING

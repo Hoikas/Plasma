@@ -81,6 +81,9 @@ class plAvTask;
 */
 class plAvatarMgr : public hsKeyedObject
 {
+protected:
+    void IUpdateLOD() const;
+
 public:
     typedef std::vector<plArmatureMod*> plArmatureModPtrVec;
 

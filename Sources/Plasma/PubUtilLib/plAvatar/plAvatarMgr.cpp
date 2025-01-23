@@ -81,6 +81,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "plStatusLog/plStatusLog.h"
 #include "plVault/plDniCoordinateInfo.h"
 
+#include "pfCamera/plVirtualCamNeu.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -111,6 +113,7 @@ plAvatarMgr * plAvatarMgr::GetInstance()
         fInstance = new plAvatarMgr;
         fInstance->RegisterAs(kAvatarMgr_KEY);
         fInstance->Ref();
+        plgDispatch::Dispatch()->RegisterForExactType(plEvalMsg::Index(), fInstance->GetKey());
     }
     return fInstance;
 }
@@ -120,6 +123,7 @@ void plAvatarMgr::ShutDown()
 {
     if(fInstance)
     {
+        plgDispatch::Dispatch()->UnRegisterForExactType(plEvalMsg::Index(), fInstance->GetKey());
         fInstance->UnRef();
         if(fInstance)
             fInstance->UnRegister();
@@ -320,7 +324,6 @@ bool plAvatarMgr::MsgReceive(plMessage *msg)
     {
         pCloneMsg->Ref();
         fCloneMsgQueue.emplace_back(pCloneMsg);
-        plgDispatch::Dispatch()->RegisterForExactType(plEvalMsg::Index(), GetKey());
         return true;
     }
 
@@ -337,9 +340,9 @@ bool plAvatarMgr::MsgReceive(plMessage *msg)
                 fCloneMsgQueue.erase(fCloneMsgQueue.begin() + i);
             }
         }
-        if (fCloneMsgQueue.empty())
-            plgDispatch::Dispatch()->UnRegisterForExactType(plEvalMsg::Index(), GetKey());
-        
+
+        IUpdateLOD();
+
         return true;
     }
     plAvCoopMsg *coopM = plAvCoopMsg::ConvertNoRef(msg);
@@ -359,6 +362,94 @@ bool plAvatarMgr::MsgReceive(plMessage *msg)
     }
 
     return false;
+}
+
+void plAvatarMgr::IUpdateLOD() const
+{
+    if (fAvatars.empty())
+        return;
+
+    struct VisibleAvatar
+    {
+        plArmatureMod* fAvatar;
+        float          fDistSq;
+
+        VisibleAvatar(plArmatureMod* av, float distSq)
+            : fAvatar(av), fDistSq(distSq)
+        { }
+    };
+
+    std::vector<VisibleAvatar> visibleAvatars;
+    visibleAvatars.reserve(fAvatars.size());
+
+    hsPoint3 camPos = plVirtualCam1::Instance()->GetCameraPos();
+    for (const auto& avatarKey : fAvatars) {
+        plArmatureMod* avatar = plArmatureMod::ConvertNoRef(avatarKey->ObjectIsLoaded());
+        if (!avatar || !avatar->GetTarget(0) || !avatar->IsFinal())
+            continue;
+
+        if (avatar->IsDrawEnabled() && avatar->GetNumLOD() > 1) {
+            plSceneObject* targ = avatar->GetTarget(0);
+            hsMatrix44     l2w = targ->GetLocalToWorld();
+            hsPoint3       ourPos = l2w.GetTranslate();
+            hsPoint3       delta = ourPos - camPos;
+            float          distanceSquared = delta.MagnitudeSquared();
+            visibleAvatars.emplace_back(avatar, distanceSquared);
+        } else if (avatar->GetNumLOD() > 1) {
+            // This guy is not visible for whatever reason, so use the worst LOD we have
+            avatar->SetLOD(avatar->GetNumLOD() - 1);
+        }
+    }
+
+    // Special case for the local avatar...
+    // We don't want them popping between LODs as they walk through the Age,
+    // so if they're inside the distance threshold, sort them before everyone.
+    // Else, just sort everyone by distance so we can expend the LOD budget
+    const plArmatureMod* localAvatar = GetLocalAvatar();
+    std::sort(
+        visibleAvatars.begin(), visibleAvatars.end(),
+        [localAvatar](const VisibleAvatar& lhs, const VisibleAvatar& rhs) {
+            float distThreshold = plArmatureModBase::fLODDistance * plArmatureModBase::fLODDistance;
+            if (lhs.fAvatar == localAvatar && lhs.fDistSq < distThreshold)
+                return true;
+            if (rhs.fAvatar == localAvatar && rhs.fDistSq < distThreshold)
+                return false;
+            return lhs.fDistSq < rhs.fDistSq;
+        }
+    );
+
+    // Previously, the engine would (in each armature) calculate how far the avatar is from
+    // the virtual camera and use progressively lower quality LODs as the distance increased.
+    // The distance and LOD levels were configurable, but this was never exposed via a settings
+    // UI of any sort. Anyway, medium quality kicked in past 50 feet, and low quality kicked in
+    // past 100 feet.
+    // The change here is that there is now a "budget" for how many avatars can be drawn at a
+    // certain LOD. Once the budget is reached, we forcibly go to the next LOD. The reason for this
+    // is that profiling indicates that the avatar's bone structure is so complicated that anytime
+    // we can drop bones, we win. Of course, we can't be certain that our requests for lower LODs
+    // will be honored (because they may not actually exist as we expect), but simply having the
+    // chance is amazing.
+    int budget = plArmatureModBase::fLODBudget;
+    int currLOD = std::min(plArmatureMod::kMinLOD, plArmatureModBase::fMinLOD); // minLOD is HQ
+    float resetThreshold = plArmatureModBase::fLODDistance * plArmatureModBase::fLODDistance;
+    for (const auto& visibleAvatar : visibleAvatars) {
+        // If we've exceeded the distance limit, reset the budget and go to a lower quality LOD.
+        while (visibleAvatar.fDistSq > resetThreshold && currLOD < plArmatureModBase::kMaxLOD) {
+            budget = plArmatureModBase::fLODBudget;
+            currLOD++;
+            resetThreshold *= 4.f;
+        }
+
+        // If we've exceeded the budget, preemptively go to the next LOD
+        if (budget < 0 && currLOD < plArmatureModBase::kMaxLOD) {
+            budget = plArmatureModBase::fLODBudget;
+            currLOD++;
+            resetThreshold = visibleAvatar.fDistSq * 4.f;
+        }
+
+        visibleAvatar.fAvatar->SetLOD(currLOD);
+        budget--;
+    }
 }
 
 bool plAvatarMgr::HandleCoopMsg(plAvCoopMsg *msg)
