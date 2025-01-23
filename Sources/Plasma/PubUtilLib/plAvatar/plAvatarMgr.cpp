@@ -666,7 +666,7 @@ void plAvatarMgr::RemoveAvatar(plArmatureMod *avatar)
     }
 }
 
-plArmatureMod* plAvatarMgr::GetLocalAvatar()
+plArmatureMod* plAvatarMgr::GetLocalAvatar() const
 {
     plNetClientApp * app = plNetClientApp::GetInstance();
     if(app)
@@ -683,7 +683,7 @@ plArmatureMod* plAvatarMgr::GetLocalAvatar()
     return nullptr;
 }
 
-plKey plAvatarMgr::GetLocalAvatarKey()
+plKey plAvatarMgr::GetLocalAvatarKey() const
 {
     plArmatureMod *avatar = GetLocalAvatar();
     if (avatar)

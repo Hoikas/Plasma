@@ -140,8 +140,8 @@ public:
     void AddAvatar(plArmatureMod *avatar);
     void RemoveAvatar(plArmatureMod *instance);
 
-    plArmatureMod *GetLocalAvatar();
-    plKey GetLocalAvatarKey();
+    plArmatureMod *GetLocalAvatar() const;
+    plKey GetLocalAvatarKey() const;
     static plArmatureMod *FindAvatar(const plKey& avatarKey); // Key of the sceneObject
     plArmatureMod *FindAvatarByPlayerID(uint32_t pid);
     plArmatureMod *FindAvatarByModelName(const ST::string& name); // Probably only useful for custom NPCs. All players are
