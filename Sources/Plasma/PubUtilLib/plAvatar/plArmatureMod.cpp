@@ -1689,6 +1689,8 @@ void plArmatureMod::RemoveTarget(plSceneObject* so)
     fAvatarPhysicalSDLMod = nullptr;
 
     plArmatureModBase::RemoveTarget(so);
+
+    plAvatarMgr::GetInstance()->RemoveAvatar(this);
 }
 
 void plArmatureMod::Write(hsStream *stream, hsResMgr *mgr)

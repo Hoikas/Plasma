@@ -331,15 +331,6 @@ plAvBrainHuman::~plAvBrainHuman()
     fWalkingStrategy = nullptr;
 }
 
-void plAvBrainHuman::Deactivate()
-{
-    // fAvMod will be nil here when exporting.
-    if (fAvMod)
-        plAvatarMgr::GetInstance()->RemoveAvatar(fAvMod);       // unregister
-
-    plArmatureBrain::Deactivate();
-}
-
 void plAvBrainHuman::Suspend()
 {
     // Kind of hacky... but this is a rather rare case.

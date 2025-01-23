@@ -72,7 +72,6 @@ public:
 
     bool Apply(double timeNow, float elapsed) override;
     void Activate(plArmatureModBase *avMod) override;
-    void Deactivate() override;
     void Suspend() override;
     void Resume() override;
     void Spawn(double timeNow) override;
