@@ -410,13 +410,13 @@ bool plDrawableSpans::IBoundsInvalid(const hsBounds3Ext& bnd) const
 
 #ifdef MF_TEST_UPDATE
 plProfile_CreateCounter("DSSetTrans", "Update", DSSetTrans);
-plProfile_CreateCounter("DSMatSpans", "Update", DSMatSpans);
-plProfile_CreateCounter("DSRegSpans", "Update", DSRegSpans);
+plProfile_CreateCounter("    DSMatSpans", "Update", DSMatSpans);
+plProfile_CreateCounter("    DSRegSpans", "Update", DSRegSpans);
 
 plProfile_CreateTimer("DSSetTransT", "Update", DSSetTransT);
-plProfile_CreateTimer("DSMatTransT", "Update", DSMatTransT);
-plProfile_CreateTimer("DSRegTransT", "Update", DSRegTransT);
-plProfile_CreateTimer("DSBndTransT", "Update", DSBndTransT);
+plProfile_CreateTimer("    DSMatTransT", "Update", DSMatTransT);
+plProfile_CreateTimer("    DSRegTransT", "Update", DSRegTransT);
+plProfile_CreateTimer("    DSBndTransT", "Update", DSBndTransT);
 #endif // MF_TEST_UPDATE
 
 

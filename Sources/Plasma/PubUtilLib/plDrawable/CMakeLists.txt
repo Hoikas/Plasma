@@ -138,5 +138,9 @@ target_link_libraries(plDrawable
         plSurface
 )
 
+if(PLASMA_ENHANCED_PROFILING)
+    set_property(SOURCE plDrawableSpans.cpp PROPERTY COMPILE_DEFINITIONS MF_TEST_UPDATE)
+endif()
+
 source_group("Source Files" FILES ${plDrawable_SOURCES})
 source_group("Header Files" FILES ${plDrawable_HEADERS})
