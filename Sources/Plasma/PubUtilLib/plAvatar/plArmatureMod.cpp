@@ -469,9 +469,11 @@ bool plArmatureModBase::SetLOD(int iNewLOD)
             }
             
             fCurLOD = iNewLOD;
-            plSceneObject * newMesh = (plSceneObject *)fMeshKeys[fCurLOD]->GetObjectPtr();
-            EnableDrawingTree(newMesh, true);
-            
+            if (IsDrawEnabled()) {
+                plSceneObject* newMesh = (plSceneObject*)fMeshKeys[fCurLOD]->GetObjectPtr();
+                EnableDrawingTree(newMesh, true);
+            }
+
             int boneLOD;
             for (boneLOD = 0; boneLOD < fMeshKeys.size(); boneLOD++)
                 IEnableBones(boneLOD, boneLOD <= iNewLOD ? false: true);
