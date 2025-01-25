@@ -581,12 +581,16 @@ void plArmatureModBase::ICustomizeApplicator()
 
 void plArmatureModBase::IEnableBones(int lod, bool enable)
 {
-    if (lod < fUnusedBones.size())
-    {
-        plKeyVector *vec = fUnusedBones[lod];
-        int i;
-        for (i = 0; i < vec->size(); i++)
-            ((plAGModifier *)(*vec)[i]->GetObjectPtr())->Enable(enable);
+    if (lod < fUnusedBones.size()) {
+        plEnableMsg* enableBoneMsg = new plEnableMsg();
+        for (const plKey& boneAGKey : *fUnusedBones[lod]) {
+            plAGModifier* bone = static_cast<plAGModifier*>(boneAGKey->GetObjectPtr());
+            enableBoneMsg->AddReceiver(boneAGKey);
+            enableBoneMsg->AddReceiver(bone->GetTarget()->GetCoordinateInterface()->GetKey());
+        }
+
+        enableBoneMsg->SetCmd(enable ? plEnableMsg::kEnable : plEnableMsg::kDisable);
+        enableBoneMsg->Send();
     }
 }
 

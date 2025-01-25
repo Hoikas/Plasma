@@ -49,6 +49,7 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #include "hsTimer.h"
 
 // other
+#include "pnMessage/plEnableMsg.h"
 #include "pnSceneObject/plSceneObject.h"
 #include "pnSceneObject/plCoordinateInterface.h"
 #include "pnSceneObject/plSimulationInterface.h"
@@ -279,6 +280,22 @@ void plAGModifier::Write(hsStream *stream, hsResMgr *mgr)
 
     // write out the name of the modifier
     stream->WriteSafeString(fChannelName);
+}
+
+// MSGRECEIVE
+bool plAGModifier::MsgReceive(plMessage* msg)
+{
+    plEnableMsg* enableMsg = plEnableMsg::ConvertNoRef(msg);
+    if (enableMsg) {
+        bool enable = enableMsg->Cmd(plEnableMsg::kEnable);
+        bool disable = enableMsg->Cmd(plEnableMsg::kDisable);
+
+        hsAssert(enable != disable, "Conflicting or missing commands to enable message");
+        fEnabled = enable && !disable;
+        return true;
+    }
+
+    return plSingleModifier::MsgReceive(msg);
 }
 
 /////////////////////////////////////////

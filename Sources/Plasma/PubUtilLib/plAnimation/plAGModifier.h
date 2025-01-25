@@ -128,6 +128,8 @@ public:
     void Read(hsStream *stream, hsResMgr *mgr) override;
     void Write(hsStream *stream, hsResMgr *mgr) override;
 
+    bool MsgReceive(plMessage* msg) override;
+
     // PLASMA PROTOCOL
     CLASSNAME_REGISTER( plAGModifier );
     GETINTERFACE_ANY( plAGModifier, plSingleModifier );

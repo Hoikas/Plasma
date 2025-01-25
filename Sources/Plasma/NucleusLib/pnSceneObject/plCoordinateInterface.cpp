@@ -398,6 +398,10 @@ void plCoordinateInterface::IRecalcTransforms()
 
 void plCoordinateInterface::ITransformChanged(bool force, uint16_t reasons, bool checkForDelay)
 {
+    // If we're disabled, avoid this slow mess.
+    if (GetProperty(plCoordinateInterface::kDisable))
+        return;
+
     plProfile_IncCount(CITrans, 1);
     plProfile_BeginTiming(CITransT);
 
