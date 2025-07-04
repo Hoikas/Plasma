@@ -200,9 +200,9 @@ void plNetClientMgr::SendLocalPlayerAvatarCustomizations()
     plSceneObject* pObj = (const_cast<plArmatureMod*>(avMod))->GetFollowerParticleSystemSO();
     if (pObj)
     {
-        const plParticleSystem* sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+        auto* sys = pObj->GetModifierByType<plParticleSystem>();
         if (sys)
-            (const_cast<plParticleSystem*>(sys))->GetSDLMod()->SendState(plSynchedObject::kBCastToClients | plSynchedObject::kForceFullSend);
+            sys->GetSDLMod()->SendState(plSynchedObject::kBCastToClients | plSynchedObject::kForceFullSend);
 
     }
     // may want to do this all the time, but for now stealthmode is the only extra avatar state we care about

@@ -43,6 +43,8 @@ You can contact Cyan Worlds, Inc. by email legal@cyan.com
 #ifndef plSceneObject_inc
 #define plSceneObject_inc
 
+#include <type_traits>
+
 #include "hsBitVector.h"
 #include "pnKeyedObject/hsKeyedObject.h"
 #include "pnNetCommon/plSynchedObject.h"
@@ -141,6 +143,13 @@ public:
     size_t                  GetNumModifiers() const { return fModifiers.size(); }
     const plModifier*       GetModifier(size_t i) const { return fModifiers[i]; }
     const plModifier*       GetModifierByType(uint16_t classIdx) const;
+
+    template<typename T>
+    const T* GetModifierByType() const
+    {
+        static_assert(std::is_base_of_v<plModifier, T>, "Requested type must derive from plModifier");
+        return T::ConvertNoRef(GetModifierByType(T::Index()));
+    }
 
     bool MsgReceive(plMessage* msg) override;
     virtual bool Eval(double secs, float del);

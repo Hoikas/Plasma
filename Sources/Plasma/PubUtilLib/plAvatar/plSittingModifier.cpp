@@ -154,7 +154,7 @@ bool plSittingModifier::MsgReceive(plMessage *msg)
                 plKey avatarKey = notifyMsg->GetAvatarKey();
                 plSceneObject * obj = plSceneObject::ConvertNoRef(avatarKey->ObjectIsLoaded());
                 if (obj) {
-                    const plArmatureMod * avMod = (plArmatureMod*)obj->GetModifierByType(plArmatureMod::Index());
+                    auto* avMod = obj->GetModifierByType<plArmatureMod>();
                     plAvBrainHuman *brain = (avMod ? plAvBrainHuman::ConvertNoRef(avMod->GetCurrentBrain()) : nullptr);
                     if (brain && !brain->IsRunningTask())
                     {
@@ -196,7 +196,7 @@ bool plSittingModifier::MsgReceive(plMessage *msg)
                 plKey avatarKey = notifyMsg->GetAvatarKey();
                 plSceneObject * obj = plSceneObject::ConvertNoRef(avatarKey->ObjectIsLoaded());
                 if (obj) {
-                    plArmatureMod * avMod = (plArmatureMod*)obj->GetModifierByType(plArmatureMod::Index());
+                    auto* avMod = const_cast<plArmatureMod*>(obj->GetModifierByType<plArmatureMod>());
 
                     uint32_t flags = kBCastToClients | kUseRelevanceRegions | kForceFullSend;
                     avMod->DirtyPhysicalSynchState(flags);

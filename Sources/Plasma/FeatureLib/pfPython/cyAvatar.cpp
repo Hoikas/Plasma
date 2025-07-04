@@ -578,7 +578,7 @@ int32_t cyAvatar::GetAvatarClothingGroup()
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if ( avMod )
             {
                 return avMod->GetClothingOutfit()->fGroup;
@@ -631,7 +631,7 @@ std::vector<PyObject*> cyAvatar::GetClosetClothingList(int32_t clothing_type)
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if ( avMod )
             {
                 // Get all the clothes that we can wear
@@ -693,7 +693,7 @@ std::vector<PyObject*> cyAvatar::GetAvatarClothingList()
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if ( avMod )
             {
                 // Currently, just all the clothing available will be returned
@@ -826,7 +826,7 @@ std::vector<PyObject*> cyAvatar::GetUniqueMeshList(int32_t clothing_type)
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if ( avMod )
             {
                 // Get all the clothes that we can wear
@@ -891,7 +891,7 @@ std::vector<PyObject*> cyAvatar::GetAllWithSameMesh(const ST::string& clothing_n
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if ( avMod )
             {
                 // Get all clothes with the same mesh as the one passed in
@@ -1044,7 +1044,7 @@ bool cyAvatar::WearClothingItemU(const ST::string& clothing_name, bool update)
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
             if (avMod && item)
@@ -1078,7 +1078,7 @@ bool cyAvatar::RemoveClothingItemU(const ST::string& clothing_name, bool update)
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
 
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
@@ -1112,7 +1112,7 @@ bool cyAvatar::TintClothingItemU(const ST::string& clothing_name, pyColor& tint,
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
 
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
@@ -1145,7 +1145,7 @@ bool cyAvatar::TintClothingItemLayerU(const ST::string& clothing_name, pyColor& 
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
 
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
@@ -1181,7 +1181,7 @@ ST::string cyAvatar::GetClothingItemParameterString(const ST::string& clothing_n
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
 
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
@@ -1224,7 +1224,7 @@ PyObject* cyAvatar::GetTintClothingItemL(const ST::string& clothing_name, uint8_
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
 
             plClothingItem *item = plClothingMgr::GetClothingMgr()->FindItemByName(clothing_name);
 
@@ -1276,7 +1276,7 @@ void cyAvatar::TintSkinU(pyColor& tint, bool update)
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             avMod->GetClothingOutfit()->TintSkin(tint.getRed(),tint.getGreen(),tint.getBlue(),update,true);
         }
     }
@@ -1299,7 +1299,7 @@ PyObject* cyAvatar::GetTintSkin()
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             hsColorRGBA tint = avMod->GetClothingOutfit()->fSkinTint;
             // now create the ptColor Python object
             return pyColor::New(tint);
@@ -1375,7 +1375,7 @@ void cyAvatar::SetMorph(const ST::string& clothing_name, uint8_t layer, float va
         plSceneObject *so = plSceneObject::ConvertNoRef(fRecvr[0]->GetObjectPtr());
         if (so != nullptr)
         {
-            const plArmatureMod *avMod = (plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+            auto* avMod = const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
             if (avMod && avMod->GetClothingOutfit())
             {
                 avMod->GetClothingOutfit()->MorphItem(item, layer, 0, wgtPlus, true);

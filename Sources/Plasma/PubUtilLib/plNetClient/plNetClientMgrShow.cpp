@@ -242,7 +242,7 @@ void plNetClientMgr::IShowRelevanceRegions()
     plSceneObject* player = plSceneObject::ConvertNoRef(GetLocalPlayer());
     if (player)
     {
-        const plArmatureMod *avMod = plArmatureMod::ConvertNoRef(player->GetModifierByType(plArmatureMod::Index()));
+        auto* avMod = player->GetModifierByType<plArmatureMod>();
         if (avMod)
         {
             ourIn = &avMod->GetRelRegionImIn();
@@ -263,7 +263,7 @@ void plNetClientMgr::IShowRelevanceRegions()
         player = (mbr->GetAvatarKey() ? plSceneObject::ConvertNoRef(mbr->GetAvatarKey()->ObjectIsLoaded()) : nullptr);
         if (player)
         {
-            const plArmatureMod* avMod = plArmatureMod::ConvertNoRef(player->GetModifierByType(plArmatureMod::Index()));
+            auto* avMod = player->GetModifierByType<plArmatureMod>();
             if (avMod)
             {
                 const hsBitVector& in = avMod->GetRelRegionImIn();
@@ -300,11 +300,10 @@ void plNetClientMgr::IShowAvatars()
 
     if (player)
     {
-        const plArmatureMod *avMod = plArmatureMod::ConvertNoRef(player->GetModifierByType(plArmatureMod::Index()));
+        auto* avMod = player->GetModifierByType<plArmatureMod>();
         if (avMod)
         {
-            plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(avMod);
-            plSceneObject* pObj = pNonConstArm->GetFollowerParticleSystemSO();
+            plSceneObject* pObj = avMod->GetFollowerParticleSystemSO();
             if (pObj)
             {
                 y+=yOff;
@@ -341,11 +340,10 @@ void plNetClientMgr::IShowAvatars()
 
         if (player)
         {
-            const plArmatureMod *avMod = plArmatureMod::ConvertNoRef(player->GetModifierByType(plArmatureMod::Index()));
+            auto* avMod = player->GetModifierByType<plArmatureMod>();
             if (avMod)
             {
-                plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(avMod);
-                plSceneObject* pObj = pNonConstArm->GetFollowerParticleSystemSO();
+                plSceneObject* pObj = avMod->GetFollowerParticleSystemSO();
                 if (pObj)
                 {
                     y+=yOff;

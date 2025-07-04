@@ -676,7 +676,7 @@ plArmatureMod* plAvatarMgr::GetLocalAvatar()
         {
             plSceneObject* so = plSceneObject::ConvertNoRef(key->GetObjectPtr());
             if (so)
-                return const_cast<plArmatureMod*>((plArmatureMod*)so->GetModifierByType(plArmatureMod::Index()));
+                return const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
         }
     }
 
@@ -715,8 +715,8 @@ plArmatureMod* plAvatarMgr::FindAvatar(const plKey& avatarKey)
 {
     plSceneObject *so = plSceneObject::ConvertNoRef(avatarKey->ObjectIsLoaded());
     if (so)
-        return const_cast<plArmatureMod*>((plArmatureMod*)so->GetModifierByType(plArmatureMod::Index()));
-    
+        return const_cast<plArmatureMod*>(so->GetModifierByType<plArmatureMod>());
+
     return nullptr;
 }
 

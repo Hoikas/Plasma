@@ -75,15 +75,13 @@ void plMorphSequenceSDLMod::IPutCurrentStateIn(plStateDataRecord* dstState)
 {
     plSceneObject* sobj=GetTarget();
     hsAssert(sobj, "plMorphSequenceSDLMod, nil target");
-    
-    const plMorphSequence *kMorphMod = nullptr;
-    kMorphMod = plMorphSequence::ConvertNoRef(sobj->GetModifierByType(plMorphSequence::Index()));
-    if (!kMorphMod)
+
+    auto* morphMod = const_cast<plMorphSequence*>(sobj->GetModifierByType<plMorphSequence>());
+    if (!morphMod)
     {
         hsAssert(false, "Couldn't find a morph sequence.");
         return;
     }
-    plMorphSequence *morphMod = const_cast<plMorphSequence*>(kMorphMod);
     
     //dstState->FindVar(kStrTarget)->Set(morphMod->GetKey());
     
@@ -147,13 +145,12 @@ void plMorphSequenceSDLMod::ISetCurrentStateFrom(const plStateDataRecord* srcSta
         return;
     }
 
-    const plMorphSequence *kMorphMod = plMorphSequence::ConvertNoRef(sobj->GetModifierByType(plMorphSequence::Index()));
-    if (!kMorphMod)
+    auto* morphMod = const_cast<plMorphSequence*>(sobj->GetModifierByType<plMorphSequence>());
+    if (!morphMod)
     {
         hsAssert(false, "Couldn't find a morph sequence.");
         return;
     }
-    plMorphSequence *morphMod = const_cast<plMorphSequence*>(kMorphMod);
     
     plSDStateVariable *morphSD = srcState->FindSDVar(kStrMorphs);
     for (int i = 0; i < morphSD->GetCount(); i++)

@@ -1351,7 +1351,7 @@ bool plSwim2DComponent::Convert(plMaxNode *node, plErrorMsg *pErrMsg)
     plMaxNode *detectorNode = (plMaxNode *)fCompPB->GetINode(kSwimDetectorNode);
     if (detectorNode && detectorNode->GetSceneObject())
     {
-        if (!detectorNode->GetSceneObject()->GetModifierByType(plSwimDetector::Index()))
+        if (!detectorNode->GetSceneObject()->GetModifierByType<plSwimDetector>())
         {
             plKey nilKey;
             plSwimMsg *enterMsg = new plSwimMsg(detectorNode->GetKey(), nilKey, true, nullptr);

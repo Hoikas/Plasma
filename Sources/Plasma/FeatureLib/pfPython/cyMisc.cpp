@@ -1697,20 +1697,18 @@ void cyMisc::SetParticleDissentPoint(float x, float y, float z, pyKey& particles
     plSceneObject* pObj = plSceneObject::ConvertNoRef(particles.getKey()->ObjectIsLoaded());
     if (!pObj)
         return;
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+    auto* sys = pObj->GetModifierByType<plParticleSystem>();
     if (sys == nullptr)
     {
-        const plModifier* pArm = pObj->GetModifierByType(plArmatureMod::Index());
-        if (pArm)
+        auto* pCArm = pObj->GetModifierByType<plArmatureMod>();
+        if (pCArm)
         {
             // it's the avatar
-            const plArmatureMod* pCArm = (const plArmatureMod*)pArm;
-            plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(pCArm);
-            pObj = pNonConstArm->GetFollowerParticleSystemSO();
+            pObj = pCArm->GetFollowerParticleSystemSO();
             if (!pObj)
                 return;
             else
-                sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+                sys = pObj->GetModifierByType<plParticleSystem>();
 
         }
         if (sys == nullptr)
@@ -1730,20 +1728,18 @@ void cyMisc::SetParticleOffset(float x, float y, float z, pyKey& particles)
     plSceneObject* pObj = plSceneObject::ConvertNoRef(particles.getKey()->ObjectIsLoaded());
     if (!pObj)
         return;
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+    auto* sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType<plParticleSystem>());
     if (sys == nullptr)
     {
-        const plModifier* pArm = pObj->GetModifierByType(plArmatureMod::Index());
-        if (pArm)
+        auto* pCArm = pObj->GetModifierByType<plArmatureMod>();
+        if (pCArm)
         {
             // it's the avatar
-            const plArmatureMod* pCArm = (const plArmatureMod*)pArm;
-            plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(pCArm);
-            pObj = pNonConstArm->GetFollowerParticleSystemSO();
+            pObj = pCArm->GetFollowerParticleSystemSO();
             if (!pObj)
                 return;
             else
-                sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+                sys = pObj->GetModifierByType<plParticleSystem>();
 
         }
         if (sys == nullptr)
@@ -1764,20 +1760,18 @@ void cyMisc::KillParticles(float time, float pct, pyKey& particles)
     plSceneObject* pObj = plSceneObject::ConvertNoRef(particles.getKey()->ObjectIsLoaded());
     if (!pObj)
         return;
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+    auto* sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType<plParticleSystem>());
     if (sys == nullptr)
     {
-        const plModifier* pArm = pObj->GetModifierByType(plArmatureMod::Index());
-        if (pArm)
+        auto* pCArm = pObj->GetModifierByType<plArmatureMod>();
+        if (pCArm)
         {
             // it's the avatar
-            const plArmatureMod* pCArm = (const plArmatureMod*)pArm;
-            plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(pCArm);
-            pObj = pNonConstArm->GetFollowerParticleSystemSO();
+            pObj = pCArm->GetFollowerParticleSystemSO();
             if (!pObj)
                 return;
             else
-                sys = plParticleSystem::ConvertNoRef(pObj->GetModifierByType(plParticleSystem::Index()));
+                sys = pObj->GetModifierByType<plParticleSystem>();
 
         }
         if (sys == nullptr)
@@ -1802,20 +1796,18 @@ int cyMisc::GetNumParticles(pyKey& host)
     plSceneObject* pObj = plSceneObject::ConvertNoRef(host.getKey()->ObjectIsLoaded());
     if (!pObj)
         return 0;
-    const plModifier* pArm = pObj->GetModifierByType(plArmatureMod::Index());
-    if (pArm)
+    auto* pCArm = pObj->GetModifierByType<plArmatureMod>();
+    if (pCArm)
     {
         // it's the avatar
-        const plArmatureMod* pCArm = (const plArmatureMod*)pArm;
-        plArmatureMod* pNonConstArm = const_cast<plArmatureMod*>(pCArm);
-        pObj = pNonConstArm->GetFollowerParticleSystemSO();
+        pObj = pCArm->GetFollowerParticleSystemSO();
         if (!pObj)
             return 0;
     }
-    const plModifier* pPart = pObj->GetModifierByType(plParticleSystem::Index());
+    auto* pPart = pObj->GetModifierByType<plParticleSystem>();
     if (!pPart)
         return 0;
-    return ((const plParticleSystem*)pPart)->GetNumValidParticles(true);
+    return pPart->GetNumValidParticles(true);
 }
 
 

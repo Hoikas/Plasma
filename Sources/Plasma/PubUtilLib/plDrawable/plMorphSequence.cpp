@@ -761,7 +761,7 @@ void plMorphSequence::RemoveSharedMesh(plSharedMesh* mesh)
 
 void plMorphSequence::FindMorphMods(const plSceneObject *so, std::vector<const plMorphSequence*> &mods)
 {
-    const plMorphSequence *morph = plMorphSequence::ConvertNoRef(so->GetModifierByType(plMorphSequence::Index()));
+    auto* morph = so->GetModifierByType<plMorphSequence>();
     if (morph)
         mods.emplace_back(morph);
     

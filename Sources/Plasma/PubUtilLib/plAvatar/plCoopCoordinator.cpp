@@ -320,7 +320,7 @@ void plCoopCoordinator::IStartGuest()
     if ( !avSO )
         return;
 
-    const plArmatureMod *hostAv = (plArmatureMod*)avSO->GetModifierByType(plArmatureMod::Index());
+    auto* hostAv = avSO->GetModifierByType<plArmatureMod>();
     if ( hostAv )
     {
         const plSceneObject *targetBone = hostAv->FindBone(fSynchBone);

@@ -395,7 +395,7 @@ bool plLinkEffectsMgr::MsgReceive(plMessage *msg)
         {
             plATCAnim *linkInAnim = nullptr;
             plKey linkInAnimKey;
-            const plArmatureMod *avMod = plArmatureMod::ConvertNoRef(avatar->GetModifierByType(plArmatureMod::Index()));
+            auto* avMod = avatar->GetModifierByType<plArmatureMod>();
             if (pTriggerMsg->HasBCastFlag(plMessage::kNetNonLocal))
             {
                 // Remote trigger, they should tell us how they linked in.

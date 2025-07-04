@@ -148,7 +148,7 @@ bool plMultistageBehMod::MsgReceive(plMessage* msg)
                             ladder = true;
                     }
 
-                    const plArmatureMod *avMod = (plArmatureMod*)avObj->GetModifierByType(plArmatureMod::Index());
+                    auto* avMod = avObj->GetModifierByType<plArmatureMod>();
                     hsAssert(avMod, "Missing armature mod on avatar scene object.");
 
                     if(avMod)

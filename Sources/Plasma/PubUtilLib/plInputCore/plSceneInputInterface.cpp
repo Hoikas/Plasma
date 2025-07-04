@@ -270,7 +270,7 @@ bool    plSceneInputInterface::MsgReceive( plMessage *msg )
                             pMod = plInterfaceInfoModifier::ConvertNoRef( pObj->GetModifier(i) );
                             if (pMod) // we found our list, stop here
                             {
-                                plLogicModBase* pLogicMod = (plLogicModBase*)pObj->GetModifierByType(plLogicModBase::Index());
+                                auto* pLogicMod = const_cast<plLogicModBase*>(pObj->GetModifierByType<plLogicModBase>());
                                 if (!pLogicMod)
                                     return true;
 
@@ -982,7 +982,7 @@ bool plSceneInputInterface::InterpretInputEvent( plInputEventMsg *pMsg )
                 if (!pObj)
                     continue;
 
-                const plArmatureMod* pArm = (const plArmatureMod*)pObj->GetModifierByType(plArmatureMod::Index());
+                auto* pArm = pObj->GetModifierByType<plArmatureMod>();
                 if (!pArm)
                     continue;
 

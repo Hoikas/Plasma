@@ -695,7 +695,7 @@ bool plClothingOutfit::IMorphItem(plClothingItem *item, uint8_t layer, uint8_t d
             if (!so)
                 continue;
 
-            plMorphSequence *seq = const_cast<plMorphSequence*>(plMorphSequence::ConvertNoRef(so->GetModifierByType(plMorphSequence::Index())));
+            auto* seq = const_cast<plMorphSequence*>(so->GetModifierByType<plMorphSequence>());
             plKey meshKey = item->fMeshes[i]->GetKey();
 
             // Lower LOD objects don't have all the morphs, so check if this one is in range.
@@ -764,7 +764,7 @@ void plClothingOutfit::IHandleMorphSDR(plStateDataRecord *sdr)
     if (!so)
         return;
 
-    plMorphSequenceSDLMod *morph = const_cast<plMorphSequenceSDLMod*>(plMorphSequenceSDLMod::ConvertNoRef(so->GetModifierByType(plMorphSequenceSDLMod::Index())));
+    auto* morph = const_cast<plMorphSequenceSDLMod*>(so->GetModifierByType<plMorphSequenceSDLMod>());
     if (morph)
         morph->SetCurrentStateFrom(sdr);
 }

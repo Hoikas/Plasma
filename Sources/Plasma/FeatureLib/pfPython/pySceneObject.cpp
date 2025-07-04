@@ -839,7 +839,7 @@ std::vector<PyObject*> pySceneObject::GetImageLibMods()
         plSceneObject* obj = plSceneObject::ConvertNoRef(fSceneObjects[0]->ObjectIsLoaded());
         if (obj)
         {
-            const plImageLibMod* ilm = plImageLibMod::ConvertNoRef(obj->GetModifierByType(plImageLibMod::Index()));
+            auto* ilm = obj->GetModifierByType<plImageLibMod>();
             if (ilm)
                 pyPL.push_back(pyImageLibMod::New(ilm->GetKey()));
         }
@@ -923,7 +923,7 @@ void pySceneObject::RunResponder(int state)
     plSceneObject* obj = plSceneObject::ConvertNoRef(fSceneObjects[0]->ObjectIsLoaded());
     if ( obj )
     {
-        const plModifier* pMod = obj->GetModifierByType(plResponderModifier::Index());
+        auto* pMod = obj->GetModifierByType<plResponderModifier>();
         if (pMod)
         {
             plNotifyMsg* pMsg = new plNotifyMsg;
@@ -946,7 +946,7 @@ void pySceneObject::FFResponder(int state)
     plSceneObject* obj = plSceneObject::ConvertNoRef(fSceneObjects[0]->ObjectIsLoaded());
     if ( obj )
     {
-        const plModifier* pMod = obj->GetModifierByType(plResponderModifier::Index());
+        auto* pMod = obj->GetModifierByType<plResponderModifier>();
         if (pMod)
         {
             plNotifyMsg* pMsg = new plNotifyMsg;

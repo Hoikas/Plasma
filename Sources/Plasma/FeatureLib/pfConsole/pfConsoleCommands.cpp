@@ -5492,8 +5492,8 @@ PF_CONSOLE_CMD( ParticleSystem,
     plSceneObject* so = plSceneObject::ConvertNoRef(key->GetObjectPtr());
     if (so == nullptr)
         return;
-    
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(so->GetModifierByType(plParticleSystem::Index()));
+
+    auto* sys = so->GetModifierByType<plParticleSystem>();
     if (sys != nullptr)
     {
         uint8_t flags = (params[3] ? plParticleKillMsg::kParticleKillPercentage : 0);
@@ -5516,7 +5516,7 @@ static plParticleFlockEffect *FindFlock(const ST::string &objName)
     if (so == nullptr)
         return nullptr;
     
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(so->GetModifierByType(plParticleSystem::Index()));
+    auto* sys = so->GetModifierByType<plParticleSystem>();
     if (sys == nullptr)
         return nullptr;
     

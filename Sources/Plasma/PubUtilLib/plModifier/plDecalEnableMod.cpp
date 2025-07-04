@@ -61,7 +61,7 @@ bool plDecalEnableMod::MsgReceive(plMessage* msg)
         if( !obj )
             return true;
 
-        const plArmatureMod* arm = (const plArmatureMod*)obj->GetModifierByType(plArmatureMod::Index());
+        auto* arm = obj->GetModifierByType<plArmatureMod>();
         if( !arm )
             return true;
 

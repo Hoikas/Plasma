@@ -55,10 +55,10 @@ void plParticleSDLMod::IPutCurrentStateIn(plStateDataRecord* dstState)
     if (!sobj)
         return;
 
-    const plParticleSystem *sys = plParticleSystem::ConvertNoRef(sobj->GetModifierByType(plParticleSystem::Index()));
+    auto* sys = const_cast<plParticleSystem*>(sobj->GetModifierByType<plParticleSystem>());
     if (!sys)
         return;
-    
+
     int num = sys->GetNumValidParticles(true);
     dstState->FindVar(kStrNumParticles)->Set(num);
 }
@@ -69,7 +69,7 @@ void plParticleSDLMod::ISetCurrentStateFrom(const plStateDataRecord* srcState)
     if (!sobj)
         return;
 
-    plParticleSystem *sys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(sobj->GetModifierByType(plParticleSystem::Index())));
+    auto* sys = const_cast<plParticleSystem*>(sobj->GetModifierByType<plParticleSystem>());
     if (!sys)
         return;
 

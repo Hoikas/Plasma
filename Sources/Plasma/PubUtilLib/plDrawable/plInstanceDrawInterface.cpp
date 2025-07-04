@@ -159,7 +159,7 @@ void plInstanceDrawInterface::AddSharedMesh(plSharedMesh *mesh, hsGMaterial *mat
             
     if (mesh->fMorphSet)
     {
-        plMorphSequence *morph = const_cast<plMorphSequence*>(plMorphSequence::ConvertNoRef(fOwner->GetModifierByType(plMorphSequence::Index())));
+        auto* morph = const_cast<plMorphSequence*>(fOwner->GetModifierByType<plMorphSequence>());
         if (morph)
         {
             //hsgResMgr::ResMgr()->AddViaNotify(mesh->GetKey(), new plGenRefMsg(morph->GetKey(), plRefMsg::kOnCreate, -1, -1), plRefFlags::kPassiveRef);
@@ -184,7 +184,7 @@ void plInstanceDrawInterface::RemoveSharedMesh(plSharedMesh *mesh)
                 
         if (mesh->fMorphSet)
         {
-            plMorphSequence *morph = const_cast<plMorphSequence*>(plMorphSequence::ConvertNoRef(fOwner->GetModifierByType(plMorphSequence::Index())));
+            auto* morph = const_cast<plMorphSequence*>(fOwner->GetModifierByType<plMorphSequence>());
             if (morph)
             {
                 //morph->GetKey()->Release(mesh->GetKey());

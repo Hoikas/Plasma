@@ -1751,7 +1751,7 @@ void plDynaDecalMgr::IGetParticles()
     {
         for (plSceneObject* partyObj : fPartyObjects)
         {
-            const plParticleSystem *sys = plParticleSystem::ConvertNoRef(partyObj->GetModifierByType(plParticleSystem::Index()));
+            auto* sys = partyObj->GetModifierByType<plParticleSystem>();
             if (sys && (std::find(fParticles.cbegin(), fParticles.cend(), sys) == fParticles.cend()))
             {
                 hsgResMgr::ResMgr()->AddViaNotify(sys->GetKey(), new plGenRefMsg(GetKey(), plRefMsg::kOnCreate, 0, kRefParticles), plRefFlags::kPassiveRef);

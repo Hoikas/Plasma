@@ -126,7 +126,7 @@ void pfMarkerInfo::InitSpawned(plKey markerKey)
     fSpawned = true;
 
     plSceneObject* so = plSceneObject::ConvertNoRef(fKey->GetObjectPtr());
-    fMod = (plGameMarkerModifier*)so->GetModifierByType(plGameMarkerModifier::Index());
+    fMod = const_cast<plGameMarkerModifier*>(so->GetModifierByType<plGameMarkerModifier>());
     hsAssert(fMod, "Couldn't find marker modifier");
     fMod->FixupAnimKeys();
 

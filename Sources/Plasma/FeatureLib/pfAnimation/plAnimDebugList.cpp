@@ -75,7 +75,7 @@ void plAnimDebugList::AddObjects(const ST::string &subString)
         plSceneObject *so = plSceneObject::ConvertNoRef(key->ObjectIsLoaded());
         if (so)
         {
-            const plAGMasterMod *agMod = plAGMasterMod::ConvertNoRef(so->GetModifierByType(plAGMasterMod::Index()));
+            const auto* agMod = so->GetModifierByType<plAGMasterMod>();
             if (agMod && std::find(fSOKeys.cbegin(), fSOKeys.cend(), so->GetKey()) == fSOKeys.cend())
                 fSOKeys.emplace_back(so->GetKey());
         }
@@ -150,7 +150,7 @@ void plAnimDebugList::ShowReport()
         if (!so)
             continue;
 
-        plAGMasterMod *mod = const_cast<plAGMasterMod*>(plAGMasterMod::ConvertNoRef(so->GetModifierByType(plAGMasterMod::Index())));
+        auto* mod = const_cast<plAGMasterMod*>(so->GetModifierByType<plAGMasterMod>());
         if (!mod)
             continue;
 

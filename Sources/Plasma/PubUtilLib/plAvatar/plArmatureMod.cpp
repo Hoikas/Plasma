@@ -837,7 +837,7 @@ void plArmatureMod::SpawnAt(int spawnNum, double time)
     if (GetFollowerParticleSystemSO())
     {
         // Since particles are in world space, if we've got some surrounding us, we've got to translate them to compensate for our warp.
-        plParticleSystem *sys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(GetFollowerParticleSystemSO()->GetModifierByType(plParticleSystem::Index())));
+        auto* sys = const_cast<plParticleSystem*>(GetFollowerParticleSystemSO()->GetModifierByType<plParticleSystem>());
         if (sys)
         {
             hsPoint3 trans = l2w.GetTranslate() - GetTarget(0)->GetLocalToWorld().GetTranslate();
@@ -882,7 +882,7 @@ void plArmatureMod::SetFollowerParticleSystemSO(plSceneObject *follower)
     hsgResMgr::ResMgr()->AddViaNotify(follower->GetKey(), new plAttachMsg(GetTarget(0)->GetKey(), nullptr, plRefMsg::kOnRequest), plRefFlags::kActiveRef);
     fFollowerParticleSystemSO = follower;
 
-    plParticleSystem *sys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(follower->GetModifierByType(plParticleSystem::Index())));
+    auto* sys = const_cast<plParticleSystem*>(follower->GetModifierByType<plParticleSystem>());
     if (sys)
     {
         sys->fMiscFlags |= plParticleSystem::kParticleSystemAlwaysUpdate;
@@ -891,7 +891,7 @@ void plArmatureMod::SetFollowerParticleSystemSO(plSceneObject *follower)
     }
 }
 
-plSceneObject *plArmatureMod::GetFollowerParticleSystemSO()
+plSceneObject *plArmatureMod::GetFollowerParticleSystemSO() const
 {
     return fFollowerParticleSystemSO;
 }
@@ -936,7 +936,7 @@ void plArmatureMod::EnterAge(bool reSpawn)
     
     if (GetFollowerParticleSystemSO())
     {
-        const plParticleSystem *sys = plParticleSystem::ConvertNoRef(GetFollowerParticleSystemSO()->GetModifierByType(plParticleSystem::Index()));
+        auto* sys = GetFollowerParticleSystemSO()->GetModifierByType<plParticleSystem>();
         hsAssert(sys, "We have a particle system SO, but no system?");
         if (sys)
         {
@@ -1237,14 +1237,14 @@ bool plArmatureMod::MsgReceive(plMessage* msg)
         }
         else
         {   
-            plParticleSystem *dstSys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(dstSysSO->GetModifierByType(plParticleSystem::Index())));
+            auto* dstSys = const_cast<plParticleSystem*>(dstSysSO->GetModifierByType<plParticleSystem>());
             if (dstSys)
             {
                 // Got the system. Time to steal particles!
                 plParticleSystem *srcSys = nullptr;
                 plSceneObject *srcSysSO = plSceneObject::ConvertNoRef(partMsg->fSysSOKey->ObjectIsLoaded());
                 if (srcSysSO)
-                    srcSys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(srcSysSO->GetModifierByType(plParticleSystem::Index())));
+                    srcSys = const_cast<plParticleSystem*>(srcSysSO->GetModifierByType<plParticleSystem>());
                 
                 // A nil source system is ok. It just won't copy anything.
                 int numToGen = partMsg->fNumToTransfer - dstSys->StealParticlesFrom(srcSys, partMsg->fNumToTransfer);
@@ -1301,7 +1301,7 @@ bool plArmatureMod::MsgReceive(plMessage* msg)
             if (so)
             {
                 so->SetSynchFlagsBit(plSynchedObject::kAllStateIsVolatile);
-                plParticleSystem *sys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(so->GetModifierByType(plParticleSystem::Index())));
+                auto* sys = const_cast<plParticleSystem*>(so->GetModifierByType<plParticleSystem>());
                 hsAssert(sys, "Modifier not loaded yet.");
                 if (sys)
                 {
@@ -1618,7 +1618,7 @@ bool plArmatureMod::IEval(double time, float elapsed, uint32_t dirty)
                     GetTarget(0)->GetLocalToWorld());
                 warp->Send();
 
-                plParticleSystem *sys = const_cast<plParticleSystem*>(plParticleSystem::ConvertNoRef(follower->GetModifierByType(plParticleSystem::Index())));
+                auto* sys = const_cast<plParticleSystem*>(follower->GetModifierByType<plParticleSystem>());
                 if (sys)
                 {
                     sys->fMiscFlags |= plParticleSystem::kParticleSystemAlwaysUpdate;

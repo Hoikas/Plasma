@@ -118,7 +118,7 @@ bool plOneShotMod::MsgReceive(plMessage* msg)
             plSceneObject *avObj = (plSceneObject *)avKey->ObjectIsLoaded();
             if(avObj)
             {
-                const plArmatureMod *avMod = (plArmatureMod*)avObj->GetModifierByType(plArmatureMod::Index());
+                auto* avMod = avObj->GetModifierByType<plArmatureMod>();
 
                 if(avMod)
                 {

@@ -114,8 +114,7 @@ void plAvatarPhysicalSDLModifier::ISetCurrentStateFrom(const plStateDataRecord* 
     hsAssert(sObj, "plAvatarPhysicalSDLModifier, nil target");
     if(sObj)
     {
-        const plArmatureMod* kAvMod = (plArmatureMod*)sObj->GetModifierByType(plArmatureMod::Index());
-        plArmatureMod * avMod = const_cast<plArmatureMod *>(kAvMod);
+        auto* avMod = const_cast<plArmatureMod*>(sObj->GetModifierByType<plArmatureMod>());
         if(avMod)
         {
             plSimpleStateVariable* worldVar = srcState->FindVar(kStrSubworld);
@@ -144,8 +143,7 @@ void plAvatarPhysicalSDLModifier::IPutCurrentStateIn(plStateDataRecord* dstState
 {
     plSceneObject* sObj = GetTarget();
     hsAssert(sObj, "plAvatarPhysicalSDLModifier, nil target");
-    const plArmatureMod* kAvMod = (plArmatureMod*)sObj->GetModifierByType(plArmatureMod::Index());
-    plArmatureMod * avMod = const_cast<plArmatureMod *>(kAvMod);
+    auto* avMod = sObj->GetModifierByType<plArmatureMod>();
     hsAssert(avMod, "nil avMod");
 
     if(avMod && avMod->GetController())
@@ -166,8 +164,7 @@ void plAvatarSDLModifier::ISetCurrentStateFrom(const plStateDataRecord* srcState
     hsAssert(sObj, "plAvatarSDLModifier, nil target");
     if(sObj)
     {
-        const plArmatureMod* kAvMod = (plArmatureMod*)sObj->GetModifierByType(plArmatureMod::Index());
-        plArmatureMod * avMod = const_cast<plArmatureMod *>(kAvMod);
+        auto* avMod = const_cast<plArmatureMod*>(sObj->GetModifierByType<plArmatureMod>());
         if(avMod)
         {
             ISetBaseAvatarStateFrom(avMod, srcState);
@@ -236,8 +233,7 @@ void plAvatarSDLModifier::IPutCurrentStateIn(plStateDataRecord* dstState)
 {
     plSceneObject* sObj = GetTarget();
     hsAssert(sObj, "plAvatarSDLModifier, nil target");
-    const plArmatureMod* kAvMod = (plArmatureMod*)sObj->GetModifierByType(plArmatureMod::Index());
-    plArmatureMod * avMod = const_cast<plArmatureMod *>(kAvMod);
+    auto* avMod = const_cast<plArmatureMod*>(sObj->GetModifierByType<plArmatureMod>());
     hsAssert(avMod, "nil avMod");
 
     if(avMod)

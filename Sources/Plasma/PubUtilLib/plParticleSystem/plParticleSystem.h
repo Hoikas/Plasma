@@ -187,7 +187,7 @@ public:
     float GetWindMult() const { return fWindMult; }
     plParticleEffect *GetEffect(uint16_t type) const;
     
-    plParticleSDLMod* GetSDLMod() {return fParticleSDLMod;}
+    plParticleSDLMod* GetSDLMod() const { return fParticleSDLMod; }
     // Functions related to/required by plModifier
     size_t GetNumTargets() const override { return fTarget ? 1 : 0; }
     plSceneObject* GetTarget(size_t w) const override { hsAssert(w < 1, "Bad target"); return fTarget; }

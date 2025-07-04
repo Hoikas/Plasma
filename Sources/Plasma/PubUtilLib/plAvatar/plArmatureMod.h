@@ -332,7 +332,7 @@ public:
     static void SetSpawnPointOverride(const ST::string &overrideObjName);
     static void WindowActivate(bool active);
     void SetFollowerParticleSystemSO(plSceneObject *follower);
-    plSceneObject *GetFollowerParticleSystemSO();
+    plSceneObject *GetFollowerParticleSystemSO() const;
     void RegisterForBehaviorNotify(plKey key);
     void UnRegisterForBehaviorNotify(const plKey& key);
     const hsBitVector& GetRelRegionCareAbout() const    { return fRegionsICareAbout; }

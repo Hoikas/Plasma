@@ -626,7 +626,7 @@ plLayerInterface    *plLayerConverter::IConvertCameraLayer(plPlasmaMAXLayer *lay
             plMaxNode *camNode = (plMaxNode*)pb->GetINode(ParamID(plMAXCameraLayer::kCamera));
             if (camNode)
             {
-                const plCameraModifier1 *mod = plCameraModifier1::ConvertNoRef(camNode->GetSceneObject()->GetModifierByType(plCameraModifier1::Index()));
+                const auto* mod = camNode->GetSceneObject()->GetModifierByType<plCameraModifier1>();
                 if (mod)
                     hsgResMgr::ResMgr()->AddViaNotify(mod->GetKey(), new plGenRefMsg(map->GetKey(), plRefMsg::kOnCreate, -1, plDynamicCamMap::kRefCamera), plRefFlags::kActiveRef);
             }

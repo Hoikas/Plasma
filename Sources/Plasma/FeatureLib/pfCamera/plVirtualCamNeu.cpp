@@ -219,8 +219,7 @@ void plVirtualCam1::RebuildStack(const plKey& key)
     plSceneObject* pObj = plSceneObject::ConvertNoRef(key->GetObjectPtr());
     if (pObj)
     {
-        
-        plCameraModifier1* pMod = (plCameraModifier1*)pObj->GetModifierByType(plCameraModifier1::Index());
+        auto* pMod = const_cast<plCameraModifier1*>(pObj->GetModifierByType<plCameraModifier1>());
         if (pMod)
             AddCameraToStack(pMod);
         else

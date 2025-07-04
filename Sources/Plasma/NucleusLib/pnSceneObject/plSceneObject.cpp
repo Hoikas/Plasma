@@ -435,6 +435,11 @@ void plSceneObject::SetNetGroup(plNetGroupId netGroup)
 
 const plModifier* plSceneObject::GetModifierByType(uint16_t classIdx) const
 {
+    hsAssert(
+        plFactory::DerivesFrom(plModifier::Index(), classIdx),
+        "Requesting a non-plModifier, eh?"
+    );
+
     for (plModifier* modifier : fModifiers)
     {
         if (modifier && plFactory::DerivesFrom(classIdx, modifier->ClassIndex()))

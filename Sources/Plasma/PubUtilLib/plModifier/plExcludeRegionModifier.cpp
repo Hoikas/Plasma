@@ -236,7 +236,7 @@ void plExcludeRegionModifier::IMoveAvatars()
 {
     for (const plKey& avatarKey : fContainedAvatars) {
         plSceneObject* so = plSceneObject::ConvertNoRef(avatarKey->ObjectIsLoaded());
-        auto constAvMod = (const plArmatureMod*)so->GetModifierByType(plArmatureMod::Index());
+        auto* constAvMod = so->GetModifierByType<plArmatureMod>();
         if (constAvMod) {
             plAvBrainGeneric *curGenBrain = (plAvBrainGeneric *)constAvMod->FindBrainByClass(plAvBrainGeneric::Index());
             // *** warning; if there's more than one generic brain active, this will only look at the first

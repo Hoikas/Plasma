@@ -413,7 +413,7 @@ void plNetLinkingMgr::IDoLink(plLinkToAgeMsg* msg)
     if (fLinkedIn) {
         // Set the link out animation we should use
         if (plSceneObject *localSO = plSceneObject::ConvertNoRef(nc->GetLocalPlayer())) {
-            plArmatureMod *avMod = const_cast<plArmatureMod*>(plArmatureMod::ConvertNoRef(localSO->GetModifierByType(plArmatureMod::Index())));
+            auto* avMod = const_cast<plArmatureMod*>(localSO->GetModifierByType<plArmatureMod>());
             avMod->SetLinkInAnim(msg->GetLinkInAnimName());
         }
         // Queue leave op

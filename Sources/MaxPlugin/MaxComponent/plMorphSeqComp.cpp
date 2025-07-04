@@ -303,7 +303,7 @@ bool plMorphSeqComp::Convert(plMaxNode* node, plErrorMsg* pErrMsg)
     const MCHAR* dbgNodeName = node->GetName();
 
     // Make our plMorphSequence modifier
-    plMorphSequence* morphSeq = const_cast<plMorphSequence *>(plMorphSequence::ConvertNoRef(node->GetSceneObject()->GetModifierByType(plMorphSequence::Index())));
+    auto* morphSeq = const_cast<plMorphSequence*>(node->GetSceneObject()->GetModifierByType<plMorphSequence>());
     if (!morphSeq)
     {
         morphSeq = new plMorphSequence;

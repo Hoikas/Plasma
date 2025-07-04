@@ -215,7 +215,7 @@ void plAvLadderMod::EmitCommand(const plKey& receiver)
     plSceneObject *SO = plSceneObject::ConvertNoRef(object);
     if(SO)
     {
-        const plArmatureMod *constAvMod = (plArmatureMod*)SO->GetModifierByType(plArmatureMod::Index());
+        auto* constAvMod = SO->GetModifierByType<plArmatureMod>();
         if(constAvMod)
         {
             plAvBrainGeneric *curGenBrain = (plAvBrainGeneric *)constAvMod->FindBrainByClass(plAvBrainGeneric::Index());
